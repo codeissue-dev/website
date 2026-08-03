@@ -1,7 +1,9 @@
 {
   "name": "codeissue",
-  "version": "0.1.0",
   "private": true,
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
   "scripts": {
     "lint:fix": "eslint . --fix",
     "lint:check": "eslint .",
