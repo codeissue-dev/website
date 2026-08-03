@@ -1,27 +1,26 @@
 # Codeissue landing page
 
-An OLED-inspired landing page for the Codeissue developer network, built with Next.js 16, React 19, Tailwind CSS 4, and local shadcn/ui components.
+OLED-first bilingual landing page for Codeissue, built with Next.js App Router, React, Tailwind CSS, and local shadcn-style open-code components.
 
-## Highlights
+## Positioning
 
-- OLED-first visual system with true black surfaces and high-contrast cyan/violet accents.
-- Native scroll progress, reveal, parallax, pointer glow, sticky storytelling, and 3D card interactions.
-- Accessible motion behavior through `prefers-reduced-motion`.
-- Responsive layouts for desktop, tablet, and mobile.
-- Complete Codeissue domains, social channels, Discord invite, and email contact.
-- shadcn/ui configured through `components.json` with local open-code primitives in `components/ui`.
-- Dependency-free Node test suite for links, contacts, and landing-page content structure.
+The site is structured around two statements:
 
-## Development
+- “Every idea starts as an issue. We turn yours into a working product.”
+- “Your idea. Our next issue.”
+
+The visual system treats a product idea as an issue moving through definition, design, implementation, human review, and release. The interface intentionally avoids generic AI imagery and keeps the emphasis on product work, process, and accountability.
+
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. The request is redirected to `/en` or `/ru` using the saved language preference and the browser `Accept-Language` header.
 
-## Verification
+## Quality checks
 
 ```bash
 npm test
@@ -31,12 +30,25 @@ npm run prettier:check
 npm run build
 ```
 
-The test suite uses Node's built-in test runner, so it does not add another test framework to the client bundle or dependency graph.
+## Internationalization
 
-## Project structure
+- English copy: `dictionaries/en.json`
+- Russian copy: `dictionaries/ru.json`
+- Locale helpers: `lib/locales.ts`
+- Locale-aware route: `app/[lang]/page.tsx`
+- Browser-language redirect: `proxy.ts`
 
-- `app/` — Next.js App Router entry points and global OLED theme.
-- `components/landing-page.tsx` — interactive landing experience.
-- `components/ui/` — local shadcn-style UI primitives.
-- `lib/site-data.js` — navigation, manifesto, capability, domain, and social content.
-- `tests/` — content and contact integrity tests.
+The language switch stores a `codeissue-locale` cookie and moves between `/en` and `/ru`. Localized metadata includes canonical and alternate-language URLs.
+
+## Structure
+
+- `components/landing-page.tsx` — page composition and scroll interactions
+- `components/social-icons.tsx` — visual marks for every social destination
+- `components/ui/` — local shadcn-style primitives
+- `lib/site-data.js` — stable links, domains, and contact data
+- `app/globals.css` — OLED visual system and responsive behavior
+- `tests/` — contact, translation, route, icon, and contrast checks
+
+## Motion and accessibility
+
+The page uses intersection-based reveals, a scroll-driven process panel, subtle ticket parallax, and a reading-progress line. Motion is disabled when `prefers-reduced-motion` is enabled. Primary actions use an opaque high-contrast cyan surface rather than transparent glow-only styling.

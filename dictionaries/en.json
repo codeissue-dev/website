@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "title": "Codeissue — From idea to working product",
+    "description": "Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review."
+  },
+  "language": {
+    "label": "Language",
+    "switchLabel": "Switch to Russian",
+    "short": "EN"
+  },
+  "brand": {
+    "descriptor": "Digital product studio"
+  },
+  "nav": {
+    "approach": "Approach",
+    "process": "Process",
+    "network": "Links",
+    "contact": "Start an issue"
+  },
+  "hero": {
+    "eyebrow": "Product design + engineering",
+    "lineOne": "Every idea starts as an issue.",
+    "lineTwo": "We turn yours into a working product.",
+    "description": "Strategy, design, engineering, and review — one focused team from first note to working release.",
+    "primary": "Start an issue",
+    "secondary": "See how we work",
+    "scroll": "Follow the issue",
+    "ticket": {
+      "id": "ISSUE-001",
+      "status": "Open",
+      "title": "Turn an idea into a product",
+      "inputLabel": "Input",
+      "inputValue": "A rough idea",
+      "outputLabel": "Output",
+      "outputValue": "A working release",
+      "stages": ["Define", "Design", "Build", "Review"],
+      "ownerLabel": "Owner",
+      "ownerValue": "Codeissue",
+      "reviewLabel": "Human review",
+      "reviewValue": "Required"
+    }
+  },
+  "approach": {
+    "eyebrow": "How we work",
+    "title": "Your idea. Our next issue.",
+    "description": "We design and build digital products using AI-assisted workflows, custom systems, and human review.",
+    "principles": [
+      {
+        "number": "01",
+        "title": "AI-assisted, not AI-shaped.",
+        "copy": "We use AI where it improves speed and coverage. Product decisions, taste, and accountability stay human."
+      },
+      {
+        "number": "02",
+        "title": "Built for the actual problem.",
+        "copy": "No generic stack pasted onto every brief. We shape the system around the product, constraints, and team."
+      },
+      {
+        "number": "03",
+        "title": "Reviewed before release.",
+        "copy": "Every important interaction, edge case, and implementation choice gets a deliberate human pass."
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "From issue to release",
+    "title": "A clear path from thought to product.",
+    "description": "We keep the process visible, reduce uncertainty early, and make each stage produce something you can review.",
+    "currentLabel": "Current issue",
+    "status": "In progress",
+    "deliverablesLabel": "What you get",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Frame the issue.",
+        "copy": "We turn the idea into a precise problem, define the audience, and agree on what a useful first release must do.",
+        "deliverables": ["Product brief", "Scope", "Success criteria"]
+      },
+      {
+        "number": "02",
+        "title": "Design the system.",
+        "copy": "We map the experience, prototype the difficult parts, and create a visual system that supports the product instead of decorating it.",
+        "deliverables": ["User flow", "Interface direction", "Technical plan"]
+      },
+      {
+        "number": "03",
+        "title": "Build the product.",
+        "copy": "Design and engineering move together. We implement the core, connect the systems, and keep the release usable at every checkpoint.",
+        "deliverables": ["Working product", "Integrations", "Responsive UI"]
+      },
+      {
+        "number": "04",
+        "title": "Review and release.",
+        "copy": "We test real scenarios, resolve edge cases, document the handoff, and ship a release that can keep evolving.",
+        "deliverables": ["Human review", "Quality pass", "Release notes"]
+      }
+    ]
+  },
+  "services": {
+    "eyebrow": "What we build",
+    "title": "Digital products that have to work.",
+    "description": "From a focused launch page to a custom platform, we care about the same thing: a clear product that survives real use.",
+    "items": [
+      {
+        "number": "01",
+        "title": "Web products",
+        "copy": "Customer-facing platforms, dashboards, services, and responsive interfaces."
+      },
+      {
+        "number": "02",
+        "title": "Internal systems",
+        "copy": "Tools and workflows that remove repetitive work and make operations easier to understand."
+      },
+      {
+        "number": "03",
+        "title": "AI-assisted features",
+        "copy": "Useful AI inside a product — scoped, tested, observable, and always reviewable."
+      },
+      {
+        "number": "04",
+        "title": "Product foundations",
+        "copy": "Design systems, architecture, prototypes, and the groundwork for a reliable next release."
+      }
+    ]
+  },
+  "network": {
+    "eyebrow": "Find Codeissue",
+    "title": "Follow the work, not the noise.",
+    "description": "Product notes, build logs, source code, streams, and direct community updates.",
+    "open": "Open",
+    "socials": {
+      "discord": "Community, feedback, and the fastest way to reach us.",
+      "github": "Source code, experiments, and work in progress.",
+      "telegram": "Compact updates, launches, and useful links.",
+      "youtube": "Build logs, product demos, and longer explanations.",
+      "x": "Short notes, links, and work shared in public.",
+      "instagram": "Visual fragments from design and development.",
+      "tiktok": "Short product, code, and internet-native videos.",
+      "twitch": "Live sessions with the process left visible.",
+      "max": "A direct channel for updates and announcements.",
+      "linkedin": "Professional context, releases, and collaboration."
+    }
+  },
+  "cta": {
+    "eyebrow": "New issue",
+    "title": "Have an idea worth shipping?",
+    "description": "Send the rough version. We will help turn it into a clear next step.",
+    "primary": "Tell us about it",
+    "secondary": "Join Discord"
+  },
+  "footer": {
+    "note": "AI-assisted workflows. Custom systems. Human review.",
+    "rights": "Codeissue — digital product studio."
+  }
+}

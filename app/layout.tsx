@@ -1,51 +1,26 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { headers } from 'next/headers';
+import type { ReactNode } from 'react';
 
 import './globals.css';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://codeissue.dev'),
   title: {
-    default: 'Codeissue — Build. Break. Ship.',
+    default: 'Codeissue — From idea to working product',
     template: '%s — Codeissue',
   },
   description:
-    'Codeissue is an independent developer network for engineering, open source, and the people building what comes next.',
+    'Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review.',
   keywords: [
     'codeissue',
-    'developer community',
-    'software engineering',
-    'open source',
-    'debugging',
+    'product design',
+    'product engineering',
+    'digital products',
+    'AI-assisted development',
   ],
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: 'Codeissue — Build. Break. Ship.',
-    description:
-      'A digital lab and community for people who build, break, debug, and ship what comes next.',
-    url: 'https://codeissue.dev',
-    siteName: 'Codeissue',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Codeissue — Build. Break. Ship.',
-    description:
-      'A digital lab and community for people who build, break, debug, and ship what comes next.',
-    creator: '@codeissue_dev',
-  },
+  authors: [{ name: 'Codeissue', url: 'https://codeissue.dev' }],
+  creator: 'Codeissue',
 };
 
 export const viewport: Viewport = {
@@ -55,12 +30,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  const requestHeaders = await headers();
+  const locale =
+    requestHeaders.get('x-codeissue-locale') === 'ru' ? 'ru' : 'en';
+
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang={locale} className="h-full antialiased">
       <body className="min-h-full">{children}</body>
     </html>
   );

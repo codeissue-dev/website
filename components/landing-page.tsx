@@ -1,28 +1,28 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
-import {
-  capabilities,
-  contactEmail,
-  domains,
-  navigation,
-  principles,
-  socials,
-} from '@/lib/site-data.js';
+import type { Dictionary } from '@/lib/i18n';
+import type { Locale } from '@/lib/locales';
+import { contactEmail, domains, navigation, socials } from '@/lib/site-data.js';
 import { cn } from '@/lib/utils';
 
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  ArrowUpRightIcon,
+  CheckIcon,
+  CodeIssueMark,
+  GlobeIcon,
+  MailIcon,
+} from './icons';
+import { SocialIcon } from './social-icons';
+import type { SocialIconName } from './social-icons';
 import { Badge } from './ui/badge';
 import { buttonVariants } from './ui/button';
 import { Card } from './ui/card';
-import {
-  ArrowDownIcon,
-  ArrowUpRightIcon,
-  CodeIssueMark,
-  MailIcon,
-  SparkIcon,
-} from './icons';
 
 function ExternalLink({
   href,
@@ -48,78 +48,197 @@ function ExternalLink({
   );
 }
 
-function HeroVisual() {
+function LanguageSwitch({
+  locale,
+  copy,
+}: {
+  locale: Locale;
+  copy: Dictionary;
+}) {
+  const nextLocale: Locale = locale === 'en' ? 'ru' : 'en';
+
+  const rememberLocale = () => {
+    document.cookie = `codeissue-locale=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
+  };
+
   return (
-    <div className="hero-visual" aria-hidden="true">
-      <div className="hero-visual__halo" />
-      <div className="hero-visual__orbit hero-visual__orbit--one">
-        <span>BUILD</span>
-        <span>BREAK</span>
-        <span>SHIP</span>
+    <Link
+      href={`/${nextLocale}`}
+      className="language-switch"
+      aria-label={copy.language.switchLabel}
+      hrefLang={nextLocale}
+      onClick={rememberLocale}
+    >
+      <GlobeIcon className="size-4" />
+      <span>{nextLocale.toUpperCase()}</span>
+    </Link>
+  );
+}
+
+function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
+  return (
+    <div className="issue-ticket" aria-label={copy.title}>
+      <div className="issue-ticket__topline">
+        <span className="issue-ticket__id">{copy.id}</span>
+        <span className="issue-ticket__status">
+          <i aria-hidden="true" />
+          {copy.status}
+        </span>
       </div>
-      <div className="hero-visual__orbit hero-visual__orbit--two" />
-      <div className="hero-visual__core">
-        <div className="hero-visual__scan" />
-        <CodeIssueMark className="size-20 text-white sm:size-28" />
-        <span className="hero-visual__core-label">CODEISSUE</span>
+
+      <h2>{copy.title}</h2>
+
+      <div className="issue-ticket__io">
+        <div>
+          <span>{copy.inputLabel}</span>
+          <strong>{copy.inputValue}</strong>
+        </div>
+        <ArrowRightIcon className="size-5" />
+        <div>
+          <span>{copy.outputLabel}</span>
+          <strong>{copy.outputValue}</strong>
+        </div>
       </div>
-      <div className="hero-visual__node hero-visual__node--a">01</div>
-      <div className="hero-visual__node hero-visual__node--b">CI</div>
-      <div className="hero-visual__node hero-visual__node--c">DEV</div>
+
+      <ol className="issue-ticket__stages">
+        {copy.stages.map((stage, index) => (
+          <li
+            key={stage}
+            className={cn(
+              index === 0 && 'is-complete',
+              index === 1 && 'is-current',
+            )}
+          >
+            <span className="issue-ticket__stage-mark">
+              {index === 0 ? <CheckIcon className="size-3.5" /> : index + 1}
+            </span>
+            <span>{stage}</span>
+          </li>
+        ))}
+      </ol>
+
+      <div className="issue-ticket__footer">
+        <div>
+          <span>{copy.ownerLabel}</span>
+          <strong>{copy.ownerValue}</strong>
+        </div>
+        <div>
+          <span>{copy.reviewLabel}</span>
+          <strong>{copy.reviewValue}</strong>
+        </div>
+      </div>
     </div>
   );
 }
 
-function TerminalPanel({ active }: { active: number }) {
-  const commands = [
-    ['scope', 'understand the real problem'],
-    ['probe', 'stress every assumption'],
-    ['release', 'ship the strongest signal'],
-  ];
+function ProcessPanel({
+  copy,
+  active,
+}: {
+  copy: Dictionary['process'];
+  active: number;
+}) {
+  const step = copy.steps[active];
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel__bar">
-        <span />
-        <span />
-        <span />
-        <p>codeissue / operating-system</p>
+    <div className="process-panel" key={active}>
+      <div className="process-panel__topline">
+        <span>{copy.currentLabel}</span>
+        <span className="process-panel__status">
+          <i aria-hidden="true" />
+          {copy.status}
+        </span>
       </div>
-      <div className="terminal-panel__body">
-        <div className="terminal-panel__meta">
-          <span>STATUS</span>
-          <strong>ONLINE</strong>
-        </div>
-        <div className="terminal-panel__command" key={active}>
-          <span className="text-primary">$</span>
-          <span>codeissue {commands[active][0]}</span>
-          <span className="terminal-panel__cursor" />
-        </div>
-        <p className="terminal-panel__output">{commands[active][1]}</p>
-        <div className="terminal-panel__graph">
-          {Array.from({ length: 22 }).map((_, index) => (
-            <span
-              key={index}
-              style={{
-                height: `${18 + ((index * 17 + active * 29) % 72)}%`,
-                animationDelay: `${index * -0.06}s`,
-              }}
-            />
+
+      <div className="process-panel__number">{step.number}</div>
+      <h3>{step.title}</h3>
+      <p>{step.copy}</p>
+
+      <div className="process-panel__deliverables">
+        <span>{copy.deliverablesLabel}</span>
+        <ul>
+          {step.deliverables.map((item) => (
+            <li key={item}>
+              <CheckIcon className="size-4" />
+              {item}
+            </li>
           ))}
-        </div>
-        <div className="terminal-panel__footer">
-          <span>signal integrity</span>
-          <span>{97 + active}%</span>
-        </div>
+        </ul>
+      </div>
+
+      <div className="process-panel__progress" aria-hidden="true">
+        {copy.steps.map((item, index) => (
+          <span
+            key={item.number}
+            className={index <= active ? 'is-active' : ''}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-export function LandingPage() {
+function SocialCard({
+  social,
+  copy,
+}: {
+  social: (typeof socials)[number];
+  copy: Dictionary['network'];
+}) {
+  const description =
+    copy.socials[social.id as keyof typeof copy.socials] ?? '';
+  const style = {
+    '--social-accent': social.accent,
+  } as CSSProperties;
+
+  return (
+    <ExternalLink
+      href={social.href}
+      className={cn('social-link-card', social.featured && 'is-featured')}
+      label={`${social.name}: ${social.handle}`}
+    >
+      <article style={style}>
+        <div className="social-link-card__visual" aria-hidden="true">
+          <div className="social-link-card__art-grid" />
+          <div className="social-link-card__icon">
+            <SocialIcon
+              name={social.id as SocialIconName}
+              className="size-10 sm:size-12"
+            />
+          </div>
+          <div className="social-link-card__signal">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
+          <span className="social-link-card__handle">{social.handle}</span>
+        </div>
+
+        <div className="social-link-card__body">
+          <div>
+            <span className="social-link-card__name">{social.name}</span>
+            <p>{description}</p>
+          </div>
+          <span className="social-link-card__open">
+            {copy.open}
+            <ArrowUpRightIcon className="size-4" />
+          </span>
+        </div>
+      </article>
+    </ExternalLink>
+  );
+}
+
+export function LandingPage({
+  locale,
+  copy,
+}: {
+  locale: Locale;
+  copy: Dictionary;
+}) {
   const progressRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const [activePrinciple, setActivePrinciple] = useState(0);
+  const [activeProcess, setActiveProcess] = useState(0);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -128,34 +247,29 @@ export function LandingPage() {
     ).matches;
     let frame = 0;
 
+    root.lang = locale;
+
     const updateScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const scrollable = document.documentElement.scrollHeight - innerHeight;
-        const progress = scrollable > 0 ? scrollY / scrollable : 0;
+        const scrollable = root.scrollHeight - window.innerHeight;
+        const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+
         progressRef.current?.style.setProperty(
           'transform',
           `scaleX(${progress})`,
         );
-        root.style.setProperty('--grid-scroll', `${scrollY * -0.018}px`);
-        root.style.setProperty('--orb-scroll', `${scrollY * -0.025}px`);
-        root.style.setProperty('--code-scroll', `${scrollY * -0.012}px`);
+        root.style.setProperty('--page-scroll', `${window.scrollY}px`);
       });
     };
 
     const updatePointer = (event: PointerEvent) => {
       if (event.pointerType === 'touch') return;
 
-      const x = event.clientX / innerWidth - 0.5;
-      const y = event.clientY / innerHeight - 0.5;
-      root.style.setProperty('--hero-shift-x', `${x * 50}px`);
-      root.style.setProperty('--hero-shift-y', `${y * 30}px`);
-      root.style.setProperty('--hero-rotate-x', `${y * -8}deg`);
-      root.style.setProperty('--hero-rotate-y', `${x * 10}deg`);
-      cursorRef.current?.style.setProperty(
-        'transform',
-        `translate3d(${event.clientX}px, ${event.clientY}px, 0)`,
-      );
+      const x = event.clientX / window.innerWidth - 0.5;
+      const y = event.clientY / window.innerHeight - 0.5;
+      root.style.setProperty('--pointer-x', `${x}`);
+      root.style.setProperty('--pointer-y', `${y}`);
     };
 
     const revealObserver = new IntersectionObserver(
@@ -167,375 +281,348 @@ export function LandingPage() {
           }
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+      { threshold: 0.14, rootMargin: '0px 0px -6% 0px' },
     );
 
     document
       .querySelectorAll<HTMLElement>('[data-reveal]')
       .forEach((element) => revealObserver.observe(element));
 
-    const stepObserver = new IntersectionObserver(
+    const processObserver = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
         if (visible) {
-          setActivePrinciple(Number(visible.target.getAttribute('data-step')));
+          setActiveProcess(Number(visible.target.getAttribute('data-step')));
         }
       },
-      { threshold: [0.35, 0.6, 0.8], rootMargin: '-28% 0px -28% 0px' },
+      { threshold: [0.35, 0.6, 0.82], rootMargin: '-24% 0px -35% 0px' },
     );
 
     document
       .querySelectorAll<HTMLElement>('[data-process-step]')
-      .forEach((element) => stepObserver.observe(element));
+      .forEach((element) => processObserver.observe(element));
 
     updateScroll();
-    addEventListener('scroll', updateScroll, { passive: true });
+    window.addEventListener('scroll', updateScroll, { passive: true });
 
     if (!reduceMotion) {
-      addEventListener('pointermove', updatePointer, { passive: true });
+      window.addEventListener('pointermove', updatePointer, { passive: true });
     }
 
     return () => {
       cancelAnimationFrame(frame);
-      removeEventListener('scroll', updateScroll);
-      removeEventListener('pointermove', updatePointer);
+      window.removeEventListener('scroll', updateScroll);
+      window.removeEventListener('pointermove', updatePointer);
       revealObserver.disconnect();
-      stepObserver.disconnect();
+      processObserver.disconnect();
     };
-  }, []);
-
-  const handleTilt = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === 'touch') return;
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    event.currentTarget.style.setProperty('--tilt-x', `${x * 10}deg`);
-    event.currentTarget.style.setProperty('--tilt-y', `${y * -10}deg`);
-    event.currentTarget.style.setProperty('--glow-x', `${(x + 0.5) * 100}%`);
-    event.currentTarget.style.setProperty('--glow-y', `${(y + 0.5) * 100}%`);
-  };
-
-  const resetTilt = (event: ReactPointerEvent<HTMLElement>) => {
-    event.currentTarget.style.setProperty('--tilt-x', '0deg');
-    event.currentTarget.style.setProperty('--tilt-y', '0deg');
-  };
+  }, [locale]);
 
   return (
     <div className="site-shell">
-      <div className="scroll-progress" ref={progressRef} />
-      <div className="cursor-glow" ref={cursorRef} aria-hidden="true" />
+      <div ref={progressRef} className="scroll-progress" aria-hidden="true" />
       <div className="ambient-grid" aria-hidden="true" />
-      <div className="noise" aria-hidden="true" />
 
       <header className="site-header">
-        <a href="#top" className="brand" aria-label="Codeissue home">
+        <a href="#top" className="brand" aria-label="Codeissue">
           <span className="brand__mark">
-            <CodeIssueMark className="size-6" />
+            <CodeIssueMark className="size-5" />
           </span>
-          <span className="brand__word">codeissue</span>
+          <span className="brand__copy">
+            <strong>Codeissue</strong>
+            <small>{copy.brand.descriptor}</small>
+          </span>
         </a>
 
-        <nav className="site-nav" aria-label="Main navigation">
+        <nav className="site-nav" aria-label="Primary navigation">
           {navigation.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
+            <a key={item.id} href={item.href}>
+              {copy.nav[item.id as keyof typeof copy.nav]}
             </a>
           ))}
         </nav>
 
-        <ExternalLink
-          href="https://discord.gg/uckqayVRmy"
-          className="header-status"
-          label="Join Codeissue on Discord"
-        >
-          <span className="status-dot" />
-          Community online
-        </ExternalLink>
+        <div className="site-header__actions">
+          <LanguageSwitch locale={locale} copy={copy} />
+          <a
+            href={`mailto:${contactEmail}`}
+            className={buttonVariants({
+              size: 'sm',
+              className: 'header-contact',
+            })}
+          >
+            {copy.nav.contact}
+            <ArrowUpRightIcon className="size-4" />
+          </a>
+        </div>
       </header>
 
       <main>
-        <section id="top" className="hero-section section-frame">
-          <div className="hero-copy">
-            <Badge className="hero-badge" data-reveal>
-              <span className="status-dot" />
-              Independent developer network
-            </Badge>
+        <section id="top" className="hero-section">
+          <div className="section-frame hero-grid">
+            <div className="hero-copy">
+              <Badge className="section-label" data-reveal>
+                <span className="section-label__dot" aria-hidden="true" />
+                {copy.hero.eyebrow}
+              </Badge>
 
-            <h1
-              className="hero-title"
-              aria-label="Code the future. Fix the impossible."
-            >
-              <span className="hero-title__line" data-reveal>
-                Code the future.
-              </span>
-              <span
-                className="hero-title__line hero-title__line--accent"
-                data-reveal
-              >
-                Fix the impossible.
-              </span>
-            </h1>
+              <h1 className="hero-title">
+                <span data-reveal>{copy.hero.lineOne}</span>
+                <span className="hero-title__accent" data-reveal>
+                  {copy.hero.lineTwo}
+                </span>
+              </h1>
 
-            <p className="hero-description" data-reveal>
-              Codeissue is a digital lab and community for people who build,
-              break, debug, and ship what comes next.
-            </p>
+              <p className="hero-description" data-reveal>
+                {copy.hero.description}
+              </p>
 
-            <div className="hero-actions" data-reveal>
-              <ExternalLink
-                href="https://discord.gg/uckqayVRmy"
-                className={buttonVariants({ size: 'lg' })}
-              >
-                Enter the community
-                <ArrowUpRightIcon className="size-4" />
-              </ExternalLink>
-              <ExternalLink
-                href="https://github.com/codeissue-dev"
-                className={buttonVariants({ variant: 'secondary', size: 'lg' })}
-              >
-                Explore GitHub
-                <span className="font-mono text-xs text-white/45">GH</span>
-              </ExternalLink>
+              <div className="hero-actions" data-reveal>
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className={buttonVariants({
+                    size: 'lg',
+                    className: 'primary-cta',
+                  })}
+                >
+                  {copy.hero.primary}
+                  <ArrowUpRightIcon className="size-4" />
+                </a>
+                <a
+                  href="#approach"
+                  className={buttonVariants({
+                    variant: 'secondary',
+                    size: 'lg',
+                    className: 'secondary-cta',
+                  })}
+                >
+                  {copy.hero.secondary}
+                  <ArrowDownIcon className="size-4" />
+                </a>
+              </div>
+
+              <div className="hero-domains" data-reveal>
+                {domains.map((domain) => (
+                  <ExternalLink key={domain.href} href={domain.href}>
+                    <span aria-hidden="true" />
+                    {domain.label}
+                  </ExternalLink>
+                ))}
+              </div>
             </div>
 
-            <div className="hero-domains" data-reveal>
-              {domains.map((domain) => (
-                <ExternalLink key={domain.href} href={domain.href}>
-                  <span className="status-dot status-dot--muted" />
-                  {domain.label}
-                </ExternalLink>
-              ))}
+            <div className="hero-ticket-wrap" data-reveal>
+              <div className="hero-ticket-backdrop" aria-hidden="true">
+                <span>IDEA</span>
+                <span>SYSTEM</span>
+                <span>PRODUCT</span>
+              </div>
+              <IssueTicket copy={copy.hero.ticket} />
             </div>
           </div>
 
-          <div className="hero-art" data-reveal>
-            <HeroVisual />
-          </div>
-
-          <a
-            href="#manifesto"
-            className="scroll-cue"
-            aria-label="Scroll to manifesto"
-          >
-            <span>Scroll to decode</span>
+          <a href="#approach" className="scroll-cue">
+            <span>{copy.hero.scroll}</span>
             <ArrowDownIcon className="size-4" />
           </a>
         </section>
 
-        <section className="signal-strip" aria-label="Codeissue principles">
-          <div className="signal-strip__track">
-            {[0, 1].map((row) => (
-              <div key={row} aria-hidden={row === 1}>
-                <span>BUILD WITH INTENT</span>
-                <SparkIcon />
-                <span>BREAK THE OBVIOUS</span>
-                <SparkIcon />
-                <span>SHIP THE SIGNAL</span>
-                <SparkIcon />
+        <section id="approach" className="approach-section section-pad">
+          <div className="section-frame">
+            <div className="approach-intro">
+              <div>
+                <p className="eyebrow" data-reveal>
+                  {copy.approach.eyebrow}
+                </p>
+                <h2 data-reveal>{copy.approach.title}</h2>
               </div>
-            ))}
-          </div>
-        </section>
+              <p className="approach-intro__description" data-reveal>
+                {copy.approach.description}
+              </p>
+            </div>
 
-        <section id="manifesto" className="manifesto-section section-frame">
-          <div className="section-kicker" data-reveal>
-            <span>01</span>
-            <p>The manifesto</p>
-          </div>
-
-          <div className="manifesto-heading">
-            <h2 data-reveal>
-              Not another content feed.
-              <span>A place to make the internet useful again.</span>
-            </h2>
-            <p data-reveal>
-              We care about the invisible work: the reasoning behind the code,
-              the failed version before the elegant one, and the community that
-              makes every next attempt stronger.
-            </p>
-          </div>
-
-          <div className="manifesto-grid">
-            <div className="manifesto-steps">
-              {principles.map((principle, index) => (
-                <article
-                  key={principle.index}
-                  data-process-step
-                  data-step={index}
-                  className={cn(
-                    'manifesto-step',
-                    activePrinciple === index && 'is-active',
-                  )}
+            <div className="principles-grid">
+              {copy.approach.principles.map((principle, index) => (
+                <Card
+                  key={principle.number}
+                  className="principle-card"
+                  data-reveal
+                  style={
+                    { '--reveal-delay': `${index * 80}ms` } as CSSProperties
+                  }
                 >
-                  <span>{principle.index}</span>
+                  <span className="principle-card__number">
+                    {principle.number}
+                  </span>
                   <div>
                     <h3>{principle.title}</h3>
                     <p>{principle.copy}</p>
-                    <code>{principle.code}</code>
                   </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="process" className="process-section section-pad">
+          <div className="section-frame process-grid">
+            <div className="process-copy">
+              <p className="eyebrow" data-reveal>
+                {copy.process.eyebrow}
+              </p>
+              <h2 data-reveal>{copy.process.title}</h2>
+              <p className="process-copy__intro" data-reveal>
+                {copy.process.description}
+              </p>
+
+              <div className="process-steps">
+                {copy.process.steps.map((step, index) => (
+                  <article
+                    key={step.number}
+                    className={cn(
+                      'process-step',
+                      activeProcess === index && 'is-active',
+                    )}
+                    data-process-step
+                    data-step={index}
+                  >
+                    <span>{step.number}</span>
+                    <div>
+                      <h3>{step.title}</h3>
+                      <p>{step.copy}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="process-sticky" data-reveal>
+              <ProcessPanel copy={copy.process} active={activeProcess} />
+            </div>
+          </div>
+        </section>
+
+        <section className="services-section section-pad">
+          <div className="section-frame">
+            <div className="section-heading services-heading">
+              <div>
+                <p className="eyebrow" data-reveal>
+                  {copy.services.eyebrow}
+                </p>
+                <h2 data-reveal>{copy.services.title}</h2>
+              </div>
+              <p data-reveal>{copy.services.description}</p>
+            </div>
+
+            <div className="services-grid">
+              {copy.services.items.map((item, index) => (
+                <article
+                  key={item.number}
+                  className="service-card"
+                  data-reveal
+                  style={
+                    { '--reveal-delay': `${index * 70}ms` } as CSSProperties
+                  }
+                >
+                  <span>{item.number}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.copy}</p>
+                  <div className="service-card__line" aria-hidden="true" />
                 </article>
               ))}
             </div>
+          </div>
+        </section>
 
-            <div className="manifesto-sticky" data-reveal>
-              <TerminalPanel active={activePrinciple} />
+        <section id="network" className="network-section section-pad">
+          <div className="section-frame">
+            <div className="section-heading network-heading">
+              <div>
+                <p className="eyebrow" data-reveal>
+                  {copy.network.eyebrow}
+                </p>
+                <h2 data-reveal>{copy.network.title}</h2>
+              </div>
+              <p data-reveal>{copy.network.description}</p>
+            </div>
+
+            <div className="social-grid">
+              {socials.map((social, index) => (
+                <div
+                  key={social.id}
+                  data-reveal
+                  style={
+                    {
+                      '--reveal-delay': `${(index % 4) * 70}ms`,
+                    } as CSSProperties
+                  }
+                >
+                  <SocialCard social={social} copy={copy.network} />
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="stack" className="capabilities-section section-frame">
-          <div className="section-kicker" data-reveal>
-            <span>02</span>
-            <p>The stack</p>
-          </div>
-
-          <div className="section-heading" data-reveal>
-            <h2>One signal. Three frequencies.</h2>
-            <p>
-              The project connects practical engineering, open knowledge, and a
-              community that refuses to gatekeep the useful parts.
-            </p>
-          </div>
-
-          <div className="capability-grid">
-            {capabilities.map((capability) => (
-              <Card
-                key={capability.number}
-                className="tilt-card capability-card"
-                data-reveal
-                onPointerMove={handleTilt}
-                onPointerLeave={resetTilt}
+        <section className="cta-section section-pad">
+          <div className="section-frame cta-panel" data-reveal>
+            <div>
+              <p className="eyebrow">{copy.cta.eyebrow}</p>
+              <h2>{copy.cta.title}</h2>
+              <p>{copy.cta.description}</p>
+            </div>
+            <div className="cta-panel__actions">
+              <a
+                href={`mailto:${contactEmail}`}
+                className={buttonVariants({
+                  size: 'lg',
+                  className: 'primary-cta',
+                })}
               >
-                <div className="tilt-card__glow" aria-hidden="true" />
-                <div className="capability-card__top">
-                  <span>{capability.number}</span>
-                  <ArrowUpRightIcon className="size-5" />
-                </div>
-                <div className="capability-card__body">
-                  <p className="capability-card__eyebrow">
-                    {capability.eyebrow}
-                  </p>
-                  <h3>{capability.title}</h3>
-                  <p>{capability.copy}</p>
-                </div>
-                <div className="capability-card__tags">
-                  {capability.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        <section className="statement-section section-frame">
-          <div className="statement-orb" aria-hidden="true" />
-          <div className="statement-copy" data-reveal>
-            <span>THE CORE IDEA</span>
-            <h2>
-              Every issue contains
-              <em>the next version.</em>
-            </h2>
-            <p>
-              Bugs are compressed understanding. Questions are unfinished tools.
-              The work is learning how to turn both into leverage.
-            </p>
-          </div>
-          <div className="statement-code" data-reveal aria-hidden="true">
-            <span>while (curious) {'{'}</span>
-            <span>&nbsp;&nbsp;inspect();</span>
-            <span>&nbsp;&nbsp;iterate();</span>
-            <span>&nbsp;&nbsp;share();</span>
-            <span>{'}'}</span>
-          </div>
-        </section>
-
-        <section id="network" className="network-section section-frame">
-          <div className="section-kicker" data-reveal>
-            <span>03</span>
-            <p>The network</p>
-          </div>
-
-          <div className="section-heading network-heading" data-reveal>
-            <h2>Find the frequency that fits.</h2>
-            <p>
-              Follow the signal anywhere, or start with Discord and GitHub for
-              the full project pulse.
-            </p>
-          </div>
-
-          <div className="social-grid">
-            {socials.map((social, index) => (
+                <MailIcon className="size-4" />
+                {copy.cta.primary}
+              </a>
               <ExternalLink
-                key={social.href}
-                href={social.href}
-                className={cn(
-                  'social-card',
-                  social.featured && 'social-card--featured',
-                )}
-                label={`Open Codeissue on ${social.name}`}
+                href="https://discord.gg/uckqayVRmy"
+                className={buttonVariants({
+                  variant: 'secondary',
+                  size: 'lg',
+                  className: 'secondary-cta',
+                })}
               >
-                <div className="social-card__index">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-                <div className="social-card__mark">{social.mark}</div>
-                <div className="social-card__copy">
-                  <span>{social.name}</span>
-                  <strong>{social.handle}</strong>
-                  <p>{social.copy}</p>
-                </div>
-                <ArrowUpRightIcon className="social-card__arrow" />
+                <SocialIcon name="discord" className="size-4" />
+                {copy.cta.secondary}
               </ExternalLink>
-            ))}
-          </div>
-        </section>
-
-        <section className="cta-section section-frame">
-          <div className="cta-panel" data-reveal>
-            <div className="cta-panel__signal" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
             </div>
-            <Badge>
-              <span className="status-dot" />
-              Open channel
-            </Badge>
-            <h2>Have an issue worth solving?</h2>
-            <p>
-              Bring the difficult problem, the strange idea, or the unfinished
-              experiment. That is usually where the interesting work begins.
-            </p>
-            <a
-              href={`mailto:${contactEmail}`}
-              className={buttonVariants({
-                size: 'lg',
-                className: 'cta-button',
-              })}
-            >
-              <MailIcon className="size-4" />
-              {contactEmail}
-            </a>
           </div>
         </section>
       </main>
 
-      <footer className="site-footer section-frame">
-        <a href="#top" className="brand" aria-label="Back to top">
-          <span className="brand__mark">
-            <CodeIssueMark className="size-6" />
-          </span>
-          <span className="brand__word">codeissue</span>
-        </a>
-        <p>Build carefully. Debug honestly. Share the signal.</p>
-        <div>
-          <span>© 2026</span>
-          <a href={`mailto:${contactEmail}`}>Contact</a>
+      <footer className="site-footer">
+        <div className="section-frame site-footer__grid">
+          <div className="site-footer__brand">
+            <span className="brand__mark">
+              <CodeIssueMark className="size-5" />
+            </span>
+            <div>
+              <strong>Codeissue</strong>
+              <span>{copy.footer.rights}</span>
+            </div>
+          </div>
+
+          <p>{copy.footer.note}</p>
+
+          <div className="site-footer__links">
+            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+            {domains.map((domain) => (
+              <ExternalLink key={domain.href} href={domain.href}>
+                {domain.label}
+              </ExternalLink>
+            ))}
+          </div>
         </div>
       </footer>
     </div>

@@ -7,19 +7,19 @@ type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
 
 const variants: Record<ButtonVariant, string> = {
   default:
-    'bg-primary text-primary-foreground shadow-[0_0_30px_-12px_var(--primary)] hover:-translate-y-0.5 hover:shadow-[0_0_38px_-10px_var(--primary)]',
+    'border border-[#e6ffff] bg-[#baffff] text-[#001113] shadow-[0_12px_32px_rgba(84,222,229,0.18)] hover:bg-[#e0ffff] hover:text-[#000b0c]',
   secondary:
-    'border border-white/10 bg-white/[0.06] text-foreground hover:border-white/20 hover:bg-white/[0.1]',
+    'border border-white/20 bg-[#0a0c0d] text-[#f8faf9] hover:border-white/40 hover:bg-[#121617]',
   outline:
-    'border border-white/14 bg-black/20 text-foreground hover:border-primary/50 hover:bg-primary/[0.08]',
+    'border border-white/16 bg-black text-foreground hover:border-primary/60 hover:bg-primary/[0.06]',
   ghost: 'text-muted-foreground hover:bg-white/[0.06] hover:text-foreground',
 };
 
 const sizes: Record<ButtonSize, string> = {
-  default: 'h-11 rounded-full px-5 text-sm',
-  sm: 'h-9 rounded-full px-4 text-xs',
-  lg: 'h-13 rounded-full px-7 text-sm sm:text-base',
-  icon: 'size-11 rounded-full',
+  default: 'h-11 rounded-[11px] px-5 text-sm',
+  sm: 'h-9 rounded-[10px] px-4 text-xs',
+  lg: 'h-13 rounded-[12px] px-7 text-sm sm:text-base',
+  icon: 'size-11 rounded-[11px]',
 };
 
 export function buttonVariants({
@@ -32,7 +32,7 @@ export function buttonVariants({
   className?: string;
 } = {}) {
   return cn(
-    'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-medium transition-[transform,background-color,border-color,color,box-shadow] duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-semibold transition-[transform,background-color,border-color,color,box-shadow] duration-300 outline-none hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50',
     variants[variant],
     sizes[size],
     className,

@@ -5,35 +5,52 @@ import {
   contactEmail,
   domains,
   navigation,
-  principles,
   socials,
 } from '../lib/site-data.js';
 
-test('publishes every requested contact channel once', () => {
+const expectedSocials = {
+  discord: 'https://discord.gg/uckqayVRmy',
+  github: 'https://github.com/codeissue-dev',
+  telegram: 'https://t.me/codeissue_dev',
+  youtube: 'https://youtube.com/@codeissue_dev',
+  x: 'https://x.com/codeissue_dev',
+  instagram: 'https://instagram.com/codeissue.dev',
+  tiktok: 'https://www.tiktok.com/@codeissue',
+  twitch: 'https://twitch.tv/codeissue',
+  max: 'https://max.ru/channel_codeissue',
+  linkedin: 'https://linkedin.com/in/codeissue',
+};
+
+test('publishes every requested contact channel exactly once', () => {
   assert.equal(socials.length, 10);
+  assert.equal(new Set(socials.map(({ id }) => id)).size, socials.length);
   assert.equal(new Set(socials.map(({ href }) => href)).size, socials.length);
+
   assert.deepEqual(
-    socials.filter(({ featured }) => featured).map(({ name }) => name),
-    ['Discord', 'GitHub'],
+    Object.fromEntries(socials.map(({ id, href }) => [id, href])),
+    expectedSocials,
   );
 });
 
-test('uses secure external URLs and valid contact metadata', () => {
+test('uses secure URLs and valid contact metadata', () => {
   for (const item of [...socials, ...domains]) {
     assert.match(item.href, /^https:\/\//);
   }
 
   assert.match(contactEmail, /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-  assert.ok(domains.some(({ href }) => href === 'https://codeissue.dev'));
+  assert.deepEqual(
+    domains.map(({ href }) => href),
+    ['https://codeissue.dev', 'https://codeissue.vercel.app'],
+  );
 });
 
-test('keeps landing-page anchors and narrative ordered', () => {
+test('keeps navigation anchors aligned with landing sections', () => {
   assert.deepEqual(
-    navigation.map(({ href }) => href),
-    ['#manifesto', '#stack', '#network'],
-  );
-  assert.deepEqual(
-    principles.map(({ index }) => index),
-    ['01', '02', '03'],
+    navigation.map(({ id, href }) => [id, href]),
+    [
+      ['approach', '#approach'],
+      ['process', '#process'],
+      ['network', '#network'],
+    ],
   );
 });
