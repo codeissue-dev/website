@@ -15,7 +15,7 @@
   ],
   "ignore": [],
   "forceInclude": [
-    "node_modules/next/dist/docs/"
+    "./node_modules/next/dist/docs/**"
   ],
   "forceIgnore": [],
   "dot": true,

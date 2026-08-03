@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Codeissue landing page
 
-## Getting Started
+An OLED-inspired landing page for the Codeissue developer network, built with Next.js 16, React 19, Tailwind CSS 4, and local shadcn/ui components.
 
-First, run the development server:
+## Highlights
+
+- OLED-first visual system with true black surfaces and high-contrast cyan/violet accents.
+- Native scroll progress, reveal, parallax, pointer glow, sticky storytelling, and 3D card interactions.
+- Accessible motion behavior through `prefers-reduced-motion`.
+- Responsive layouts for desktop, tablet, and mobile.
+- Complete Codeissue domains, social channels, Discord invite, and email contact.
+- shadcn/ui configured through `components.json` with local open-code primitives in `components/ui`.
+- Dependency-free Node test suite for links, contacts, and landing-page content structure.
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verification
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+npm run typecheck
+npm run lint:check
+npm run prettier:check
+npm run build
+```
 
-## Learn More
+The test suite uses Node's built-in test runner, so it does not add another test framework to the client bundle or dependency graph.
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` — Next.js App Router entry points and global OLED theme.
+- `components/landing-page.tsx` — interactive landing experience.
+- `components/ui/` — local shadcn-style UI primitives.
+- `lib/site-data.js` — navigation, manifesto, capability, domain, and social content.
+- `tests/` — content and contact integrity tests.
