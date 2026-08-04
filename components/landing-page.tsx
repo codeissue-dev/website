@@ -1,6 +1,7 @@
 'use client';
 
 import { useChangeLanguage } from 'next-i18next/client';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
@@ -342,7 +343,7 @@ export function LandingPage({
 
         <div className="site-header__actions">
           <LanguageSwitch locale={locale} copy={copy} />
-          <a
+          <Link
             href="/admin"
             className={buttonVariants({
               variant: 'secondary',
@@ -351,7 +352,7 @@ export function LandingPage({
             })}
           >
             {copy.nav.workspace}
-          </a>
+          </Link>
           <a
             href={`mailto:${contactEmail}`}
             className={buttonVariants({

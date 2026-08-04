@@ -17,16 +17,21 @@ import { hashPassword } from '@/lib/auth/password';
 const adminEmail = (process.env.ADMIN_EMAIL ?? 'admin@codeissue.dev')
   .trim()
   .toLowerCase();
-const adminPassword = process.env.ADMIN_PASSWORD;
 
-if (!adminPassword) {
-  throw new Error(
-    'ADMIN_PASSWORD is required. Copy .env.example to .env and set a strong password.',
-  );
+function getAdminPassword(): string {
+  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
+
+  if (!adminPassword) {
+    throw new Error(
+      'ADMIN_PASSWORD is required. Copy .env.example to .env and set a strong password.',
+    );
+  }
+
+  return adminPassword;
 }
 
 async function seed() {
-  const passwordHash = await hashPassword(adminPassword);
+  const passwordHash = await hashPassword(getAdminPassword());
 
   const [existingUser] = await db
     .select()
