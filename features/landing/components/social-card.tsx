@@ -30,17 +30,17 @@ export function SocialCard({
         <SocialIcon name={social.id} className="size-5" />
       </span>
       <div className="min-w-0">
-        <span className="font-mono text-[0.55rem] opacity-55">
+        <span className="font-mono text-sm opacity-55">
           {String(index + 1).padStart(2, '0')}
         </span>
         <strong className="mt-1 block truncate text-base font-medium tracking-[-0.02em]">
           {social.name}
         </strong>
-        <small className="mt-1 block truncate font-mono text-[0.58rem] opacity-60">
+        <small className="mt-1 block truncate font-mono text-sm opacity-60">
           {social.handle}
         </small>
       </div>
-      <p className="col-span-2 max-w-xl text-xs leading-5 opacity-65 sm:col-span-1">
+      <p className="col-span-2 max-w-xl text-sm leading-5 opacity-65 sm:col-span-1">
         {copy.socials[social.id]}
       </p>
       <ArrowUpRightIcon className="size-4 opacity-45 transition-opacity group-hover:opacity-100" />

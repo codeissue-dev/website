@@ -10,7 +10,7 @@ npm run db:seed
 npm run dev
 ```
 
-Нужны Node.js 22.22.1+ и PostgreSQL 18. После запуска откройте `http://localhost:3000`; вход для оператора находится на `/login`.
+Нужны Node.js 22.22.1+ и PostgreSQL 18. Владелец входит на `/login` через `ADMIN_USERNAME` и `ADMIN_PASSWORD`. Пользовательская регистрация находится на `/register`, email не нужен. Создание продуктовой задачи находится на `/issues/new`.
 
 ## Через Docker Compose
 
@@ -28,10 +28,10 @@ npm run prettier:check
 npm run build
 ```
 
-Все тесты находятся в `tests/`, написаны на TypeScript/TSX и запускаются через `tests/index.ts`.
+Все тесты написаны на TypeScript/TSX и запускаются через `tests/index.ts`.
 
-## Развёртывание
+## Развертывание
 
-Соберите production stage Dockerfile, один раз примените миграции и запустите контейнер с production `.env`. Обязательно задайте `DATABASE_URL`, `AUTH_SECRET`, webhook-secret и адреса внешнего API/WebSocket backend. PostgreSQL должен использовать постоянный volume и отдельные резервные копии.
+Перед запуском новой версии примените Drizzle-миграции. Обязательно задайте `DATABASE_URL`, `AUTH_SECRET`, webhook-secret и адреса внешнего API/WebSocket backend. Для seed нужны `ADMIN_USERNAME` и `ADMIN_PASSWORD`. PostgreSQL должен использовать постоянный volume и отдельные резервные копии.
 
 Подробности: [development.md](development.md), [deployment.md](deployment.md), [architecture.md](architecture.md).

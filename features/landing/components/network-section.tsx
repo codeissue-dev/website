@@ -15,7 +15,7 @@ export function NetworkSection({ copy }: { copy: Dictionary }) {
           title={copy.network.title}
           description={copy.network.description}
           aside={
-            <span className="font-mono text-[0.6rem] tracking-[0.1em] text-signal">
+            <span className="font-mono text-sm tracking-[0.1em] text-signal">
               {copy.network.channelsLabel}
             </span>
           }

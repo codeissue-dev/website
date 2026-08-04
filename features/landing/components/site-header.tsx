@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-import { ArrowUpRightIcon, CodeIssueMark } from '@/components/icons';
+import { BrandLogo } from '@/components/brand/brand-logo';
+import { ArrowUpRightIcon } from '@/components/icons';
 import { buttonVariants } from '@/components/ui/button';
 import type { Dictionary, Locale } from '@/lib/i18n';
-import { contactEmail, navigation } from '@/lib/site-data';
+import { navigation } from '@/lib/site-data';
 import { pageFrame } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
@@ -53,14 +54,12 @@ export function SiteHeader({
           aria-label="Codeissue"
           onClick={() => setMenuOpen(false)}
         >
-          <span className="grid size-8 shrink-0 place-items-center border border-signal text-signal">
-            <CodeIssueMark className="size-[1.15rem]" />
-          </span>
+          <BrandLogo className="size-9" priority />
           <span className="flex min-w-0 flex-col">
             <strong className="text-sm font-semibold tracking-[-0.02em]">
               Codeissue
             </strong>
-            <small className="hidden truncate font-mono text-[0.58rem] tracking-[0.1em] text-muted-foreground sm:block">
+            <small className="hidden truncate font-mono text-sm tracking-[0.1em] text-muted-foreground sm:block">
               {copy.brand.descriptor}
             </small>
           </span>
@@ -74,7 +73,7 @@ export function SiteHeader({
             <a
               key={item.id}
               href={item.href}
-              className="inline-flex h-full items-center border-r border-border px-5 font-mono text-[0.64rem] tracking-[0.08em] text-muted-foreground transition-colors last:border-r-0 hover:bg-white hover:text-black"
+              className="inline-flex h-full items-center border-r border-border px-5 font-mono text-sm tracking-[0.08em] text-muted-foreground transition-colors last:border-r-0 hover:bg-white hover:text-black"
             >
               {copy.nav[item.id]}
             </a>
@@ -93,13 +92,10 @@ export function SiteHeader({
             >
               {copy.nav.workspace}
             </Link>
-            <a
-              href={`mailto:${contactEmail}`}
-              className={buttonVariants({ size: 'sm' })}
-            >
+            <Link href="/issues/new" className={buttonVariants({ size: 'sm' })}>
               {copy.nav.contact}
               <ArrowUpRightIcon className="size-3.5" />
-            </a>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
@@ -161,7 +157,7 @@ export function SiteHeader({
                 className="grid min-h-16 grid-cols-[3rem_1fr_auto] items-center border-b border-border px-4 text-lg font-medium last:border-b-0 hover:bg-white hover:text-black"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="font-mono text-[0.62rem] text-signal">
+                <span className="font-mono text-sm text-signal">
                   0{index + 1}
                 </span>
                 <span>{copy.nav[item.id]}</span>
@@ -178,17 +174,17 @@ export function SiteHeader({
             >
               {copy.nav.workspace}
             </Link>
-            <a
-              href={`mailto:${contactEmail}`}
+            <Link
+              href="/issues/new"
               className={buttonVariants({ size: 'lg' })}
               onClick={() => setMenuOpen(false)}
             >
               {copy.nav.contact}
               <ArrowUpRightIcon className="size-4" />
-            </a>
+            </Link>
           </div>
 
-          <div className="mt-auto border-t border-border p-4 font-mono text-[0.62rem] leading-5 text-muted-foreground">
+          <div className="mt-auto border-t border-border p-4 font-mono text-sm leading-5 text-muted-foreground">
             codeissue.dev
             <br />
             codeissue@outlook.com

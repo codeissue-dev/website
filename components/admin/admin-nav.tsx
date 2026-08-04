@@ -81,7 +81,7 @@ export function AdminNav({ items }: { items: NavigationItem[] }) {
             key={item.href}
             href={item.href}
             className={cn(
-              'group relative inline-flex min-h-10 shrink-0 items-center gap-2.5 border border-transparent px-3 text-xs font-semibold text-muted-foreground transition-colors hover:border-border hover:bg-surface-soft hover:text-foreground lg:w-full',
+              'group relative inline-flex min-h-10 shrink-0 items-center gap-2.5 border border-transparent px-3 text-sm font-semibold text-muted-foreground transition-colors hover:border-border hover:bg-surface-soft hover:text-foreground lg:w-full',
               active &&
                 'border-border bg-surface-soft text-foreground before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:bg-signal',
             )}

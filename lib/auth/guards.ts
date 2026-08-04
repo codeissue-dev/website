@@ -5,6 +5,16 @@ import type { UserRole } from '@/db/schema';
 
 const adminRoles: UserRole[] = ['owner', 'admin', 'operator'];
 
+export async function requireUser(callbackUrl = '/admin') {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+  }
+
+  return session;
+}
+
 export async function requireAdmin() {
   const session = await auth();
 

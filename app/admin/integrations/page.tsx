@@ -58,12 +58,12 @@ export default async function IntegrationsPage() {
             key={type}
             className="grid min-h-28 grid-cols-[3.5rem_minmax(0,1fr)] gap-4 border-r border-b border-border bg-surface/50 p-4"
           >
-            <span className="font-mono text-[0.58rem] font-semibold text-signal">
+            <span className="font-mono text-sm font-semibold text-signal">
               {type}
             </span>
             <div className="min-w-0">
-              <strong className="block text-xs">{label}</strong>
-              <code className="mt-3 block truncate text-[0.62rem] text-muted-foreground">
+              <strong className="block text-sm">{label}</strong>
+              <code className="mt-3 block truncate text-sm text-muted-foreground">
                 {endpoint}
               </code>
             </div>
@@ -71,7 +71,7 @@ export default async function IntegrationsPage() {
         ))}
       </section>
 
-      <p className="border-x border-b border-border px-4 py-3 font-mono text-[0.58rem] leading-5 text-muted-foreground">
+      <p className="border-x border-b border-border px-4 py-3 font-mono text-sm leading-5 text-muted-foreground">
         {page.secretHint}
       </p>
 
@@ -88,7 +88,7 @@ export default async function IntegrationsPage() {
                   className="size-7"
                 />
               ) : (
-                <span className="font-mono text-xs text-signal">
+                <span className="font-mono text-sm text-signal">
                   {integration.provider.slice(0, 2).toUpperCase()}
                 </span>
               )}
@@ -99,7 +99,7 @@ export default async function IntegrationsPage() {
                   <h2 className="truncate text-lg font-semibold tracking-[-0.035em]">
                     {integration.displayName}
                   </h2>
-                  <span className="mt-1 block truncate font-mono text-[0.58rem] text-muted-foreground">
+                  <span className="mt-1 block truncate font-mono text-sm text-muted-foreground">
                     {integration.externalAccountId ?? integration.provider}
                   </span>
                 </div>
@@ -108,14 +108,14 @@ export default async function IntegrationsPage() {
                 </StatusPill>
               </header>
               <footer className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4">
-                <span className="font-mono text-[0.56rem] text-muted-foreground">
+                <span className="font-mono text-sm text-muted-foreground">
                   {integration.lastEventAt
                     ? formatRelativeTime(integration.lastEventAt, lng)
                     : page.noEvents}
                 </span>
                 <button
                   type="button"
-                  className="font-mono text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
+                  className="font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
                 >
                   {page.configure} →
                 </button>

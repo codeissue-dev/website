@@ -63,22 +63,22 @@ export default async function InboxPage() {
                 <ChannelAvatar source={conversation.source} />
                 <div className="min-w-0">
                   <header className="flex items-center justify-between gap-3">
-                    <strong className="truncate text-xs">
+                    <strong className="truncate text-sm">
                       {conversation.contact}
                     </strong>
-                    <time className="shrink-0 font-mono text-[0.54rem] text-muted-foreground">
+                    <time className="shrink-0 font-mono text-sm text-muted-foreground">
                       {formatRelativeTime(conversation.lastMessageAt, lng)}
                     </time>
                   </header>
-                  <span className="mt-1 block truncate text-xs text-foreground/80">
+                  <span className="mt-1 block truncate text-sm text-foreground/80">
                     {conversation.subject}
                   </span>
-                  <p className="mt-2 line-clamp-2 text-[0.7rem] leading-5 text-muted-foreground">
+                  <p className="mt-2 line-clamp-2 text-sm leading-5 text-muted-foreground">
                     {conversation.preview}
                   </p>
                 </div>
                 {conversation.unreadCount > 0 ? (
-                  <b className="grid size-5 place-items-center bg-signal font-mono text-[0.54rem] text-primary-foreground">
+                  <b className="grid size-5 place-items-center bg-signal font-mono text-sm text-primary-foreground">
                     {conversation.unreadCount}
                   </b>
                 ) : null}
@@ -97,26 +97,26 @@ export default async function InboxPage() {
                     <strong className="block truncate text-sm">
                       {selected.contact}
                     </strong>
-                    <small className="mt-1 block truncate text-xs text-muted-foreground">
+                    <small className="mt-1 block truncate text-sm text-muted-foreground">
                       {selected.subject}
                     </small>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="block font-mono text-[0.54rem] uppercase tracking-[0.1em] text-muted-foreground">
+                  <span className="block font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground">
                     {page.assigned}
                   </span>
-                  <strong className="mt-1 block text-xs">
+                  <strong className="mt-1 block text-sm">
                     {selected.assignedTo ?? page.unassigned}
                   </strong>
                 </div>
               </header>
               <div className="flex flex-1 flex-col gap-4 bg-surface-quiet/60 p-5 sm:p-8">
-                <time className="self-center font-mono text-[0.56rem] uppercase tracking-[0.1em] text-muted-foreground">
+                <time className="self-center font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground">
                   {formatRelativeTime(selected.lastMessageAt, lng)}
                 </time>
                 <article className="max-w-[72%] border border-border bg-surface p-4">
-                  <span className="font-mono text-[0.56rem] uppercase tracking-[0.1em] text-signal">
+                  <span className="font-mono text-sm uppercase tracking-[0.1em] text-signal">
                     {selected.contact}
                   </span>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -124,7 +124,7 @@ export default async function InboxPage() {
                   </p>
                 </article>
                 <article className="max-w-[72%] self-end border border-signal/40 bg-signal/10 p-4">
-                  <span className="font-mono text-[0.56rem] uppercase tracking-[0.1em] text-signal-soft">
+                  <span className="font-mono text-sm uppercase tracking-[0.1em] text-signal-soft">
                     Codeissue system
                   </span>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -150,12 +150,12 @@ export default async function InboxPage() {
                   className={cn(textareaClass, 'min-h-28 resize-y')}
                 />
                 <div className="mt-3 flex items-center justify-between gap-4">
-                  <span className="font-mono text-[0.56rem] uppercase tracking-[0.08em] text-muted-foreground">
+                  <span className="font-mono text-sm uppercase tracking-[0.08em] text-muted-foreground">
                     {selected.source} · {selected.contact}
                   </span>
                   <button
                     type="submit"
-                    className="inline-flex h-10 min-w-28 items-center justify-center border border-signal bg-signal px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-signal-soft"
+                    className="inline-flex h-10 min-w-28 items-center justify-center border border-signal bg-signal px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-signal-soft"
                   >
                     {page.send} →
                   </button>

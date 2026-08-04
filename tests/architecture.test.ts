@@ -9,6 +9,9 @@ test('organizes public UI, admin queries, and integration services by feature', 
     'features/landing/hooks/use-landing-interactions.ts',
     'features/landing/components/section-heading.tsx',
     'features/landing/components/scroll-progress.tsx',
+    'features/landing/components/hero-art.tsx',
+    'components/auth/auth-shell.tsx',
+    'components/issues/new-issue-form.tsx',
     'components/admin/admin-page-header.tsx',
     'components/admin/channel-avatar.tsx',
     'components/admin/status-pill.tsx',
@@ -60,7 +63,8 @@ test('keeps the public page server-rendered and isolates browser behavior', asyn
 
   assert.doesNotMatch(landingPage, /['"]use client['"]/);
   assert.match(progress, /['"]use client['"]/);
-  assert.doesNotMatch(interactions, /pointermove|--pointer-x|--page-scroll/);
+  assert.match(interactions, /pointermove/);
+  assert.match(interactions, /--parallax-y/);
 });
 
 test('keeps visual composition in Tailwind utilities instead of feature CSS', async () => {

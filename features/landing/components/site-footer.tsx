@@ -21,17 +21,17 @@ export function SiteFooter({ copy }: { copy: Dictionary }) {
           </span>
           <div className="flex flex-col">
             <strong className="text-sm">Codeissue</strong>
-            <span className="font-mono text-[0.58rem] tracking-[0.08em] text-muted-foreground">
+            <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
               {copy.footer.rights}
             </span>
           </div>
         </div>
 
-        <p className="max-w-lg text-xs leading-5 text-muted-foreground md:text-center">
+        <p className="max-w-lg text-sm leading-5 text-muted-foreground md:text-center">
           {copy.footer.note}
         </p>
 
-        <div className="flex flex-col items-start gap-1.5 font-mono text-[0.6rem] text-muted-foreground md:items-end">
+        <div className="flex flex-col items-start gap-1.5 font-mono text-sm text-muted-foreground md:items-end">
           <a href={`mailto:${contactEmail}`} className="hover:text-signal-soft">
             {contactEmail}
           </a>

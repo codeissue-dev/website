@@ -19,22 +19,14 @@ export async function authenticate(
 ): Promise<LoginState> {
   try {
     await signIn('credentials', {
-      email: String(formData.get('email') ?? ''),
+      username: String(formData.get('username') ?? ''),
       password: String(formData.get('password') ?? ''),
       redirectTo: safeCallbackUrl(formData.get('callbackUrl')),
     });
   } catch (error) {
-    if (error instanceof AuthError) {
-      return { error: error.type };
-    }
+    if (error instanceof AuthError) return { error: error.type };
     throw error;
   }
 
   return {};
-}
-
-export async function authenticateWithGitHub(formData: FormData) {
-  await signIn('github', {
-    redirectTo: safeCallbackUrl(formData.get('callbackUrl')),
-  });
 }

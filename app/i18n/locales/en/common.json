@@ -161,21 +161,20 @@
   },
   "auth": {
     "eyebrow": "Codeissue workspace",
-    "title": "Sign in to the operating system.",
-    "description": "One secure workspace for orders, conversations, integrations, and live backend events.",
-    "email": "Email",
+    "title": "Sign in to your workspace.",
+    "description": "Use your username and password. Email is not required.",
+    "username": "Username",
     "password": "Password",
     "submit": "Sign in",
-    "submitting": "Signing in…",
-    "error": "The email or password is incorrect.",
+    "submitting": "Signing in...",
+    "error": "Invalid username or password.",
     "back": "Back to the website",
     "security": "Protected by Auth.js and server-side access control.",
-    "or": "or",
-    "github": "Continue with GitHub",
+    "createAccount": "Create account",
     "sideEyebrow": "Private operations layer",
-    "sideTitle": "One desk for every incoming issue.",
-    "sideDescription": "Messages, orders, integrations, and delivery events stay in one operational view.",
-    "sideItems": ["Identity", "Workspace", "Events"]
+    "sideTitle": "One workspace for every incoming issue.",
+    "sideDescription": "Requests, orders, integrations, and delivery events stay in one operational view.",
+    "sideItems": ["Access", "Workspace", "Events"]
   },
   "admin": {
     "brand": "Codeissue OS",
@@ -308,6 +307,75 @@
       "admin": "Administrator",
       "operator": "Operator",
       "viewer": "Viewer"
+    }
+  },
+  "register": {
+    "eyebrow": "Create your workspace access",
+    "title": "Start with a username, not an inbox.",
+    "description": "Create an account without email. You can open a product issue immediately after registration.",
+    "displayName": "Display name",
+    "username": "Username",
+    "usernameHint": "3-32 characters: latin letters, numbers, hyphen, or underscore.",
+    "password": "Password",
+    "passwordHint": "At least 12 characters.",
+    "submit": "Create account",
+    "submitting": "Creating account...",
+    "haveAccount": "Already have an account? Sign in",
+    "errors": {
+      "invalid_username": "Choose a valid username.",
+      "invalid_display_name": "Enter a display name between 2 and 80 characters.",
+      "invalid_password": "Use a password with at least 12 characters.",
+      "username_taken": "This username is already taken.",
+      "unknown": "Account could not be created. Try again."
+    }
+  },
+  "newIssue": {
+    "eyebrow": "New product issue",
+    "title": "Describe the product you want to move forward.",
+    "description": "No email form and no generic brief. Give us the problem, the desired result, and the channel where you want to continue the conversation.",
+    "back": "Back to website",
+    "steps": [
+      "Create an account",
+      "Describe the issue",
+      "Choose a contact channel",
+      "Receive the next step"
+    ],
+    "fields": {
+      "title": "Issue title",
+      "titlePlaceholder": "Client operations workspace",
+      "projectType": "Product type",
+      "projectTypes": {
+        "web-product": "Web product",
+        "mobile-product": "Mobile product",
+        "internal-system": "Internal system",
+        "automation": "Automation and integrations",
+        "landing": "Product website",
+        "other": "Other"
+      },
+      "brief": "What needs to be solved?",
+      "briefPlaceholder": "Describe the users, the current problem, and what already exists.",
+      "outcome": "What should the first useful result look like?",
+      "outcomePlaceholder": "Describe the outcome you would consider a successful first release.",
+      "contactChannel": "Contact channel",
+      "contactHandle": "Handle or profile link",
+      "contactHandlePlaceholder": "@username or invitation link",
+      "budget": "Budget range (optional)",
+      "budgetPlaceholder": "For example: $3k-$8k or needs estimation"
+    },
+    "submit": "Create issue",
+    "submitting": "Creating issue...",
+    "successLabel": "Issue created",
+    "successTitle": "Your request is now in the Codeissue workspace.",
+    "successDescription": "We will review the brief and continue in the contact channel you selected.",
+    "errors": {
+      "invalid_title": "Add a clear issue title.",
+      "invalid_project_type": "Choose a product type.",
+      "invalid_brief": "Describe the problem in at least 30 characters.",
+      "invalid_outcome": "Describe the desired outcome in at least 10 characters.",
+      "invalid_contact_channel": "Choose a contact channel.",
+      "invalid_contact_handle": "Add a valid handle or profile link.",
+      "invalid_budget": "Keep the budget range under 80 characters.",
+      "unknown": "The issue could not be created. Try again."
     }
   }
 }

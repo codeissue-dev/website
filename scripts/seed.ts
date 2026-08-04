@@ -15,7 +15,7 @@ import {
 import { hashPassword } from '@/lib/auth/password';
 import { DEFAULT_WORKSPACE_SLUG } from '@/lib/workspaces/service';
 
-const adminEmail = (process.env.ADMIN_EMAIL ?? 'admin@codeissue.dev')
+const adminUsername = (process.env.ADMIN_USERNAME ?? 'admin')
   .trim()
   .toLowerCase();
 
@@ -37,7 +37,7 @@ async function seed() {
   const [existingUser] = await db
     .select()
     .from(users)
-    .where(eq(users.email, adminEmail))
+    .where(eq(users.username, adminUsername))
     .limit(1);
 
   const [admin] = existingUser
@@ -45,6 +45,7 @@ async function seed() {
         .update(users)
         .set({
           name: existingUser.name ?? 'Codeissue Admin',
+          username: adminUsername,
           passwordHash,
           role: 'owner',
           updatedAt: new Date(),
@@ -55,7 +56,8 @@ async function seed() {
         .insert(users)
         .values({
           name: 'Codeissue Admin',
-          email: adminEmail,
+          username: adminUsername,
+          email: null,
           passwordHash,
           role: 'owner',
         })
@@ -206,7 +208,7 @@ async function seed() {
     })
     .onConflictDoNothing();
 
-  console.log(`Seeded Codeissue workspace. Admin: ${adminEmail}`);
+  console.log(`Seeded Codeissue workspace. Admin: ${adminUsername}`);
 }
 
 seed()

@@ -30,6 +30,16 @@ export async function hasWorkspaceAccess(workspaceId: string, userId: string) {
   return Boolean(membership);
 }
 
+export async function ensureWorkspaceMembership(
+  workspaceId: string,
+  userId: string,
+) {
+  await db
+    .insert(workspaceMembers)
+    .values({ workspaceId, userId, role: 'viewer' })
+    .onConflictDoNothing();
+}
+
 export async function requireWorkspaceAccess(
   workspaceId: string,
   userId: string,

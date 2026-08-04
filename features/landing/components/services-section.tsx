@@ -14,7 +14,7 @@ export function ServicesSection({ copy }: { copy: Dictionary }) {
           title={copy.services.title}
           description={copy.services.description}
           aside={
-            <span className="font-mono text-[0.6rem] tracking-[0.1em] text-muted-foreground">
+            <span className="font-mono text-sm tracking-[0.1em] text-muted-foreground">
               PRODUCT / PLATFORM / OPERATIONS
             </span>
           }
@@ -30,7 +30,7 @@ export function ServicesSection({ copy }: { copy: Dictionary }) {
               )}
               data-reveal
             >
-              <span className="font-mono text-[0.62rem] text-signal">
+              <span className="font-mono text-sm text-signal">
                 {item.number}
               </span>
               <h3 className="text-xl font-medium tracking-[-0.03em] sm:text-2xl">

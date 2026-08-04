@@ -12,7 +12,7 @@
   --color-secondary: #0a0a0a;
   --color-secondary-foreground: #f5f5f3;
   --color-muted: #101010;
-  --color-muted-foreground: #9b9ba3;
+  --color-muted-foreground: #aaaab2;
   --color-accent: #c8c4ff;
   --color-accent-foreground: #05040d;
   --color-destructive: #ff747c;
@@ -29,14 +29,34 @@
   --color-warning: #e5c36b;
   --color-danger: #ff747c;
   --font-sans:
-    'Helvetica Neue', Helvetica, Arial, ui-sans-serif, system-ui, -apple-system,
-    sans-serif;
+    var(--font-geist-sans), Geist, ui-sans-serif, system-ui, sans-serif;
   --font-mono:
-    'SFMono-Regular', Consolas, 'Liberation Mono', ui-monospace, monospace;
+    var(--font-geist-mono), 'Geist Mono', ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
   --radius-sm: 0;
   --radius-md: 0;
   --radius-lg: 0;
   --radius-xl: 0;
+  --animate-signal-scan: signal-scan 7s linear infinite;
+  --animate-slow-drift: slow-drift 10s ease-in-out infinite alternate;
+}
+
+@keyframes signal-scan {
+  from {
+    transform: translateY(-120%);
+  }
+  to {
+    transform: translateY(520%);
+  }
+}
+
+@keyframes slow-drift {
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) scale(1.06);
+  }
 }
 
 @layer base {

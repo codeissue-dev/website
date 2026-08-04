@@ -36,7 +36,7 @@ export async function queueReply(formData: FormData) {
       .values({
         conversationId: conversation.id,
         direction: 'outbound',
-        authorName: session.user.name ?? session.user.email ?? 'Codeissue',
+        authorName: session.user.name ?? session.user.username ?? 'Codeissue',
         body: draft.body,
         sentAt: now,
       })

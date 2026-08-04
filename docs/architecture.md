@@ -48,6 +48,10 @@ Inbound idempotency is enforced at three levels:
 
 Auth.js uses text user IDs, while operational entities use PostgreSQL UUIDs.
 
+## Public account and issue intake
+
+Public intake is intentionally independent from email. A visitor creates a username and password at `/register`, receives viewer membership in the default workspace, and continues to `/issues/new`. The issue action validates the brief, stores the requester ID and contact channel in the order intake payload, and never asks for or derives an email address. Account creation and workspace membership are committed in one database transaction.
+
 ## Message lifecycle
 
 1. An adapter validates the provider signature and maps the payload to the Codeissue envelope.

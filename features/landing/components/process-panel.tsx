@@ -13,7 +13,7 @@ export function ProcessPanel({
 
   return (
     <div className="border border-border bg-surface p-5" key={active}>
-      <div className="flex items-center justify-between border-b border-border pb-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="flex items-center justify-between border-b border-border pb-4 font-mono text-sm uppercase tracking-[0.14em] text-muted-foreground">
         <span>{copy.currentLabel}</span>
         <span className="inline-flex items-center gap-2">
           <i className="size-1.5 bg-positive" aria-hidden="true" />
@@ -30,7 +30,7 @@ export function ProcessPanel({
       </p>
 
       <div className="mt-8 border-t border-border pt-5">
-        <span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="font-mono text-sm uppercase tracking-[0.14em] text-muted-foreground">
           {copy.deliverablesLabel}
         </span>
         <ul className="mt-4 space-y-3">

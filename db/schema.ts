@@ -58,7 +58,8 @@ export const users = pgTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text('name'),
-    email: text('email').notNull(),
+    username: text('username').notNull(),
+    email: text('email'),
     emailVerified: timestamp('email_verified', { mode: 'date' }),
     image: text('image'),
     passwordHash: text('password_hash'),
@@ -66,7 +67,10 @@ export const users = pgTable(
     createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),
   },
-  (table) => [uniqueIndex('users_email_unique').on(table.email)],
+  (table) => [
+    uniqueIndex('users_username_unique').on(table.username),
+    uniqueIndex('users_email_unique').on(table.email),
+  ],
 );
 
 export const accounts = pgTable(
@@ -297,11 +301,18 @@ export const orders = pgTable(
     ownerId: text('owner_id').references(() => users.id, {
       onDelete: 'set null',
     }),
+    requestedById: text('requested_by_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
     title: text('title').notNull(),
     status: orderStatusEnum('status').notNull().default('lead'),
     currency: text('currency').notNull().default('USD'),
     valueCents: integer('value_cents'),
     summary: text('summary'),
+    intake: jsonb('intake')
+      .$type<Record<string, string>>()
+      .notNull()
+      .default({}),
     dueAt: timestamp('due_at', { mode: 'date' }),
     createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),

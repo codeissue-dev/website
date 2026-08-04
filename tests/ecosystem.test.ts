@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { parseRegistrationDraft } from '../lib/auth/credentials';
 import { parseReplyDraft } from '../lib/inbox/input';
+import { parseIssueDraft } from '../lib/issues/input';
 import { parseNormalizedMessageEvent } from '../lib/integrations/contracts';
 import { parseOrderDraft } from '../lib/orders/input';
 import { assertFile, readJson, readText } from './helpers/project';
@@ -40,6 +42,9 @@ test('ships Auth.js, protected admin pages, APIs, and live event monitor', async
     'auth.ts',
     'app/api/auth/[...nextauth]/route.ts',
     'app/login/page.tsx',
+    'app/register/page.tsx',
+    'app/issues/new/page.tsx',
+    'app/issues/new/actions.ts',
     'app/admin/layout.tsx',
     'app/admin/page.tsx',
     'app/admin/inbox/page.tsx',
@@ -60,8 +65,9 @@ test('ships Auth.js, protected admin pages, APIs, and live event monitor', async
     readText('lib/auth/guards.ts'),
     readText('components/admin/event-stream.tsx'),
   ]);
-  assert.match(auth, /DrizzleAdapter/);
+  assert.doesNotMatch(auth, /DrizzleAdapter/);
   assert.match(auth, /Credentials/);
+  assert.match(auth, /username/);
   assert.match(auth, /session:\s*\{ strategy: 'jwt' \}/);
   assert.match(guard, /requireAdmin/);
   assert.match(stream, /new WebSocket\(ticket\.url\)/);
@@ -144,7 +150,39 @@ test('keeps route handlers thin and moves ingestion into a service', async () =>
   assert.match(service, /db\.transaction/);
 });
 
-test('validates order and reply commands before server-side persistence', () => {
+test('validates account, issue, order, and reply commands before persistence', () => {
+  assert.deepEqual(
+    parseRegistrationDraft({
+      username: '  Build_Ops  ',
+      displayName: 'Alex',
+      password: 'very-strong-password',
+    }),
+    {
+      username: 'build_ops',
+      displayName: 'Alex',
+      password: 'very-strong-password',
+    },
+  );
+  assert.deepEqual(
+    parseIssueDraft({
+      title: 'Customer portal',
+      projectType: 'web-product',
+      brief: 'We need a workspace that combines projects, files, and billing.',
+      desiredOutcome: 'A useful internal release for the support team.',
+      contactChannel: 'telegram',
+      contactHandle: '@alexbuilds',
+      budgetRange: '$5k-$10k',
+    }),
+    {
+      title: 'Customer portal',
+      projectType: 'web-product',
+      brief: 'We need a workspace that combines projects, files, and billing.',
+      desiredOutcome: 'A useful internal release for the support team.',
+      contactChannel: 'telegram',
+      contactHandle: '@alexbuilds',
+      budgetRange: '$5k-$10k',
+    },
+  );
   assert.deepEqual(
     parseOrderDraft({
       title: 'Customer portal',
@@ -163,4 +201,37 @@ test('validates order and reply commands before server-side persistence', () => 
       body: 'We can start discovery tomorrow.',
     },
   );
+});
+
+test('supports username-only registration and issue intake without email', async () => {
+  const [
+    auth,
+    schema,
+    register,
+    registerForm,
+    issueAction,
+    issueForm,
+    migration,
+  ] = await Promise.all([
+    readText('auth.ts'),
+    readText('db/schema.ts'),
+    readText('app/register/actions.ts'),
+    readText('components/auth/register-form.tsx'),
+    readText('app/issues/new/actions.ts'),
+    readText('components/issues/new-issue-form.tsx'),
+    readText('drizzle/0001_username_issue_intake.sql'),
+  ]);
+
+  assert.match(auth, /credentials:\s*\{\s*username/s);
+  assert.doesNotMatch(register, /formData\.get\('email'\)/);
+  assert.doesNotMatch(registerForm, /type="email"|name="email"/);
+  assert.match(register, /db\.transaction/);
+  assert.match(register, /workspaceMembers/);
+  assert.match(schema, /username: text\('username'\)\.notNull\(\)/);
+  assert.match(schema, /requestedById/);
+  assert.match(schema, /intake: jsonb/);
+  assert.match(issueAction, /contactChannel/);
+  assert.doesNotMatch(issueAction, /email/);
+  assert.doesNotMatch(issueForm, /type="email"|name="email"/);
+  assert.match(migration, /ALTER COLUMN "email" DROP NOT NULL/);
 });

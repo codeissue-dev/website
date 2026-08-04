@@ -48,7 +48,7 @@ export default async function AdminLayout({
             <strong className="text-sm font-semibold">
               {copy.admin.brand}
             </strong>
-            <small className="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground">
+            <small className="truncate font-mono text-sm uppercase tracking-[0.12em] text-muted-foreground">
               {copy.admin.workspace}
             </small>
           </span>
@@ -58,14 +58,14 @@ export default async function AdminLayout({
 
         <div className="hidden mt-auto border-t border-border p-4 lg:grid lg:gap-3">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9 shrink-0 place-items-center border border-border-strong bg-surface font-mono text-xs text-signal">
+            <span className="grid size-9 shrink-0 place-items-center border border-border-strong bg-surface font-mono text-sm text-signal">
               {session.user.name?.slice(0, 1).toUpperCase() ?? 'C'}
             </span>
             <div className="flex min-w-0 flex-col">
-              <strong className="truncate text-xs">
-                {session.user.name ?? session.user.email}
+              <strong className="truncate text-sm">
+                {session.user.name ?? session.user.username}
               </strong>
-              <small className="truncate text-[0.65rem] text-muted-foreground">
+              <small className="truncate text-sm text-muted-foreground">
                 {copy.admin.roles[session.user.role]}
               </small>
             </div>
@@ -78,7 +78,7 @@ export default async function AdminLayout({
           >
             <button
               type="submit"
-              className="h-9 w-full border border-border font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:border-danger hover:text-danger"
+              className="h-9 w-full border border-border font-mono text-sm uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:border-danger hover:text-danger"
             >
               {copy.admin.signOut}
             </button>
@@ -90,8 +90,8 @@ export default async function AdminLayout({
         <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-4 border-b border-border bg-black/90 px-4  sm:px-6 lg:min-h-[4.75rem] lg:px-8">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="size-2 bg-positive" />
-            <strong className="text-xs">Codeissue</strong>
-            <small className="hidden truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground sm:block">
+            <strong className="text-sm">Codeissue</strong>
+            <small className="hidden truncate font-mono text-sm uppercase tracking-[0.12em] text-muted-foreground sm:block">
               {copy.admin.topbar}
             </small>
           </div>
@@ -100,7 +100,7 @@ export default async function AdminLayout({
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-signal-soft"
+              className="inline-flex items-center gap-1.5 font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:text-signal-soft"
             >
               <span className="hidden sm:inline">{copy.admin.openWebsite}</span>
               <ArrowUpRightIcon className="size-3.5" />

@@ -68,14 +68,14 @@ export default async function AdminOverviewPage() {
             key={metric.code}
             className="group relative min-h-40 border-r border-b border-border bg-surface/50 p-5"
           >
-            <div className="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground">
+            <div className="flex items-center justify-between font-mono text-sm uppercase tracking-[0.12em] text-muted-foreground">
               <span>{metric.code}</span>
               <span className="text-signal">0{index + 1}</span>
             </div>
             <strong className="mt-8 block text-5xl font-semibold tracking-[-0.065em] sm:text-6xl">
               {metric.value.toString().padStart(2, '0')}
             </strong>
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+            <p className="mt-3 text-sm leading-5 text-muted-foreground">
               {metric.label}
             </p>
             <span className="absolute inset-x-5 bottom-0 h-px origin-left scale-x-0 bg-signal transition-transform duration-300 group-hover:scale-x-100" />
@@ -87,7 +87,7 @@ export default async function AdminOverviewPage() {
         <section className="border border-border bg-surface/50 xl:row-span-2">
           <div className="flex items-end justify-between gap-4 border-b border-border p-5 sm:p-6">
             <div>
-              <span className="font-mono text-[0.58rem] uppercase tracking-[0.14em] text-signal">
+              <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
                 {page.inboxLabel}
               </span>
               <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">
@@ -96,7 +96,7 @@ export default async function AdminOverviewPage() {
             </div>
             <Link
               href="/admin/inbox"
-              className="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
+              className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
             >
               {page.viewAll} <ArrowRightIcon className="size-3.5" />
             </Link>
@@ -113,19 +113,19 @@ export default async function AdminOverviewPage() {
                     <strong className="truncate text-sm">
                       {conversation.contact}
                     </strong>
-                    <time className="shrink-0 font-mono text-[0.56rem] text-muted-foreground">
+                    <time className="shrink-0 font-mono text-sm text-muted-foreground">
                       {formatRelativeTime(conversation.lastMessageAt, lng)}
                     </time>
                   </div>
-                  <span className="mt-1 block truncate text-xs text-foreground/80">
+                  <span className="mt-1 block truncate text-sm text-foreground/80">
                     {conversation.subject}
                   </span>
-                  <p className="mt-2 line-clamp-1 text-xs text-muted-foreground">
+                  <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">
                     {conversation.preview}
                   </p>
                 </div>
                 {conversation.unreadCount > 0 ? (
-                  <b className="grid size-6 place-items-center bg-signal font-mono text-[0.58rem] text-primary-foreground">
+                  <b className="grid size-6 place-items-center bg-signal font-mono text-sm text-primary-foreground">
                     {conversation.unreadCount}
                   </b>
                 ) : null}
@@ -137,7 +137,7 @@ export default async function AdminOverviewPage() {
         <section className="border border-border bg-surface/50">
           <div className="flex items-end justify-between gap-4 border-b border-border p-5">
             <div>
-              <span className="font-mono text-[0.58rem] uppercase tracking-[0.14em] text-signal">
+              <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
                 {page.pipelineLabel}
               </span>
               <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
@@ -146,7 +146,7 @@ export default async function AdminOverviewPage() {
             </div>
             <Link
               href="/admin/orders"
-              className="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
+              className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
             >
               {page.viewAll} <ArrowRightIcon className="size-3.5" />
             </Link>
@@ -158,12 +158,12 @@ export default async function AdminOverviewPage() {
                   <StatusPill tone={orderTone(order.status)}>
                     {copy.admin.orders.statuses[order.status]}
                   </StatusPill>
-                  <time className="font-mono text-[0.56rem] text-muted-foreground">
+                  <time className="font-mono text-sm text-muted-foreground">
                     {formatRelativeTime(order.updatedAt, lng)}
                   </time>
                 </div>
                 <h3 className="mt-4 text-sm font-semibold">{order.title}</h3>
-                <strong className="mt-2 block font-mono text-xs text-signal-soft">
+                <strong className="mt-2 block font-mono text-sm text-signal-soft">
                   {formatMoney(order.valueCents, order.currency, lng)}
                 </strong>
               </article>
@@ -173,7 +173,7 @@ export default async function AdminOverviewPage() {
 
         <section className="border border-border bg-surface/50">
           <div className="border-b border-border p-5">
-            <span className="font-mono text-[0.58rem] uppercase tracking-[0.14em] text-signal">
+            <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
               {page.systemLabel}
             </span>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
@@ -199,7 +199,7 @@ export default async function AdminOverviewPage() {
             ].map(([label, value, tone]) => (
               <div
                 key={label}
-                className="flex items-center justify-between gap-4 p-4 text-xs"
+                className="flex items-center justify-between gap-4 p-4 text-sm"
               >
                 <span className="inline-flex items-center gap-2">
                   <i
@@ -211,7 +211,7 @@ export default async function AdminOverviewPage() {
                   />
                   {label}
                 </span>
-                <strong className="font-mono text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground">
+                <strong className="font-mono text-sm uppercase tracking-[0.08em] text-muted-foreground">
                   {value}
                 </strong>
               </div>

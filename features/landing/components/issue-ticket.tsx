@@ -18,7 +18,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
         aria-hidden="true"
       />
 
-      <header className="relative flex items-center justify-between border-b border-border pb-4 font-mono text-[0.62rem] tracking-[0.1em]">
+      <header className="relative flex items-center justify-between border-b border-border pb-4 font-mono text-sm tracking-[0.1em]">
         <span className="text-signal">{copy.id}</span>
         <span className="inline-flex items-center gap-2 text-muted-foreground">
           <i className="size-1.5 bg-positive" aria-hidden="true" />
@@ -27,7 +27,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
       </header>
 
       <div className="relative mt-8">
-        <span className="font-mono text-[0.58rem] tracking-[0.1em] text-muted-foreground">
+        <span className="font-mono text-sm tracking-[0.1em] text-muted-foreground">
           {copy.inputLabel} / {copy.outputLabel}
         </span>
         <h2 className="mt-3 max-w-[12ch] text-[clamp(1.8rem,3vw,2.8rem)] font-medium leading-[1.02] tracking-[-0.045em]">
@@ -37,7 +37,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
 
       <div className="relative mt-8 grid grid-cols-[1fr_2.75rem_1fr] border-y border-border bg-black">
         <div className="p-4">
-          <span className="block font-mono text-[0.55rem] tracking-[0.1em] text-muted-foreground">
+          <span className="block font-mono text-sm tracking-[0.1em] text-muted-foreground">
             {copy.inputLabel}
           </span>
           <strong className="mt-2 block text-sm leading-5">
@@ -48,7 +48,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
           <ArrowRightIcon className="size-4" />
         </span>
         <div className="p-4">
-          <span className="block font-mono text-[0.55rem] tracking-[0.1em] text-muted-foreground">
+          <span className="block font-mono text-sm tracking-[0.1em] text-muted-foreground">
             {copy.outputLabel}
           </span>
           <strong className="mt-2 block text-sm leading-5">
@@ -70,7 +70,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
               )}
               aria-hidden="true"
             />
-            <span className="font-mono text-[0.58rem] text-muted-foreground">
+            <span className="font-mono text-sm text-muted-foreground">
               0{index + 1}
             </span>
             <span className="text-sm">{stage}</span>
@@ -88,16 +88,16 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
 
       <footer className="relative mt-auto grid grid-cols-2 border-t border-border pt-4">
         <div>
-          <span className="block font-mono text-[0.55rem] tracking-[0.1em] text-muted-foreground">
+          <span className="block font-mono text-sm tracking-[0.1em] text-muted-foreground">
             {copy.ownerLabel}
           </span>
-          <strong className="mt-1 block text-xs">{copy.ownerValue}</strong>
+          <strong className="mt-1 block text-sm">{copy.ownerValue}</strong>
         </div>
         <div className="border-l border-border pl-4">
-          <span className="block font-mono text-[0.55rem] tracking-[0.1em] text-muted-foreground">
+          <span className="block font-mono text-sm tracking-[0.1em] text-muted-foreground">
             {copy.reviewLabel}
           </span>
-          <strong className="mt-1 block text-xs">{copy.reviewValue}</strong>
+          <strong className="mt-1 block text-sm">{copy.reviewValue}</strong>
         </div>
       </footer>
     </aside>

@@ -161,4 +161,6 @@ export function SocialIcon({
         </svg>
       );
   }
+
+  return null;
 }

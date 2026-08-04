@@ -38,9 +38,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-codeissue}:${POSTGRES_PASSWORD:-codeissue-local-password}@postgres:5432/${POSTGRES_DB:-codeissue}
       AUTH_SECRET: ${AUTH_SECRET:-local-development-secret-change-before-production}
       AUTH_TRUST_HOST: 'true'
-      AUTH_GITHUB_ID: ${AUTH_GITHUB_ID:-}
-      AUTH_GITHUB_SECRET: ${AUTH_GITHUB_SECRET:-}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@codeissue.dev}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
       BACKEND_API_URL: ${BACKEND_API_URL:-http://host.docker.internal:8080}
       BACKEND_API_TOKEN: ${BACKEND_API_TOKEN:-}
@@ -78,7 +76,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-codeissue}:${POSTGRES_PASSWORD:-codeissue-local-password}@postgres:5432/${POSTGRES_DB:-codeissue}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@codeissue.dev}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
     command: npm run db:seed
 

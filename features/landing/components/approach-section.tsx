@@ -32,7 +32,7 @@ export function ApproachSection({ copy }: { copy: Dictionary }) {
           </header>
 
           <div className="lg:pl-10">
-            <div className="border-b border-border py-5 font-mono text-[0.6rem] tracking-[0.1em] text-muted-foreground">
+            <div className="border-b border-border py-5 font-mono text-sm tracking-[0.1em] text-muted-foreground">
               {copy.approach.label}
             </div>
             {copy.approach.principles.map((principle) => (
@@ -44,7 +44,7 @@ export function ApproachSection({ copy }: { copy: Dictionary }) {
                 )}
                 data-reveal
               >
-                <span className="font-mono text-[0.62rem] text-signal">
+                <span className="font-mono text-sm text-signal">
                   {principle.number}
                 </span>
                 <h3 className="max-w-[18ch] text-xl font-medium tracking-[-0.025em] sm:text-2xl">

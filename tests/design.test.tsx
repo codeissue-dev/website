@@ -15,10 +15,8 @@ function relativeLuminance(hex: string) {
       channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
     );
 
-  if (!channels || channels.length !== 3) {
+  if (!channels || channels.length !== 3)
     throw new Error(`Invalid hex color: ${hex}`);
-  }
-
   return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
 }
 
@@ -37,9 +35,8 @@ test('primary action colors keep strong contrast', async () => {
   const foreground = css.match(
     /--color-primary-foreground:\s*(#[0-9a-f]{6})/i,
   )?.[1];
-
-  assert.ok(primary, 'Missing --color-primary');
-  assert.ok(foreground, 'Missing --color-primary-foreground');
+  assert.ok(primary);
+  assert.ok(foreground);
   assert.ok(contrastRatio(primary, foreground) >= 7);
 });
 
@@ -48,7 +45,6 @@ test('renders an SVG brand mark for every social destination', () => {
     const markup = renderToStaticMarkup(
       <SocialIcon name={social.id} data-social={social.id} />,
     );
-
     assert.match(markup, /^<svg/);
     assert.match(markup, new RegExp(`data-social="${social.id}"`));
   }
@@ -61,7 +57,6 @@ test('keeps next-i18next in no-locale-path mode', async () => {
     readText('features/landing/components/language-switch.tsx'),
     readText('app/[lang]/page.tsx'),
   ]);
-
   assert.match(config, /localeInPath:\s*false/);
   assert.match(config, /next-i18next\/proxy/);
   assert.match(proxy, /createProxy/);
@@ -69,30 +64,58 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   assert.match(legacyRoute, /redirect\('\/'\)/);
 });
 
-test('uses a pure black square-edged interface with compact hero type', async () => {
-  const [globals, hero, ticket, landing, button, auth] = await Promise.all([
+test('uses Geist, pure black surfaces, readable labels, and a compact hero', async () => {
+  const [globals, layout, hero, landing] = await Promise.all([
     readText('app/globals.css'),
+    readText('app/layout.tsx'),
     readText('features/landing/components/hero-section.tsx'),
-    readText('features/landing/components/issue-ticket.tsx'),
     readText('features/landing/landing-page.tsx'),
-    readText('components/ui/button.tsx'),
-    readText('app/login/page.tsx'),
   ]);
 
   assert.match(globals, /--color-background:\s*#000000/i);
-  assert.match(globals, /--color-signal:\s*#948dff/i);
-  assert.match(globals, /--radius-md:\s*0/);
-  assert.match(hero, /text-\[clamp\(2\.35rem,4\.2vw,4\.6rem\)\]/);
-  assert.match(hero, /background-image:linear-gradient/);
-  assert.doesNotMatch(ticket, /clip-path:polygon/);
+  assert.match(globals, /--font-sans:\s*var\(--font-geist-sans\)/);
+  assert.match(globals, /--font-mono:/);
+  assert.match(layout, /Geist, Geist_Mono/);
+  assert.match(hero, /text-\[clamp\(2\.15rem,4vw,4rem\)\]/);
   assert.match(landing, /bg-black text-foreground/);
-  assert.doesNotMatch(button, /rounded-/);
-  assert.match(auth, /bg-black/);
+
+  const source = [globals, layout, hero, landing].join('\n');
+  assert.doesNotMatch(source, /text-\[0\.[0-6][0-9]?rem\]/);
+  assert.doesNotMatch(source, /text-xs/);
+});
+
+test('uses a transparent vector brand asset instead of a boxed bitmap', async () => {
+  const [logo, mark] = await Promise.all([
+    readText('components/brand/brand-logo.tsx'),
+    readText('public/images/codeissue-mark.svg'),
+  ]);
+
+  assert.match(logo, /codeissue-mark\.svg/);
+  assert.doesNotMatch(logo, /bg-black|border-border/);
+  assert.match(mark, /^<svg/);
+  assert.doesNotMatch(mark, /<rect/);
+});
+
+test('restores illustration, scroll reveal, pointer parallax, and process interaction', async () => {
+  const [heroArt, process, interactions] = await Promise.all([
+    readText('features/landing/components/hero-art.tsx'),
+    readText('features/landing/components/process-section.tsx'),
+    readText('features/landing/hooks/use-landing-interactions.ts'),
+  ]);
+
+  assert.match(heroArt, /next\/image/);
+  assert.match(heroArt, /banner\.png/);
+  assert.match(heroArt, /codeissue-mark\.svg/);
+  assert.match(heroArt, /data-parallax/);
+  assert.match(process, /avatar\.png/);
+  assert.match(process, /data-process-step/);
+  assert.match(interactions, /pointermove/);
+  assert.match(interactions, /IntersectionObserver/);
+  assert.match(interactions, /--parallax-y/);
 });
 
 test('ships an accessible mobile burger menu', async () => {
   const header = await readText('features/landing/components/site-header.tsx');
-
   assert.match(header, /useState\(false\)/);
   assert.match(header, /aria-expanded=\{menuOpen\}/);
   assert.match(header, /aria-controls="mobile-navigation"/);
