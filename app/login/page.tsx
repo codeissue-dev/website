@@ -26,48 +26,53 @@ export default async function LoginPage({
   );
 
   return (
-    <main className="grid min-h-screen bg-background lg:grid-cols-[minmax(0,1.15fr)_minmax(24rem,0.65fr)]">
-      <section className="relative hidden overflow-hidden border-r border-border bg-surface-quiet p-10 lg:flex lg:flex-col">
+    <main className="grid min-h-screen bg-black lg:grid-cols-[minmax(0,1.05fr)_minmax(24rem,0.62fr)]">
+      <section className="relative hidden overflow-hidden border-r border-border bg-black p-10 lg:flex lg:flex-col">
         <div
-          className="pointer-events-none absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(135,149,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(135,149,255,0.08)_1px,transparent_1px)] [background-size:4rem_4rem]"
+          className="pointer-events-none absolute inset-0 opacity-60 [background-image:linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] [background-size:4.5rem_4.5rem]"
           aria-hidden="true"
         />
-        <div className="relative flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground">
-          <span className="text-signal">Codeissue / operator gate</span>
-          <span>AUTH-01</span>
+        <div className="relative flex items-center justify-between font-mono text-[0.62rem] tracking-[0.1em] text-muted-foreground">
+          <span className="text-signal">CODEISSUE / ACCESS</span>
+          <span>AUTH 01</span>
         </div>
-        <div className="relative mt-auto max-w-4xl">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-signal">
-            Private operations layer
+
+        <div className="relative my-auto max-w-3xl py-16">
+          <p className="font-mono text-[0.62rem] tracking-[0.1em] text-signal">
+            {copy.auth.sideEyebrow}
           </p>
-          <h1 className="mt-6 max-w-[10ch] text-[clamp(4rem,7vw,7rem)] font-semibold leading-[0.9] tracking-[-0.065em]">
-            One desk for every incoming issue.
+          <h1 className="mt-6 max-w-[11ch] text-[clamp(3rem,5vw,5.25rem)] font-medium leading-[0.96] tracking-[-0.055em]">
+            {copy.auth.sideTitle}
           </h1>
-          <div className="mt-10 grid max-w-2xl grid-cols-3 border-t border-l border-border">
-            {['Identity', 'Workspace', 'Events'].map((item, index) => (
-              <div key={item} className="border-r border-b border-border p-4">
-                <span className="font-mono text-[0.56rem] text-signal">
-                  0{index + 1}
-                </span>
-                <strong className="mt-4 block text-xs">{item}</strong>
-              </div>
-            ))}
-          </div>
+          <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground">
+            {copy.auth.sideDescription}
+          </p>
+        </div>
+
+        <div className="relative grid grid-cols-3 border-t border-l border-border">
+          {copy.auth.sideItems.map((item, index) => (
+            <div key={item} className="border-r border-b border-border p-4">
+              <span className="font-mono text-[0.56rem] text-signal">
+                0{index + 1}
+              </span>
+              <strong className="mt-4 block text-xs">{item}</strong>
+            </div>
+          ))}
         </div>
       </section>
 
-      <section className="flex min-w-0 flex-col justify-center bg-surface px-5 py-10 sm:px-10 lg:px-[clamp(2.5rem,5vw,5rem)]">
+      <section className="flex min-w-0 flex-col justify-center border-t border-border bg-black px-5 py-10 sm:px-10 lg:border-t-0 lg:px-[clamp(2.5rem,5vw,5rem)]">
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-16 flex items-center gap-3">
-            <span className="grid size-9 place-items-center border border-signal bg-signal text-primary-foreground [clip-path:polygon(0_0,76%_0,100%_24%,100%_100%,0_100%)]">
+          <div className="mb-14 flex items-center gap-3">
+            <span className="grid size-9 place-items-center border border-signal text-signal">
               <CodeIssueMark className="size-5" />
             </span>
             <span className="text-sm font-semibold">Codeissue OS</span>
           </div>
-          <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-signal">
+          <p className="font-mono text-[0.62rem] font-semibold tracking-[0.1em] text-signal">
             {copy.auth.eyebrow}
           </p>
-          <h2 className="mt-4 max-w-[11ch] text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[0.94] tracking-[-0.055em]">
+          <h2 className="mt-4 max-w-[12ch] text-[clamp(2.25rem,4vw,3.75rem)] font-medium leading-[0.98] tracking-[-0.05em]">
             {copy.auth.title}
           </h2>
           <p className="mt-5 max-w-md text-sm leading-7 text-muted-foreground">
@@ -83,7 +88,7 @@ export default async function LoginPage({
                 <input type="hidden" name="callbackUrl" value={callbackUrl} />
                 <button
                   type="submit"
-                  className="h-11 w-full rounded-md border border-border-strong text-sm font-semibold text-foreground transition-colors hover:border-signal hover:text-signal-soft"
+                  className="h-11 w-full border border-border-strong text-sm font-semibold text-foreground transition-colors hover:border-signal hover:text-signal-soft"
                 >
                   {copy.auth.github}
                 </button>
@@ -92,7 +97,7 @@ export default async function LoginPage({
           ) : null}
           <div className="mt-10 flex items-center justify-between gap-4 border-t border-border pt-4 font-mono text-[0.58rem] text-muted-foreground">
             <Link href="/" className="hover:text-signal-soft">
-              ← {copy.auth.back}
+              &lt;- {copy.auth.back}
             </Link>
             <span className="text-right">{copy.auth.security}</span>
           </div>

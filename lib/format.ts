@@ -24,7 +24,7 @@ export function formatMoney(
   currency: string,
   locale: string,
 ) {
-  if (valueCents === null) return '—';
+  if (valueCents === null) return ' - ';
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency,

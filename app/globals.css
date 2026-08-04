@@ -1,54 +1,54 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --color-background: #08090d;
-  --color-foreground: #f4f2eb;
-  --color-card: #0d1017;
-  --color-card-foreground: #f4f2eb;
-  --color-popover: #0d1017;
-  --color-popover-foreground: #f4f2eb;
-  --color-primary: #8795ff;
-  --color-primary-foreground: #070812;
-  --color-secondary: #11151e;
-  --color-secondary-foreground: #f4f2eb;
-  --color-muted: #151923;
-  --color-muted-foreground: #9ea5b7;
-  --color-accent: #cbd0ff;
-  --color-accent-foreground: #08090d;
-  --color-destructive: #ff7d86;
-  --color-border: #252b39;
-  --color-border-strong: #41495e;
-  --color-input: #151923;
-  --color-ring: #8795ff;
-  --color-surface: #0d1017;
-  --color-surface-soft: #11151e;
-  --color-surface-quiet: #0a0c11;
-  --color-signal: #8795ff;
-  --color-signal-soft: #cbd0ff;
-  --color-positive: #7ed9ad;
-  --color-warning: #edc979;
-  --color-danger: #ff7d86;
+  --color-background: #000000;
+  --color-foreground: #f5f5f3;
+  --color-card: #050505;
+  --color-card-foreground: #f5f5f3;
+  --color-popover: #050505;
+  --color-popover-foreground: #f5f5f3;
+  --color-primary: #948dff;
+  --color-primary-foreground: #05040d;
+  --color-secondary: #0a0a0a;
+  --color-secondary-foreground: #f5f5f3;
+  --color-muted: #101010;
+  --color-muted-foreground: #9b9ba3;
+  --color-accent: #c8c4ff;
+  --color-accent-foreground: #05040d;
+  --color-destructive: #ff747c;
+  --color-border: #242424;
+  --color-border-strong: #404040;
+  --color-input: #0a0a0a;
+  --color-ring: #948dff;
+  --color-surface: #050505;
+  --color-surface-soft: #0a0a0a;
+  --color-surface-quiet: #020202;
+  --color-signal: #948dff;
+  --color-signal-soft: #c8c4ff;
+  --color-positive: #66d9a3;
+  --color-warning: #e5c36b;
+  --color-danger: #ff747c;
   --font-sans:
     'Helvetica Neue', Helvetica, Arial, ui-sans-serif, system-ui, -apple-system,
     sans-serif;
   --font-mono:
     'SFMono-Regular', Consolas, 'Liberation Mono', ui-monospace, monospace;
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-    background: var(--color-background);
+    background: #000000;
   }
 
   body {
     min-width: 320px;
     overflow-x: hidden;
-    background: var(--color-background);
+    background: #000000;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;

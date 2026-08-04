@@ -12,35 +12,43 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
   return (
     <section className={sectionSpacing}>
       <div className={pageFrame}>
-        <div
-          className={cn(
-            reveal,
-            'relative grid overflow-hidden border border-signal bg-signal text-primary-foreground [clip-path:polygon(0_0,96%_0,100%_18%,100%_100%,0_100%)] lg:grid-cols-[9rem_minmax(0,1fr)_auto]',
-          )}
-          data-reveal
-        >
-          <div className="border-b border-primary-foreground/25 p-5 font-mono text-[0.62rem] uppercase tracking-[0.16em] lg:border-r lg:border-b-0 lg:p-7">
-            CI / CONTACT
+        <div className="grid border-y border-border lg:grid-cols-[8rem_minmax(0,1fr)_minmax(18rem,0.38fr)]">
+          <div className="border-b border-border p-5 font-mono text-[0.6rem] tracking-[0.1em] text-signal lg:border-r lg:border-b-0 lg:p-7">
+            CI / NEW
           </div>
-          <div className="p-5 sm:p-8 lg:p-10">
-            <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.18em] opacity-65">
+          <div className="border-b border-border p-5 sm:p-8 lg:border-r lg:border-b-0 lg:p-10">
+            <p
+              className={cn(
+                reveal,
+                'font-mono text-[0.62rem] tracking-[0.1em] text-muted-foreground',
+              )}
+              data-reveal
+            >
               {copy.cta.eyebrow}
             </p>
-            <h2 className="mt-6 max-w-[11ch] text-[clamp(2.8rem,5.6vw,5.8rem)] font-semibold leading-[0.92] tracking-[-0.06em]">
+            <h2
+              className={cn(
+                reveal,
+                'mt-6 max-w-[12ch] text-[clamp(2.2rem,4.2vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.05em]',
+              )}
+              data-reveal
+            >
               {copy.cta.title}
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 opacity-70">
+            <p
+              className={cn(
+                reveal,
+                'mt-6 max-w-2xl text-base leading-7 text-muted-foreground',
+              )}
+              data-reveal
+            >
               {copy.cta.description}
             </p>
           </div>
-          <div className="grid content-end gap-2 border-t border-primary-foreground/25 p-5 sm:grid-cols-2 lg:min-w-72 lg:grid-cols-1 lg:border-t-0 lg:border-l lg:p-7">
+          <div className="grid content-end gap-2 p-5 sm:grid-cols-2 sm:p-8 lg:grid-cols-1 lg:p-7">
             <a
               href={`mailto:${contactEmail}`}
-              className={buttonVariants({
-                size: 'lg',
-                className:
-                  'border-primary-foreground bg-primary-foreground text-signal hover:border-background hover:bg-background hover:text-signal',
-              })}
+              className={buttonVariants({ size: 'lg' })}
             >
               <MailIcon className="size-4" />
               {copy.cta.primary}
@@ -48,9 +56,8 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
             <ExternalLink
               href="https://discord.gg/uckqayVRmy"
               className={buttonVariants({
-                variant: 'outline',
+                variant: 'secondary',
                 size: 'lg',
-                className: 'text-primary-foreground',
               })}
             >
               <SocialIcon name="discord" className="size-4" />

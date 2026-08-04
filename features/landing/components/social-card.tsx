@@ -21,34 +21,29 @@ export function SocialCard({
       href={social.href}
       className={cn(
         reveal,
-        'group relative flex min-h-52 flex-col border-r border-b border-border bg-background/40 p-4 transition-colors hover:bg-signal hover:text-primary-foreground sm:min-h-60 sm:p-5',
+        'group grid min-h-32 grid-cols-[3rem_minmax(0,1fr)_auto] items-start gap-4 border-b border-border py-5 transition-colors hover:bg-white hover:px-4 hover:text-black sm:min-h-36 sm:grid-cols-[3.5rem_minmax(0,0.65fr)_minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:py-6',
       )}
       label={`${social.name}: ${social.handle}`}
       data-reveal=""
     >
-      <div className="flex items-start justify-between">
-        <span className="grid size-10 place-items-center border border-current/30">
-          <SocialIcon name={social.id} className="size-5" />
-        </span>
-        <span className="font-mono text-[0.58rem] opacity-60">
+      <span className="grid size-10 place-items-center border border-current/30">
+        <SocialIcon name={social.id} className="size-5" />
+      </span>
+      <div className="min-w-0">
+        <span className="font-mono text-[0.55rem] opacity-55">
           {String(index + 1).padStart(2, '0')}
         </span>
-      </div>
-      <div className="mt-auto">
-        <strong className="block text-lg font-semibold tracking-[-0.03em]">
+        <strong className="mt-1 block truncate text-base font-medium tracking-[-0.02em]">
           {social.name}
         </strong>
-        <small className="mt-1 block truncate font-mono text-[0.62rem] opacity-65">
+        <small className="mt-1 block truncate font-mono text-[0.58rem] opacity-60">
           {social.handle}
         </small>
-        <p className="mt-4 text-xs leading-5 opacity-70">
-          {copy.socials[social.id]}
-        </p>
       </div>
-      <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.12em] opacity-70">
-        {copy.open}
-        <ArrowUpRightIcon className="size-3.5" />
-      </span>
+      <p className="col-span-2 max-w-xl text-xs leading-5 opacity-65 sm:col-span-1">
+        {copy.socials[social.id]}
+      </p>
+      <ArrowUpRightIcon className="size-4 opacity-45 transition-opacity group-hover:opacity-100" />
     </ExternalLink>
   );
 }

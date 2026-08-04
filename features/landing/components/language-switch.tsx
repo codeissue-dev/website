@@ -18,7 +18,7 @@ export function LanguageSwitch({
   return (
     <button
       type="button"
-      className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-surface/80 px-3 font-mono text-[0.65rem] font-semibold tracking-[0.12em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground"
+      className="inline-flex h-9 items-center gap-2 border border-border bg-black px-3 font-mono text-[0.64rem] font-semibold tracking-[0.08em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground"
       aria-label={label}
       onClick={() => changeLanguage(nextLocale)}
     >

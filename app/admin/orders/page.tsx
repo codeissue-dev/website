@@ -30,7 +30,7 @@ export default async function OrdersPage() {
         description={page.description}
         action={
           <details className="group relative">
-            <summary className="inline-flex h-10 list-none items-center justify-center rounded-md border border-signal bg-signal px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-signal-soft [&::-webkit-details-marker]:hidden">
+            <summary className="inline-flex h-10 list-none items-center justify-center border border-signal bg-signal px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-signal-soft [&::-webkit-details-marker]:hidden">
               + {page.new}
             </summary>
             <form
@@ -84,7 +84,7 @@ export default async function OrdersPage() {
               </div>
               <button
                 type="submit"
-                className="h-10 rounded-md border border-signal bg-signal text-xs font-semibold text-primary-foreground hover:bg-signal-soft"
+                className="h-10 border border-signal bg-signal text-xs font-semibold text-primary-foreground hover:bg-signal-soft"
               >
                 {page.create}
               </button>
@@ -118,7 +118,7 @@ export default async function OrdersPage() {
               {page.statuses[order.status]}
             </StatusPill>
             <span className="truncate text-xs text-muted-foreground">
-              {order.owner ?? '—'}
+              {order.owner ?? ' - '}
             </span>
             <strong className="font-mono text-xs text-signal-soft">
               {formatMoney(order.valueCents, order.currency, lng)}

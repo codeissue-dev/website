@@ -25,7 +25,7 @@ The Next.js application owns the public website, Auth.js identity boundary, oper
 ## Code boundaries
 
 - `app/` contains transport concerns: pages, layouts, route handlers, and server actions.
-- `features/landing/` owns the server-rendered public composition. Only the scroll progress and reveal observer cross the client boundary.
+- `features/landing/` owns the server-rendered public composition. Only the header menu, language switch, scroll progress, and reveal observer cross the client boundary.
 - `app/globals.css` contains only the Tailwind CSS v4 import, theme tokens, and minimal document-level base rules. Visual composition lives in utility classes close to the React markup.
 - `lib/ui/` centralizes the few repeated Tailwind utility strings used by fields, page frames, reveal motion, and admin controls.
 - `lib/admin/` builds read models for the operations UI. Queries, fallback data, and DTO types are separate modules.
@@ -69,4 +69,4 @@ Production readiness still requires provider adapters, worker queues, observabil
 
 ## Interface system
 
-The public site, login flow, and operations workspace share one utility-first visual language: graphite surfaces, warm white type, a cobalt signal color, thin routing lines, and clipped issue artifacts. Feature components own their responsive Tailwind classes; the legacy files under `styles/` remain as empty compatibility placeholders and are not imported.
+The public site, login flow, and operations workspace share one utility-first visual language: a true black canvas, warm white type, a violet signal color, square controls, fine grid lines, and issue-routing diagrams. Feature components own their responsive Tailwind classes; the legacy files under `styles/` remain as empty compatibility placeholders and are not imported.

@@ -48,3 +48,15 @@ test('translates the ecosystem workspace and every social link', async () => {
   assert.ok(english.auth.title.length > 10);
   assert.ok(russian.auth.title.length > 10);
 });
+
+test('uses plain punctuation in public copy', async () => {
+  const dictionaries = await Promise.all([
+    readDictionary('en'),
+    readDictionary('ru'),
+  ]);
+  const prohibited = /[\u2014\u2013\u201c\u201d\u2018\u2019]/;
+
+  for (const dictionary of dictionaries) {
+    assert.doesNotMatch(JSON.stringify(dictionary), prohibited);
+  }
+});

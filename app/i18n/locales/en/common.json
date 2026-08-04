@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Codeissue — From idea to working product",
+    "title": "Codeissue - From idea to working product",
     "description": "Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review."
   },
   "language": {
@@ -17,13 +17,15 @@
     "process": "Process",
     "network": "Links",
     "contact": "Start an issue",
-    "workspace": "Workspace"
+    "workspace": "Workspace",
+    "menu": "Open menu",
+    "close": "Close menu"
   },
   "hero": {
     "eyebrow": "Product design + engineering",
     "lineOne": "Every idea starts as an issue.",
     "lineTwo": "We turn yours into a working product.",
-    "description": "Strategy, design, engineering, and review — one focused team from first note to working release.",
+    "description": "Strategy, design, engineering, and review. One focused team from first note to working release.",
     "primary": "Start an issue",
     "secondary": "See how we work",
     "scroll": "Follow the issue",
@@ -43,7 +45,7 @@
     }
   },
   "approach": {
-    "eyebrow": "How we work",
+    "eyebrow": "Working agreement",
     "title": "Your idea. Our next issue.",
     "description": "We design and build digital products using AI-assisted workflows, custom systems, and human review.",
     "principles": [
@@ -62,12 +64,13 @@
         "title": "Reviewed before release.",
         "copy": "Every important interaction, edge case, and implementation choice gets a deliberate human pass."
       }
-    ]
+    ],
+    "label": "Working agreement / 03"
   },
   "process": {
-    "eyebrow": "From issue to release",
-    "title": "A clear path from thought to product.",
-    "description": "We keep the process visible, reduce uncertainty early, and make each stage produce something you can review.",
+    "eyebrow": "How the work moves",
+    "title": "One team from first decision to release.",
+    "description": "The same people stay with the problem. Scope, interface, code, and review move in one visible thread.",
     "currentLabel": "Current issue",
     "status": "In progress",
     "deliverablesLabel": "What you get",
@@ -96,12 +99,13 @@
         "copy": "We test real scenarios, resolve edge cases, document the handoff, and ship a release that can keep evolving.",
         "deliverables": ["Human review", "Quality pass", "Release notes"]
       }
-    ]
+    ],
+    "facts": ["One team", "One thread", "Weekly review"]
   },
   "services": {
     "eyebrow": "What we build",
-    "title": "Digital products that have to work.",
-    "description": "From a focused launch page to a custom platform, we care about the same thing: a clear product that survives real use.",
+    "title": "Products, systems, and the work between them.",
+    "description": "We build focused launch surfaces, customer products, operational tools, and the foundations that keep them reliable.",
     "items": [
       {
         "number": "01",
@@ -116,7 +120,7 @@
       {
         "number": "03",
         "title": "AI-assisted features",
-        "copy": "Useful AI inside a product — scoped, tested, observable, and always reviewable."
+        "copy": "Useful AI inside a product - scoped, tested, observable, and always reviewable."
       },
       {
         "number": "04",
@@ -127,8 +131,8 @@
   },
   "network": {
     "eyebrow": "Find Codeissue",
-    "title": "Follow the work, not the noise.",
-    "description": "Product notes, build logs, source code, streams, and direct community updates.",
+    "title": "The work is public where it helps.",
+    "description": "Source code, build notes, demos, community feedback, and direct updates across the channels you already use.",
     "open": "Open",
     "socials": {
       "discord": "Community, feedback, and the fastest way to reach us.",
@@ -141,7 +145,8 @@
       "twitch": "Live sessions with the process left visible.",
       "max": "A direct channel for updates and announcements.",
       "linkedin": "Professional context, releases, and collaboration."
-    }
+    },
+    "channelsLabel": "10 active channels"
   },
   "cta": {
     "eyebrow": "New issue",
@@ -152,7 +157,7 @@
   },
   "footer": {
     "note": "AI-assisted workflows. Custom systems. Human review.",
-    "rights": "Codeissue — digital product studio."
+    "rights": "Codeissue - digital product studio."
   },
   "auth": {
     "eyebrow": "Codeissue workspace",
@@ -166,7 +171,11 @@
     "back": "Back to the website",
     "security": "Protected by Auth.js and server-side access control.",
     "or": "or",
-    "github": "Continue with GitHub"
+    "github": "Continue with GitHub",
+    "sideEyebrow": "Private operations layer",
+    "sideTitle": "One desk for every incoming issue.",
+    "sideDescription": "Messages, orders, integrations, and delivery events stay in one operational view.",
+    "sideItems": ["Identity", "Workspace", "Events"]
   },
   "admin": {
     "brand": "Codeissue OS",

@@ -38,4 +38,4 @@ Normalized adapters call `POST /api/webhooks/{provider}` with `X-Codeissue-Webho
 
 ## Styling conventions
 
-Use Tailwind CSS v4 utilities in `className` for component-level styling and responsive behavior. Add shared color or typography tokens in `app/globals.css`; place only genuinely repeated utility groups in `lib/ui/styles.ts`. Do not add new page-specific files under `styles/`—that directory is retained only for package compatibility.
+Use Tailwind CSS v4 utilities in `className` for component-level styling and responsive behavior. Add shared color or typography tokens in `app/globals.css`; place only genuinely repeated utility groups in `lib/ui/styles.ts`. Do not add new page-specific files under `styles/` - that directory is retained only for package compatibility.

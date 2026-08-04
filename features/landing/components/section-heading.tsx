@@ -19,7 +19,7 @@ export function SectionHeading({
   return (
     <header
       className={cn(
-        'grid gap-8 border-t border-border pt-5 md:grid-cols-[minmax(0,1.2fr)_minmax(16rem,0.8fr)] md:gap-12',
+        'grid gap-8 border-t border-border pt-5 md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)] md:gap-12',
         className,
       )}
     >
@@ -30,7 +30,7 @@ export function SectionHeading({
         <h2
           className={cn(
             reveal,
-            'mt-6 max-w-[12ch] text-[clamp(2.6rem,5.2vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.06em]',
+            'mt-6 max-w-[14ch] text-[clamp(2.1rem,4vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em]',
           )}
           data-reveal
         >

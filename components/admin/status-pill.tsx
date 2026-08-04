@@ -26,14 +26,12 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        'inline-flex w-fit items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em]',
+        'inline-flex w-fit items-center gap-2 border px-2.5 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em]',
         tones[tone],
         className,
       )}
     >
-      {dot ? (
-        <i className="size-1.5 rounded-full bg-current" aria-hidden="true" />
-      ) : null}
+      {dot ? <i className="size-1.5 bg-current" aria-hidden="true" /> : null}
       {children}
     </span>
   );

@@ -69,21 +69,33 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   assert.match(legacyRoute, /redirect\('\/'\)/);
 });
 
-test('uses Tailwind utilities and a distinct cobalt issue-system language', async () => {
-  const [globals, hero, ticket, landing, admin, auth] = await Promise.all([
+test('uses a pure black square-edged interface with compact hero type', async () => {
+  const [globals, hero, ticket, landing, button, auth] = await Promise.all([
     readText('app/globals.css'),
     readText('features/landing/components/hero-section.tsx'),
     readText('features/landing/components/issue-ticket.tsx'),
     readText('features/landing/landing-page.tsx'),
-    readText('app/admin/layout.tsx'),
+    readText('components/ui/button.tsx'),
     readText('app/login/page.tsx'),
   ]);
 
-  assert.match(globals, /--color-signal:\s*#8795ff/i);
-  assert.doesNotMatch(globals, /#ff6a45|#ff5c35/i);
-  assert.match(hero, /text-\[clamp\(2\.9rem,5\.6vw,5\.75rem\)\]/);
-  assert.match(ticket, /clip-path:polygon/);
-  assert.match(landing, /bg-background text-foreground/);
-  assert.match(admin, /bg-surface-quiet/);
-  assert.match(auth, /operator gate/);
+  assert.match(globals, /--color-background:\s*#000000/i);
+  assert.match(globals, /--color-signal:\s*#948dff/i);
+  assert.match(globals, /--radius-md:\s*0/);
+  assert.match(hero, /text-\[clamp\(2\.35rem,4\.2vw,4\.6rem\)\]/);
+  assert.match(hero, /background-image:linear-gradient/);
+  assert.doesNotMatch(ticket, /clip-path:polygon/);
+  assert.match(landing, /bg-black text-foreground/);
+  assert.doesNotMatch(button, /rounded-/);
+  assert.match(auth, /bg-black/);
+});
+
+test('ships an accessible mobile burger menu', async () => {
+  const header = await readText('features/landing/components/site-header.tsx');
+
+  assert.match(header, /useState\(false\)/);
+  assert.match(header, /aria-expanded=\{menuOpen\}/);
+  assert.match(header, /aria-controls="mobile-navigation"/);
+  assert.match(header, /h-\[calc\(100dvh-4rem\)\]/);
+  assert.match(header, /event\.key === 'Escape'/);
 });

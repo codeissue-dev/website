@@ -35,13 +35,13 @@ export default async function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
-      <aside className="relative z-40 border-b border-border bg-surface-quiet lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
+    <div className="min-h-screen bg-black text-foreground lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <aside className="relative z-40 border-b border-border bg-black lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
         <Link
           href="/admin"
           className="flex min-h-16 items-center gap-3 border-b border-border px-4 lg:min-h-[4.75rem]"
         >
-          <span className="grid size-9 place-items-center border border-signal bg-signal text-primary-foreground [clip-path:polygon(0_0,76%_0,100%_24%,100%_100%,0_100%)]">
+          <span className="grid size-9 place-items-center border border-signal bg-signal text-primary-foreground ">
             <CodeIssueMark className="size-5" />
           </span>
           <span className="flex min-w-0 flex-col">
@@ -58,7 +58,7 @@ export default async function AdminLayout({
 
         <div className="hidden mt-auto border-t border-border p-4 lg:grid lg:gap-3">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-9 shrink-0 place-items-center rounded-full border border-border-strong bg-surface font-mono text-xs text-signal">
+            <span className="grid size-9 shrink-0 place-items-center border border-border-strong bg-surface font-mono text-xs text-signal">
               {session.user.name?.slice(0, 1).toUpperCase() ?? 'C'}
             </span>
             <div className="flex min-w-0 flex-col">
@@ -87,9 +87,9 @@ export default async function AdminLayout({
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-4 border-b border-border bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:min-h-[4.75rem] lg:px-8">
+        <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between gap-4 border-b border-border bg-black/90 px-4  sm:px-6 lg:min-h-[4.75rem] lg:px-8">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="size-2 rounded-full bg-positive" />
+            <span className="size-2 bg-positive" />
             <strong className="text-xs">Codeissue</strong>
             <small className="hidden truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground sm:block">
               {copy.admin.topbar}

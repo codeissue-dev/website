@@ -13,28 +13,33 @@ export function ServicesSection({ copy }: { copy: Dictionary }) {
           eyebrow={copy.services.eyebrow}
           title={copy.services.title}
           description={copy.services.description}
+          aside={
+            <span className="font-mono text-[0.6rem] tracking-[0.1em] text-muted-foreground">
+              PRODUCT / PLATFORM / OPERATIONS
+            </span>
+          }
         />
 
-        <div className="mt-14 border-t border-border sm:mt-20">
+        <div className="mt-14 border-t border-border sm:mt-16">
           {copy.services.items.map((item) => (
             <article
               key={item.number}
               className={cn(
                 reveal,
-                'group grid gap-4 border-b border-border py-6 md:grid-cols-[4.5rem_minmax(12rem,0.75fr)_minmax(0,1.25fr)_2rem] md:items-center md:gap-8 md:py-8',
+                'group grid gap-4 border-b border-border py-6 md:grid-cols-[4rem_minmax(12rem,0.72fr)_minmax(0,1.28fr)_2rem] md:items-center md:gap-8 md:py-8',
               )}
               data-reveal
             >
-              <span className="font-mono text-[0.65rem] text-signal">
+              <span className="font-mono text-[0.62rem] text-signal">
                 {item.number}
               </span>
-              <h3 className="text-xl font-semibold tracking-[-0.035em] transition-transform duration-200 group-hover:translate-x-2 sm:text-2xl">
+              <h3 className="text-xl font-medium tracking-[-0.03em] sm:text-2xl">
                 {item.title}
               </h3>
-              <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
                 {item.copy}
               </p>
-              <ArrowUpRightIcon className="size-5 text-muted-foreground transition-colors group-hover:text-signal" />
+              <ArrowUpRightIcon className="size-5 text-border-strong transition-colors group-hover:text-signal" />
             </article>
           ))}
         </div>

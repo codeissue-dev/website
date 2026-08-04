@@ -78,7 +78,7 @@ export default async function InboxPage() {
                   </p>
                 </div>
                 {conversation.unreadCount > 0 ? (
-                  <b className="grid size-5 place-items-center rounded-full bg-signal font-mono text-[0.54rem] text-primary-foreground">
+                  <b className="grid size-5 place-items-center bg-signal font-mono text-[0.54rem] text-primary-foreground">
                     {conversation.unreadCount}
                   </b>
                 ) : null}
@@ -155,7 +155,7 @@ export default async function InboxPage() {
                   </span>
                   <button
                     type="submit"
-                    className="inline-flex h-10 min-w-28 items-center justify-center rounded-md border border-signal bg-signal px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-signal-soft"
+                    className="inline-flex h-10 min-w-28 items-center justify-center border border-signal bg-signal px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-signal-soft"
                   >
                     {page.send} →
                   </button>

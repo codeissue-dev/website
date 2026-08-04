@@ -11,7 +11,7 @@ export function AdminLanguageSwitch({ locale }: { locale: Locale }) {
   return (
     <button
       type="button"
-      className="inline-flex h-8 items-center rounded-full border border-border px-3 font-mono text-[0.62rem] font-semibold tracking-[0.12em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground"
+      className="inline-flex h-8 items-center border border-border px-3 font-mono text-[0.62rem] font-semibold tracking-[0.12em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground"
       onClick={() => changeLanguage(nextLocale)}
       aria-label={`Switch language to ${nextLocale}`}
     >

@@ -16,7 +16,7 @@ export function ProcessPanel({
       <div className="flex items-center justify-between border-b border-border pb-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground">
         <span>{copy.currentLabel}</span>
         <span className="inline-flex items-center gap-2">
-          <i className="size-1.5 rounded-full bg-positive" aria-hidden="true" />
+          <i className="size-1.5 bg-positive" aria-hidden="true" />
           {copy.status}
         </span>
       </div>

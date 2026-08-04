@@ -125,7 +125,7 @@ export default async function AdminOverviewPage() {
                   </p>
                 </div>
                 {conversation.unreadCount > 0 ? (
-                  <b className="grid size-6 place-items-center rounded-full bg-signal font-mono text-[0.58rem] text-primary-foreground">
+                  <b className="grid size-6 place-items-center bg-signal font-mono text-[0.58rem] text-primary-foreground">
                     {conversation.unreadCount}
                   </b>
                 ) : null}
@@ -205,8 +205,8 @@ export default async function AdminOverviewPage() {
                   <i
                     className={
                       tone === 'positive'
-                        ? 'size-1.5 rounded-full bg-positive'
-                        : 'size-1.5 rounded-full bg-warning'
+                        ? 'size-1.5 bg-positive'
+                        : 'size-1.5 bg-warning'
                     }
                   />
                   {label}

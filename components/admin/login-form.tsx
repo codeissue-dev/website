@@ -20,7 +20,7 @@ function SubmitButton({ copy }: { copy: LoginCopy }) {
   return (
     <button
       type="submit"
-      className="mt-1 inline-flex h-11 w-full items-center justify-between rounded-md border border-signal bg-signal px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-signal-soft disabled:pointer-events-none disabled:opacity-50"
+      className="mt-1 inline-flex h-11 w-full items-center justify-between border border-signal bg-signal px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-signal-soft disabled:pointer-events-none disabled:opacity-50"
       disabled={pending}
     >
       {pending ? copy.submitting : copy.submit}

@@ -25,7 +25,7 @@ export function AdminPageHeader({
     >
       <div>
         <p className={eyebrow}>{eyebrowText}</p>
-        <h1 className="mt-4 max-w-[15ch] text-[clamp(2.2rem,4.4vw,4.4rem)] font-semibold leading-[0.96] tracking-[-0.055em]">
+        <h1 className="mt-4 max-w-[16ch] text-[clamp(2rem,3.5vw,3.7rem)] font-medium leading-[0.98] tracking-[-0.05em]">
           {title}
         </h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">

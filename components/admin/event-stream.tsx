@@ -170,7 +170,7 @@ export function EventStream({
     <div className="mt-8 border border-border bg-surface/40">
       <div className="flex flex-col gap-4 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={cn('size-2 shrink-0 rounded-full', connectionDot)} />
+          <span className={cn('size-2 shrink-0', connectionDot)} />
           <div className="min-w-0">
             <strong className="block text-xs">{labels[connection]}</strong>
             <span className="mt-1 block truncate font-mono text-[0.56rem] text-muted-foreground">
@@ -233,7 +233,7 @@ export function EventStream({
               <div className="flex flex-col gap-2">
                 <span
                   className={cn(
-                    'w-fit rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.1em]',
+                    'w-fit border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.1em]',
                     event.transport === 'websocket'
                       ? 'border-positive/40 bg-positive/10 text-positive'
                       : 'border-border text-muted-foreground',

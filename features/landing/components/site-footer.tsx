@@ -8,20 +8,20 @@ import { ExternalLink } from './external-link';
 
 export function SiteFooter({ copy }: { copy: Dictionary }) {
   return (
-    <footer className="border-t border-border bg-surface-quiet">
+    <footer className="border-t border-border bg-black">
       <div
         className={cn(
           pageFrame,
-          'grid gap-8 border-x border-border/70 py-8 md:grid-cols-[1fr_1fr_auto] md:items-end',
+          'grid gap-8 border-x border-border py-8 md:grid-cols-[1fr_1fr_auto] md:items-end',
         )}
       >
         <div className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center border border-border text-signal">
-            <CodeIssueMark className="size-5" />
+          <span className="grid size-8 place-items-center border border-signal text-signal">
+            <CodeIssueMark className="size-[1.1rem]" />
           </span>
           <div className="flex flex-col">
             <strong className="text-sm">Codeissue</strong>
-            <span className="font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground">
+            <span className="font-mono text-[0.58rem] tracking-[0.08em] text-muted-foreground">
               {copy.footer.rights}
             </span>
           </div>
@@ -31,7 +31,7 @@ export function SiteFooter({ copy }: { copy: Dictionary }) {
           {copy.footer.note}
         </p>
 
-        <div className="flex flex-col items-start gap-1.5 font-mono text-[0.62rem] text-muted-foreground md:items-end">
+        <div className="flex flex-col items-start gap-1.5 font-mono text-[0.6rem] text-muted-foreground md:items-end">
           <a href={`mailto:${contactEmail}`} className="hover:text-signal-soft">
             {contactEmail}
           </a>
