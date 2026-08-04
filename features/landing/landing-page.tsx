@@ -18,7 +18,7 @@ export function LandingPage({
   copy: Dictionary;
 }) {
   return (
-    <div className="site-shell">
+    <div className="min-h-screen bg-background text-foreground">
       <ScrollProgress locale={locale} />
       <SiteHeader locale={locale} copy={copy} />
 

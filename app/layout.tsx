@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: 'dark',
-  themeColor: '#000000',
+  themeColor: '#08090d',
   width: 'device-width',
   initialScale: 1,
 };
@@ -39,8 +39,8 @@ export default async function RootLayout({
   const resources = getResources(i18n);
 
   return (
-    <html lang={lng} className="h-full antialiased">
-      <body className="min-h-full">
+    <html lang={lng} className="h-full scroll-smooth bg-background antialiased">
+      <body className="min-h-full bg-background font-sans text-foreground">
         <I18nProvider language={lng} resources={resources}>
           {children}
         </I18nProvider>

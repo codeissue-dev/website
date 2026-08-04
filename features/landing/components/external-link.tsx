@@ -1,16 +1,17 @@
-import type { ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
 
 export function ExternalLink({
   href,
   className,
   children,
   label,
+  ...props
 }: {
   href: string;
   className?: string;
   children: ReactNode;
   label?: string;
-}) {
+} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className'>) {
   return (
     <a
       href={href}
@@ -18,6 +19,7 @@ export function ExternalLink({
       rel="noreferrer"
       aria-label={label}
       className={className}
+      {...props}
     >
       {children}
     </a>

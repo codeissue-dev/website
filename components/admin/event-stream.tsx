@@ -156,60 +156,101 @@ export function EventStream({
   useEffect(() => disconnect, [disconnect]);
 
   const labels = stateLabels(copy);
+  const connectionDot = {
+    connected: 'bg-positive',
+    connecting: 'bg-warning',
+    disconnected: 'bg-muted-foreground',
+    error: 'bg-danger',
+  }[connection];
+
+  const controlClass =
+    'inline-flex h-9 items-center justify-center border border-border px-3 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground disabled:pointer-events-none disabled:opacity-50';
 
   return (
-    <div className="event-console">
-      <div className="event-console__toolbar">
-        <div className="event-console__connection">
-          <span className={cn('connection-dot', `is-${connection}`)} />
-          <div>
-            <strong>{labels[connection]}</strong>
-            <span>{endpoint ?? copy.wsMissing}</span>
+    <div className="mt-8 border border-border bg-surface/40">
+      <div className="flex flex-col gap-4 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className={cn('size-2 shrink-0 rounded-full', connectionDot)} />
+          <div className="min-w-0">
+            <strong className="block text-xs">{labels[connection]}</strong>
+            <span className="mt-1 block truncate font-mono text-[0.56rem] text-muted-foreground">
+              {endpoint ?? copy.wsMissing}
+            </span>
           </div>
         </div>
 
-        <div className="event-console__actions">
+        <div className="flex flex-wrap gap-2">
           {connection === 'connected' || connection === 'connecting' ? (
-            <button type="button" onClick={disconnect}>
+            <button type="button" onClick={disconnect} className={controlClass}>
               {copy.disconnect}
             </button>
           ) : (
-            <button type="button" onClick={connect}>
+            <button
+              type="button"
+              onClick={connect}
+              className={cn(
+                controlClass,
+                'border-signal bg-signal text-primary-foreground hover:bg-signal-soft hover:text-primary-foreground',
+              )}
+            >
               {copy.connect}
             </button>
           )}
-          <button type="button" onClick={refreshApi} disabled={apiLoading}>
+          <button
+            type="button"
+            onClick={refreshApi}
+            disabled={apiLoading}
+            className={controlClass}
+          >
             {apiLoading ? '…' : copy.refresh}
           </button>
-          <button type="button" onClick={() => setEvents([])}>
+          <button
+            type="button"
+            onClick={() => setEvents([])}
+            className={controlClass}
+          >
             {copy.clear}
           </button>
         </div>
       </div>
 
-      <div className="event-console__hint">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-quiet px-4 py-3 font-mono text-[0.56rem] text-muted-foreground">
         <span>{copy.apiReady}</span>
-        <code>/api/admin/backend/[...path]</code>
+        <code className="text-signal-soft">/api/admin/backend/[...path]</code>
       </div>
 
-      <div className="event-log" aria-live="polite">
+      <div aria-live="polite">
         {events.length === 0 ? (
-          <div className="event-log__empty">{copy.empty}</div>
+          <div className="grid min-h-64 place-items-center p-8 text-sm text-muted-foreground">
+            {copy.empty}
+          </div>
         ) : (
           events.map((event) => (
-            <article key={`${event.transport}-${event.id}`}>
-              <div className="event-log__meta">
+            <article
+              key={`${event.transport}-${event.id}`}
+              className="grid gap-4 border-b border-border p-4 last:border-b-0 lg:grid-cols-[13rem_12rem_minmax(0,1fr)] lg:p-5"
+            >
+              <div className="flex flex-col gap-2">
                 <span
                   className={cn(
-                    'event-transport',
-                    event.transport === 'websocket' && 'is-live',
+                    'w-fit rounded-full border px-2.5 py-1 font-mono text-[0.55rem] uppercase tracking-[0.1em]',
+                    event.transport === 'websocket'
+                      ? 'border-positive/40 bg-positive/10 text-positive'
+                      : 'border-border text-muted-foreground',
                   )}
                 >
                   {event.transport === 'websocket' ? copy.live : copy.persisted}
                 </span>
-                <strong>{event.eventType}</strong>
-                <span>{event.status}</span>
-                <time dateTime={event.receivedAt}>
+                <strong className="break-words text-xs">
+                  {event.eventType}
+                </strong>
+                <span className="font-mono text-[0.56rem] text-muted-foreground">
+                  {event.status}
+                </span>
+                <time
+                  dateTime={event.receivedAt}
+                  className="font-mono text-[0.56rem] text-muted-foreground"
+                >
                   {new Intl.DateTimeFormat(undefined, {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -217,11 +258,17 @@ export function EventStream({
                   }).format(new Date(event.receivedAt))}
                 </time>
               </div>
-              <div className="event-log__source">
-                <span>{copy.source}</span>
-                <code>{event.source}</code>
+              <div>
+                <span className="font-mono text-[0.55rem] uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy.source}
+                </span>
+                <code className="mt-2 block break-all text-xs text-signal-soft">
+                  {event.source}
+                </code>
               </div>
-              <pre>{JSON.stringify(event.payload, null, 2)}</pre>
+              <pre className="max-h-80 overflow-auto border border-border bg-background p-4 text-[0.68rem] leading-5 text-muted-foreground">
+                {JSON.stringify(event.payload, null, 2)}
+              </pre>
             </article>
           ))
         )}

@@ -31,13 +31,15 @@ function contrastRatio(first: string, second: string) {
   return (brighter + 0.05) / (darker + 0.05);
 }
 
-test('primary action colors keep strong editorial contrast', async () => {
-  const css = await readText('styles/tokens.css');
-  const primary = css.match(/--primary:\s*(#[0-9a-f]{6})/i)?.[1];
-  const foreground = css.match(/--primary-foreground:\s*(#[0-9a-f]{6})/i)?.[1];
+test('primary action colors keep strong contrast', async () => {
+  const css = await readText('app/globals.css');
+  const primary = css.match(/--color-primary:\s*(#[0-9a-f]{6})/i)?.[1];
+  const foreground = css.match(
+    /--color-primary-foreground:\s*(#[0-9a-f]{6})/i,
+  )?.[1];
 
-  assert.ok(primary, 'Missing --primary color');
-  assert.ok(foreground, 'Missing --primary-foreground color');
+  assert.ok(primary, 'Missing --color-primary');
+  assert.ok(foreground, 'Missing --color-primary-foreground');
   assert.ok(contrastRatio(primary, foreground) >= 7);
 });
 
@@ -67,18 +69,21 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   assert.match(legacyRoute, /redirect\('\/'\)/);
 });
 
-test('uses a restrained single-accent design system', async () => {
-  const [tokens, landing, globals] = await Promise.all([
-    readText('styles/tokens.css'),
-    readText('styles/landing.css'),
+test('uses Tailwind utilities and a distinct cobalt issue-system language', async () => {
+  const [globals, hero, ticket, landing, admin, auth] = await Promise.all([
     readText('app/globals.css'),
+    readText('features/landing/components/hero-section.tsx'),
+    readText('features/landing/components/issue-ticket.tsx'),
+    readText('features/landing/landing-page.tsx'),
+    readText('app/admin/layout.tsx'),
+    readText('app/login/page.tsx'),
   ]);
 
-  assert.match(tokens, /--primary:\s*#ff6a45/i);
-  assert.match(tokens, /--radius:\s*2px/);
-  assert.doesNotMatch(landing, /radial-gradient|box-shadow:\s*0\s+0/);
-  assert.match(globals, /styles\/landing\.css/);
-  assert.match(globals, /styles\/admin\.css/);
-  assert.match(globals, /styles\/operations\.css/);
-  assert.match(globals, /styles\/auth\.css/);
+  assert.match(globals, /--color-signal:\s*#8795ff/i);
+  assert.doesNotMatch(globals, /#ff6a45|#ff5c35/i);
+  assert.match(hero, /text-\[clamp\(2\.9rem,5\.6vw,5\.75rem\)\]/);
+  assert.match(ticket, /clip-path:polygon/);
+  assert.match(landing, /bg-background text-foreground/);
+  assert.match(admin, /bg-surface-quiet/);
+  assert.match(auth, /operator gate/);
 });

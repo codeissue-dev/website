@@ -18,11 +18,11 @@ export function LanguageSwitch({
   return (
     <button
       type="button"
-      className="language-switch"
+      className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-surface/80 px-3 font-mono text-[0.65rem] font-semibold tracking-[0.12em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground"
       aria-label={label}
       onClick={() => changeLanguage(nextLocale)}
     >
-      <GlobeIcon className="size-4" />
+      <GlobeIcon className="size-3.5" />
       <span>{nextLocale.toUpperCase()}</span>
     </button>
   );

@@ -1,8 +1,71 @@
 @import 'tailwindcss';
-@import '../styles/tokens.css';
-@import '../styles/base.css';
-@import '../styles/landing.css';
-@import '../styles/admin.css';
-@import '../styles/operations.css';
-@import '../styles/auth.css';
-@import '../styles/responsive.css';
+
+@theme inline {
+  --color-background: #08090d;
+  --color-foreground: #f4f2eb;
+  --color-card: #0d1017;
+  --color-card-foreground: #f4f2eb;
+  --color-popover: #0d1017;
+  --color-popover-foreground: #f4f2eb;
+  --color-primary: #8795ff;
+  --color-primary-foreground: #070812;
+  --color-secondary: #11151e;
+  --color-secondary-foreground: #f4f2eb;
+  --color-muted: #151923;
+  --color-muted-foreground: #9ea5b7;
+  --color-accent: #cbd0ff;
+  --color-accent-foreground: #08090d;
+  --color-destructive: #ff7d86;
+  --color-border: #252b39;
+  --color-border-strong: #41495e;
+  --color-input: #151923;
+  --color-ring: #8795ff;
+  --color-surface: #0d1017;
+  --color-surface-soft: #11151e;
+  --color-surface-quiet: #0a0c11;
+  --color-signal: #8795ff;
+  --color-signal-soft: #cbd0ff;
+  --color-positive: #7ed9ad;
+  --color-warning: #edc979;
+  --color-danger: #ff7d86;
+  --font-sans:
+    'Helvetica Neue', Helvetica, Arial, ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-mono:
+    'SFMono-Regular', Consolas, 'Liberation Mono', ui-monospace, monospace;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-background);
+  }
+
+  body {
+    min-width: 320px;
+    overflow-x: hidden;
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-primary-foreground);
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

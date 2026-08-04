@@ -1,4 +1,5 @@
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
+import { StatusPill } from '@/components/admin/status-pill';
 import { SocialIcon } from '@/components/social-icons';
 import type { SocialIconName } from '@/components/social-icons';
 import { getIntegrations } from '@/lib/admin';
@@ -19,6 +20,13 @@ const supportedSocialIcons = new Set([
   'linkedin',
 ]);
 
+function integrationTone(status: string) {
+  if (status === 'connected') return 'positive' as const;
+  if (status === 'degraded') return 'warning' as const;
+  if (status === 'disabled') return 'danger' as const;
+  return 'neutral' as const;
+}
+
 export default async function IntegrationsPage() {
   const [{ i18n, lng }, result] = await Promise.all([
     getT('common'),
@@ -26,6 +34,15 @@ export default async function IntegrationsPage() {
   ]);
   const copy = i18n.getResourceBundle(lng, 'common') as Dictionary;
   const page = copy.admin.integrations;
+  const endpoints = [
+    [
+      'REST',
+      page.apiEndpoint,
+      process.env.BACKEND_API_URL ?? 'BACKEND_API_URL',
+    ],
+    ['WS', page.wsEndpoint, process.env.BACKEND_WS_URL ?? 'BACKEND_WS_URL'],
+    ['HOOK', page.webhookEndpoint, '/api/webhooks/[provider]'],
+  ];
 
   return (
     <main>
@@ -35,66 +52,73 @@ export default async function IntegrationsPage() {
         description={page.description}
       />
 
-      <section className="integration-endpoints">
-        <article>
-          <span>REST</span>
-          <div>
-            <strong>{page.apiEndpoint}</strong>
-            <code>{process.env.BACKEND_API_URL ?? 'BACKEND_API_URL'}</code>
-          </div>
-        </article>
-        <article>
-          <span>WS</span>
-          <div>
-            <strong>{page.wsEndpoint}</strong>
-            <code>{process.env.BACKEND_WS_URL ?? 'BACKEND_WS_URL'}</code>
-          </div>
-        </article>
-        <article>
-          <span>HOOK</span>
-          <div>
-            <strong>{page.webhookEndpoint}</strong>
-            <code>/api/webhooks/[provider]</code>
-          </div>
-        </article>
+      <section className="mt-8 grid border-t border-l border-border lg:grid-cols-3">
+        {endpoints.map(([type, label, endpoint]) => (
+          <article
+            key={type}
+            className="grid min-h-28 grid-cols-[3.5rem_minmax(0,1fr)] gap-4 border-r border-b border-border bg-surface/50 p-4"
+          >
+            <span className="font-mono text-[0.58rem] font-semibold text-signal">
+              {type}
+            </span>
+            <div className="min-w-0">
+              <strong className="block text-xs">{label}</strong>
+              <code className="mt-3 block truncate text-[0.62rem] text-muted-foreground">
+                {endpoint}
+              </code>
+            </div>
+          </article>
+        ))}
       </section>
 
-      <p className="integration-secret-hint">{page.secretHint}</p>
+      <p className="border-x border-b border-border px-4 py-3 font-mono text-[0.58rem] leading-5 text-muted-foreground">
+        {page.secretHint}
+      </p>
 
-      <section className="integration-grid">
+      <section className="mt-8 grid border-t border-l border-border lg:grid-cols-2">
         {result.data.map((integration) => (
-          <article key={integration.id}>
-            <div className="integration-card__icon">
+          <article
+            key={integration.id}
+            className="grid min-h-44 grid-cols-[4.5rem_minmax(0,1fr)] border-r border-b border-border bg-surface/40 transition-colors hover:bg-surface-soft"
+          >
+            <div className="grid place-items-center border-r border-border text-foreground">
               {supportedSocialIcons.has(integration.provider) ? (
                 <SocialIcon
                   name={integration.provider as SocialIconName}
                   className="size-7"
                 />
               ) : (
-                <span>{integration.provider.slice(0, 2).toUpperCase()}</span>
+                <span className="font-mono text-xs text-signal">
+                  {integration.provider.slice(0, 2).toUpperCase()}
+                </span>
               )}
             </div>
-            <div className="integration-card__copy">
-              <header>
-                <div>
-                  <h2>{integration.displayName}</h2>
-                  <span>
+            <div className="flex min-w-0 flex-col p-5">
+              <header className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <h2 className="truncate text-lg font-semibold tracking-[-0.035em]">
+                    {integration.displayName}
+                  </h2>
+                  <span className="mt-1 block truncate font-mono text-[0.58rem] text-muted-foreground">
                     {integration.externalAccountId ?? integration.provider}
                   </span>
                 </div>
-                <span className={`integration-status is-${integration.status}`}>
-                  <i />
+                <StatusPill tone={integrationTone(integration.status)} dot>
                   {page[integration.status] ?? integration.status}
-                </span>
+                </StatusPill>
               </header>
-              <div className="integration-card__line" />
-              <footer>
-                <span>
+              <footer className="mt-auto flex items-center justify-between gap-4 border-t border-border pt-4">
+                <span className="font-mono text-[0.56rem] text-muted-foreground">
                   {integration.lastEventAt
                     ? formatRelativeTime(integration.lastEventAt, lng)
                     : page.noEvents}
                 </span>
-                <button type="button">{page.configure} →</button>
+                <button
+                  type="button"
+                  className="font-mono text-[0.58rem] uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
+                >
+                  {page.configure} →
+                </button>
               </footer>
             </div>
           </article>

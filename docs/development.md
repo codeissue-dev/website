@@ -35,3 +35,7 @@ Commit both the schema change and generated files under `drizzle/`. Use `db:push
 ## Integration testing
 
 Normalized adapters call `POST /api/webhooks/{provider}` with `X-Codeissue-Webhook-Secret`. The expected envelope is documented in [architecture.md](architecture.md). Keep provider-specific signatures, retries, media downloads, and OAuth inside adapters or the external backend.
+
+## Styling conventions
+
+Use Tailwind CSS v4 utilities in `className` for component-level styling and responsive behavior. Add shared color or typography tokens in `app/globals.css`; place only genuinely repeated utility groups in `lib/ui/styles.ts`. Do not add new page-specific files under `styles/`—that directory is retained only for package compatibility.

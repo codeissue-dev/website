@@ -26,7 +26,8 @@ The Next.js application owns the public website, Auth.js identity boundary, oper
 
 - `app/` contains transport concerns: pages, layouts, route handlers, and server actions.
 - `features/landing/` owns the server-rendered public composition. Only the scroll progress and reveal observer cross the client boundary.
-- `styles/` owns the shared visual language: design tokens, base rules, landing surfaces, admin shell, operational workflows, authentication, and responsive behavior.
+- `app/globals.css` contains only the Tailwind CSS v4 import, theme tokens, and minimal document-level base rules. Visual composition lives in utility classes close to the React markup.
+- `lib/ui/` centralizes the few repeated Tailwind utility strings used by fields, page frames, reveal motion, and admin controls.
 - `lib/admin/` builds read models for the operations UI. Queries, fallback data, and DTO types are separate modules.
 - `lib/workspaces/` owns tenant discovery and membership checks used by every mutation.
 - `lib/integrations/` validates normalized contracts, parses webhook requests, and persists events transactionally.
@@ -65,3 +66,7 @@ The admin catch-all route validates the requested path, discards browser credent
 All executable tests are TypeScript or TSX. `tests/index.ts` imports the suites and is executed with Node's test runner plus the `tsx` loader. Pure validation and security helpers are tested directly; source-level architecture checks guard framework wiring and module boundaries without requiring a live database.
 
 Production readiness still requires provider adapters, worker queues, observability, rate limiting, secret rotation, media storage, audit logging, and workspace-aware authorization on every new endpoint.
+
+## Interface system
+
+The public site, login flow, and operations workspace share one utility-first visual language: graphite surfaces, warm white type, a cobalt signal color, thin routing lines, and clipped issue artifacts. Feature components own their responsive Tailwind classes; the legacy files under `styles/` remain as empty compatibility placeholders and are not imported.

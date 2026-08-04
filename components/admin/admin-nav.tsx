@@ -40,15 +40,16 @@ function NavIcon({ name }: { name: NavigationItem['icon'] }) {
         <rect x="7" y="7" width="10" height="10" rx="3" />
       </>
     ),
-    events: (
-      <>
-        <path d="M4 12h3l2-6 4 12 2-6h5" />
-      </>
-    ),
+    events: <path d="M4 12h3l2-6 4 12 2-6h5" />,
   };
 
   return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      className="size-4 shrink-0"
+    >
       <g
         stroke="currentColor"
         strokeWidth="1.7"
@@ -65,7 +66,10 @@ export function AdminNav({ items }: { items: NavigationItem[] }) {
   const pathname = usePathname();
 
   return (
-    <nav className="admin-nav" aria-label="Admin navigation">
+    <nav
+      className="flex gap-1 overflow-x-auto border-t border-border p-2 lg:grid lg:overflow-visible lg:border-t-0 lg:p-3"
+      aria-label="Admin navigation"
+    >
       {items.map((item) => {
         const active =
           item.href === '/admin'
@@ -76,7 +80,11 @@ export function AdminNav({ items }: { items: NavigationItem[] }) {
           <Link
             key={item.href}
             href={item.href}
-            className={cn(active && 'is-active')}
+            className={cn(
+              'group relative inline-flex min-h-10 shrink-0 items-center gap-2.5 border border-transparent px-3 text-xs font-semibold text-muted-foreground transition-colors hover:border-border hover:bg-surface-soft hover:text-foreground lg:w-full',
+              active &&
+                'border-border bg-surface-soft text-foreground before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:bg-signal',
+            )}
           >
             <NavIcon name={item.icon} />
             <span>{item.label}</span>

@@ -39,7 +39,8 @@ npm run db:seed      # create/update the initial owner and demo data
 
 - `app/` — routes, layouts, route handlers, and server actions
 - `features/landing/` — server-rendered public sections and a minimal browser interaction boundary
-- `styles/` — shared tokens plus isolated landing, admin shell, operations, auth, and responsive layers
+- `app/globals.css` — Tailwind CSS v4 import and the small shared token layer
+- `lib/ui/` — reusable Tailwind utility strings for layout, fields, and motion
 - `components/` — shared UI and admin components
 - `lib/admin/` — admin read models and fallback data
 - `lib/integrations/` — normalized event contracts and ingestion service
@@ -51,3 +52,9 @@ npm run db:seed      # create/update the initial owner and demo data
 Useful routes: `/`, `/login`, `/admin`, `/admin/inbox`, `/admin/orders`, `/admin/integrations`, `/admin/events`, and `/api/health`.
 
 See [development](docs/development.md), [deployment](docs/deployment.md), [architecture](docs/architecture.md), or the [Russian quick guide](docs/README.ru.md).
+
+## Interface styling
+
+The interface uses Tailwind CSS v4 utilities directly in React components. `app/globals.css` is intentionally small: it imports Tailwind, declares shared theme tokens, and contains only document-level base rules. Repeated utility groups live in `lib/ui/styles.ts`; the files under `styles/` remain compatibility placeholders and are not imported.
+
+The visual system is shared by the landing page, authentication flow, and operations workspace: graphite surfaces, warm white typography, a cobalt signal color, thin routing lines, and clipped issue artifacts. New UI should extend these tokens instead of introducing page-specific CSS.

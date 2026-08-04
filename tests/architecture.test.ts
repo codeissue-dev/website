@@ -10,11 +10,10 @@ test('organizes public UI, admin queries, and integration services by feature', 
     'features/landing/components/section-heading.tsx',
     'features/landing/components/scroll-progress.tsx',
     'components/admin/admin-page-header.tsx',
-    'styles/tokens.css',
-    'styles/landing.css',
-    'styles/admin.css',
-    'styles/operations.css',
-    'styles/auth.css',
+    'components/admin/channel-avatar.tsx',
+    'components/admin/status-pill.tsx',
+    'app/globals.css',
+    'lib/ui/styles.ts',
     'lib/admin/types.ts',
     'lib/admin/fallback-data.ts',
     'lib/admin/queries.ts',
@@ -62,4 +61,22 @@ test('keeps the public page server-rendered and isolates browser behavior', asyn
   assert.doesNotMatch(landingPage, /['"]use client['"]/);
   assert.match(progress, /['"]use client['"]/);
   assert.doesNotMatch(interactions, /pointermove|--pointer-x|--page-scroll/);
+});
+
+test('keeps visual composition in Tailwind utilities instead of feature CSS', async () => {
+  const [globals, landing, admin, auth] = await Promise.all([
+    readText('app/globals.css'),
+    readText('features/landing/components/hero-section.tsx'),
+    readText('app/admin/layout.tsx'),
+    readText('app/login/page.tsx'),
+  ]);
+
+  assert.match(globals, /@import 'tailwindcss'/);
+  assert.doesNotMatch(
+    globals,
+    /styles\/(landing|admin|operations|auth|responsive)\.css/,
+  );
+  assert.match(landing, /className=/);
+  assert.match(admin, /className=/);
+  assert.match(auth, /className=/);
 });
