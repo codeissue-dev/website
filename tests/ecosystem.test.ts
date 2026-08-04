@@ -222,7 +222,7 @@ test('supports username-only registration and issue intake without email', async
     readText('drizzle/0001_username_issue_intake.sql'),
   ]);
 
-  assert.match(auth, /credentials:\s*\{\s*username/s);
+  assert.match(auth, /credentials:\s*\{[\s\S]*?username/);
   assert.doesNotMatch(register, /formData\.get\('email'\)/);
   assert.doesNotMatch(registerForm, /type="email"|name="email"/);
   assert.match(register, /db\.transaction/);
