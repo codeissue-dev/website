@@ -8,7 +8,7 @@ const i18nConfig: I18nConfig = {
   localeInPath: false,
   cookieName: 'codeissue-locale',
   resourceLoader: (language, namespace) =>
-    import(`./app/i18n/locales/${language}/${namespace}.json`),
+    import(`./locales/${language}/${namespace}.json`),
 };
 
 export default i18nConfig;

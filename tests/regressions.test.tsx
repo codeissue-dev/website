@@ -7,7 +7,7 @@ import { readText } from './helpers/project';
 
 test('uses Next Link for the internal admin route', async () => {
   const headerSource = await readText(
-    'features/landing/components/site-header.tsx',
+    'features/landing/components/site-header-actions.tsx',
   );
 
   assert.match(headerSource, /import Link from 'next\/link';/);

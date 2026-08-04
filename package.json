@@ -1,5 +1,5 @@
 {
-  "name": "codeissue-website",
+  "name": "@codeissue/website",
   "private": true,
   "type": "module",
   "lint-staged": {
@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write . --ignore-unknown",
-    "check": "npm run typecheck && npm run lint:check && npm run test",
+    "check": "npm run typecheck && npm run lint:check && npm run test && npm run docs:check && npm run boundaries:check",
     "secret:generate": "node -e \"console.log(require('node:crypto').randomBytes(32).toString('base64url'))\"",
     "dev": "next dev",
     "build": "next build --webpack",
@@ -25,7 +25,9 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx scripts/seed.ts",
     "docker:up": "docker compose up --build",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "docs:check": "node --import tsx scripts/check-docs.ts",
+    "boundaries:check": "node --import tsx scripts/check-boundaries.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",
@@ -55,5 +57,11 @@
     "tsx": "4.22.5",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.66.0"
+  },
+  "version": "0.3.0",
+  "packageManager": "npm@10.9.2",
+  "engines": {
+    "node": ">=22.22.1",
+    "npm": ">=10.9.0"
   }
 }

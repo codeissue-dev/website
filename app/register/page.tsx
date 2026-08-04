@@ -1,10 +1,9 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
-import { AuthShell } from '@/components/auth/auth-shell';
-import { RegisterForm } from '@/components/auth/register-form';
+import { AuthRouteFooter, AuthShell, RegisterForm } from '@/features/auth';
 import type { Dictionary } from '@/lib/i18n';
+import { toLocale } from '@/lib/i18n/locales';
 import { getT } from '@/lib/i18n/server';
 
 export default async function RegisterPage({
@@ -27,18 +26,13 @@ export default async function RegisterPage({
       eyebrow={copy.register.eyebrow}
       title={copy.register.title}
       description={copy.register.description}
+      locale={toLocale(lng)}
       footer={
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="hover:text-foreground">
-            &lt;- {copy.auth.back}
-          </Link>
-          <Link
-            href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="hover:text-foreground"
-          >
-            {copy.register.haveAccount}
-          </Link>
-        </div>
+        <AuthRouteFooter
+          backLabel={copy.auth.back}
+          alternateHref={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+          alternateLabel={copy.register.haveAccount}
+        />
       }
     >
       <RegisterForm copy={copy.register} callbackUrl={callbackUrl} />

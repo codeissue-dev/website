@@ -1,58 +1,164 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { assertFile, readText } from './helpers/project';
+import { assertFile, readJson, readText } from './helpers/project';
 
-test('organizes public UI, admin queries, and integration services by feature', async () => {
+test('organizes interface code by feature and shared responsibility', async () => {
   const files = [
     'features/landing/landing-page.tsx',
-    'features/landing/hooks/use-landing-interactions.ts',
-    'features/landing/components/section-heading.tsx',
-    'features/landing/components/scroll-progress.tsx',
-    'features/landing/components/hero-art.tsx',
-    'components/auth/auth-shell.tsx',
-    'components/issues/new-issue-form.tsx',
-    'components/admin/admin-page-header.tsx',
-    'components/admin/channel-avatar.tsx',
-    'components/admin/status-pill.tsx',
+    'features/landing/index.ts',
+    'features/landing/components/site-header.tsx',
+    'features/landing/components/hero-background.tsx',
+    'features/landing/components/hero-content.tsx',
+    'features/landing/components/mobile-navigation.tsx',
+    'features/landing/components/hero-issue-overview.tsx',
+    'features/landing/components/hero-issue-details.tsx',
+    'features/landing/components/process-visual.tsx',
+    'features/landing/components/process-timeline.tsx',
+    'features/auth/index.ts',
+    'features/auth/auth-shell.tsx',
+    'features/auth/auth-route-footer.tsx',
+    'features/auth/login-form.tsx',
+    'features/auth/register-form.tsx',
+    'features/issues/index.ts',
+    'features/issues/new-issue-screen.tsx',
+    'features/issues/components/issue-product-fields.tsx',
+    'features/issues/components/issue-contact-fields.tsx',
+    'features/issues/new-issue-form.tsx',
+    'features/admin/shell/index.ts',
+    'features/admin/shell/admin-shell.tsx',
+    'features/admin/shell/admin-account.tsx',
+    'features/admin/overview/overview-screen.tsx',
+    'features/admin/inbox/inbox-screen.tsx',
+    'features/admin/orders/orders-screen.tsx',
+    'features/admin/integrations/integrations-screen.tsx',
+    'features/admin/events/events-screen.tsx',
+    'features/admin/events/event-stream.tsx',
+    'components/admin/admin-nav-item.tsx',
+    'components/admin/admin-nav-icon.tsx',
+    'components/forms/form-field.tsx',
+    'components/forms/submit-button.tsx',
+    'components/i18n/locale-select.tsx',
+    'components/layout/brand-link.tsx',
     'components/ui/panel.tsx',
-    'app/globals.css',
-    'lib/ui/styles.ts',
-    'lib/admin/types.ts',
-    'lib/admin/fallback-data.ts',
-    'lib/admin/queries.ts',
-    'lib/admin/overview.ts',
-    'lib/workspaces/service.ts',
-    'lib/integrations/ingest.ts',
-    'lib/backend/client.ts',
+    'lib/config/site.ts',
+    'lib/i18n/locales.ts',
+    'scripts/check-boundaries.ts',
   ];
 
   await Promise.all(files.map(assertFile));
 
-  const compatibilityBarrel = await readText('components/landing-page.tsx');
-  assert.match(compatibilityBarrel, /features\/landing\/landing-page/);
+  const compatibilityFiles = [
+    'components/landing-page.tsx',
+    'components/auth/auth-shell.tsx',
+    'components/auth/register-form.tsx',
+    'components/admin/login-form.tsx',
+    'components/admin/event-stream.tsx',
+    'components/issues/new-issue-form.tsx',
+  ];
+  const sources = await Promise.all(compatibilityFiles.map(readText));
+  for (const source of sources) assert.match(source, /Compatibility export/);
 });
 
-test('keeps route files focused on transport and delegates business logic', async () => {
-  const [webhookRoute, backendRoute, orderAction] = await Promise.all([
-    readText('app/api/webhooks/[provider]/route.ts'),
-    readText('app/api/admin/backend/[...path]/route.ts'),
-    readText('app/admin/orders/actions.ts'),
-  ]);
+test('keeps route files thin and delegates actions and screens to features', async () => {
+  const routeFiles = [
+    'app/admin/page.tsx',
+    'app/admin/inbox/page.tsx',
+    'app/admin/orders/page.tsx',
+    'app/admin/integrations/page.tsx',
+    'app/admin/events/page.tsx',
+    'app/issues/new/page.tsx',
+  ];
 
-  assert.ok(webhookRoute.split('\n').length < 100);
-  assert.ok(backendRoute.split('\n').length < 120);
+  for (const file of routeFiles) {
+    const source = await readText(file);
+    assert.ok(
+      source.split('\n').length < 45,
+      `${file} should stay focused on route composition`,
+    );
+    assert.match(source, /features\//);
+  }
+
+  const [orderExport, orderAction, issueExport, issueAction] =
+    await Promise.all([
+      readText('app/admin/orders/actions.ts'),
+      readText('features/admin/orders/actions.ts'),
+      readText('app/issues/new/actions.ts'),
+      readText('features/issues/actions.ts'),
+    ]);
+  assert.match(orderExport, /features\/admin\/orders\/actions/);
   assert.match(orderAction, /parseOrderDraft/);
   assert.match(orderAction, /requireWorkspaceAccess/);
+  assert.match(issueExport, /features\/issues\/actions/);
+  assert.match(issueAction, /parseIssueDraft/);
 });
 
-test('ships concise development and deployment documentation', async () => {
-  await Promise.all([
-    assertFile('README.md'),
-    assertFile('docs/development.md'),
-    assertFile('docs/deployment.md'),
-    assertFile('docs/README.ru.md'),
+test('prepares the website package for a future monorepo move', async () => {
+  const packageJson = await readJson<{
+    name: string;
+    packageManager: string;
+    engines: Record<string, string>;
+  }>('package.json');
+  const [guide, tsconfig, siteConfig] = await Promise.all([
+    readText('docs/technical/monorepo.md'),
+    readText('tsconfig.json'),
+    readText('lib/config/site.ts'),
   ]);
+
+  assert.equal(packageJson.name, '@codeissue/website');
+  assert.match(packageJson.packageManager, /^npm@/);
+  assert.match(packageJson.engines.node, /22\.22\.1/);
+  assert.match(tsconfig, /"@\/\*"/);
+  assert.match(guide, /apps\/website/);
+  assert.match(guide, /packages\/ui/);
+  assert.match(guide, /boundaries:check/);
+  assert.match(siteConfig, /localeCookie/);
+});
+
+test('separates concise user docs from detailed technical docs in English', async () => {
+  const files = [
+    'README.md',
+    'docs/README.md',
+    'docs/user/README.md',
+    'docs/user/getting-started.md',
+    'docs/user/using-the-website.md',
+    'docs/technical/README.md',
+    'docs/technical/architecture.md',
+    'docs/technical/development.md',
+    'docs/technical/testing.md',
+    'docs/technical/localization.md',
+    'docs/technical/deployment.md',
+    'docs/technical/monorepo.md',
+  ];
+
+  const sources = await Promise.all(files.map(readText));
+  for (const [index, source] of sources.entries()) {
+    assert.doesNotMatch(
+      source,
+      /[А-Яа-яЁё]/,
+      `${files[index]} should be English`,
+    );
+  }
+  assert.ok(sources[0].split('\n').length < 60);
+  assert.match(sources[6], /Feature boundaries/);
+  assert.match(sources[10], /Release sequence/);
+});
+
+test('uses feature public entrypoints and enforces package boundaries', async () => {
+  const [loginPage, adminPage, issuePage, boundaryScript, packageJson] =
+    await Promise.all([
+      readText('app/login/page.tsx'),
+      readText('app/admin/page.tsx'),
+      readText('app/issues/new/page.tsx'),
+      readText('scripts/check-boundaries.ts'),
+      readJson<{ scripts: Record<string, string> }>('package.json'),
+    ]);
+
+  assert.match(loginPage, /@\/features\/auth['"]/);
+  assert.match(adminPage, /@\/features\/admin\/overview['"]/);
+  assert.match(issuePage, /@\/features\/issues['"]/);
+  assert.match(boundaryScript, /must not import from app/);
+  assert.match(packageJson.scripts.check, /boundaries:check/);
 });
 
 test('keeps the public page server-rendered and isolates browser behavior', async () => {
@@ -69,11 +175,11 @@ test('keeps the public page server-rendered and isolates browser behavior', asyn
 });
 
 test('keeps visual composition in Tailwind utilities instead of feature CSS', async () => {
-  const [globals, landing, admin, auth] = await Promise.all([
+  const [globals, landing, adminShell, authShell] = await Promise.all([
     readText('app/globals.css'),
     readText('features/landing/components/hero-section.tsx'),
-    readText('app/admin/layout.tsx'),
-    readText('app/login/page.tsx'),
+    readText('features/admin/shell/admin-shell.tsx'),
+    readText('features/auth/auth-shell.tsx'),
   ]);
 
   assert.match(globals, /@import 'tailwindcss'/);
@@ -82,6 +188,6 @@ test('keeps visual composition in Tailwind utilities instead of feature CSS', as
     /styles\/(landing|admin|operations|auth|responsive)\.css/,
   );
   assert.match(landing, /className=/);
-  assert.match(admin, /className=/);
-  assert.match(auth, /className=/);
+  assert.match(adminShell, /className=/);
+  assert.match(authShell, /className=/);
 });

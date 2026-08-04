@@ -5,7 +5,7 @@
   },
   "language": {
     "label": "Язык",
-    "switchLabel": "Переключить на английский",
+    "switchLabel": "Выберите язык",
     "short": "RU",
     "current": "Русский"
   },

@@ -6,7 +6,7 @@ import { socials } from '../lib/site-data';
 import { readJson, valueShape } from './helpers/project';
 
 const readDictionary = (locale: 'en' | 'ru') =>
-  readJson<Dictionary>(`app/i18n/locales/${locale}/common.json`);
+  readJson<Dictionary>(`locales/${locale}/common.json`);
 
 test('English and Russian dictionaries have the same complete shape', async () => {
   const [english, russian] = await Promise.all([
@@ -15,6 +15,29 @@ test('English and Russian dictionaries have the same complete shape', async () =
   ]);
 
   assert.deepEqual(valueShape(russian), valueShape(english));
+});
+
+test('keeps compatibility dictionaries synchronized with active resources', async () => {
+  const [
+    activeEnglish,
+    activeRussian,
+    appEnglish,
+    appRussian,
+    legacyEnglish,
+    legacyRussian,
+  ] = await Promise.all([
+    readJson<Dictionary>('locales/en/common.json'),
+    readJson<Dictionary>('locales/ru/common.json'),
+    readJson<Dictionary>('app/i18n/locales/en/common.json'),
+    readJson<Dictionary>('app/i18n/locales/ru/common.json'),
+    readJson<Dictionary>('dictionaries/en.json'),
+    readJson<Dictionary>('dictionaries/ru.json'),
+  ]);
+
+  assert.deepEqual(appEnglish, activeEnglish);
+  assert.deepEqual(appRussian, activeRussian);
+  assert.deepEqual(legacyEnglish, activeEnglish);
+  assert.deepEqual(legacyRussian, activeRussian);
 });
 
 test('keeps the approved positioning at the center of both locales', async () => {

@@ -54,13 +54,16 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   const [config, proxy, switcher, legacyRoute] = await Promise.all([
     readText('i18n.config.ts'),
     readText('proxy.ts'),
-    readText('features/landing/components/language-switch.tsx'),
+    readText('components/i18n/locale-select.tsx'),
     readText('app/[lang]/page.tsx'),
   ]);
   assert.match(config, /localeInPath:\s*false/);
   assert.match(config, /next-i18next\/proxy/);
   assert.match(proxy, /createProxy/);
   assert.match(switcher, /useChangeLanguage/);
+  assert.match(switcher, /<select/);
+  assert.match(switcher, /current\.flag/);
+  assert.match(switcher, /option\.flag/);
   assert.match(legacyRoute, /redirect\('\/'\)/);
 });
 
@@ -68,7 +71,7 @@ test('uses Geist, pure black surfaces, readable labels, and a compact hero', asy
   const [globals, layout, hero, landing] = await Promise.all([
     readText('app/globals.css'),
     readText('app/layout.tsx'),
-    readText('features/landing/components/hero-section.tsx'),
+    readText('features/landing/components/hero-content.tsx'),
     readText('features/landing/landing-page.tsx'),
   ]);
 
@@ -97,29 +100,36 @@ test('uses a transparent vector brand asset instead of a boxed bitmap', async ()
 });
 
 test('restores illustration, scroll reveal, pointer parallax, and process interaction', async () => {
-  const [heroArt, process, interactions] = await Promise.all([
-    readText('features/landing/components/hero-art.tsx'),
-    readText('features/landing/components/process-section.tsx'),
-    readText('features/landing/hooks/use-landing-interactions.ts'),
-  ]);
+  const [heroArt, heroOverview, processVisual, processTimeline, interactions] =
+    await Promise.all([
+      readText('features/landing/components/hero-art.tsx'),
+      readText('features/landing/components/hero-issue-overview.tsx'),
+      readText('features/landing/components/process-visual.tsx'),
+      readText('features/landing/components/process-timeline.tsx'),
+      readText('features/landing/hooks/use-landing-interactions.ts'),
+    ]);
 
-  assert.match(heroArt, /next\/image/);
-  assert.match(heroArt, /banner\.png/);
-  assert.match(heroArt, /CodeIssueMark/);
+  assert.match(heroArt, /HeroIssueOverview/);
+  assert.match(heroOverview, /next\/image/);
+  assert.match(heroOverview, /banner\.png/);
+  assert.match(heroOverview, /CodeIssueMark/);
   assert.match(heroArt, /data-parallax/);
-  assert.match(process, /avatar\.png/);
-  assert.match(process, /data-process-step/);
+  assert.match(processVisual, /avatar\.png/);
+  assert.match(processTimeline, /data-process-step/);
   assert.match(interactions, /pointermove/);
   assert.match(interactions, /IntersectionObserver/);
   assert.match(interactions, /--parallax-y/);
 });
 
 test('ships an accessible mobile burger menu', async () => {
-  const header = await readText('features/landing/components/site-header.tsx');
+  const [header, mobile] = await Promise.all([
+    readText('features/landing/components/site-header.tsx'),
+    readText('features/landing/components/mobile-navigation.tsx'),
+  ]);
   assert.match(header, /useState\(false\)/);
   assert.match(header, /aria-expanded=\{menuOpen\}/);
   assert.match(header, /aria-controls="mobile-navigation"/);
-  assert.match(header, /h-\[calc\(100dvh-4rem\)\]/);
+  assert.match(mobile, /h-\[calc\(100dvh-4rem\)\]/);
   assert.match(header, /event\.key === 'Escape'/);
 });
 
@@ -129,15 +139,15 @@ test('uses a restrained Next and Vercel inspired interface system', async () => 
       readText('app/globals.css'),
       readText('features/landing/components/site-header.tsx'),
       readText('features/landing/components/hero-art.tsx'),
-      readText('components/auth/auth-shell.tsx'),
-      readText('app/admin/layout.tsx'),
+      readText('features/auth/auth-shell.tsx'),
+      readText('features/admin/shell/admin-shell.tsx'),
       readText('components/ui/panel.tsx'),
     ]);
 
   assert.match(globals, /--color-primary:\s*#ffffff/i);
   assert.match(globals, /--color-signal:\s*#8b5cf6/i);
   assert.match(header, /backdrop-blur-xl/);
-  assert.match(hero, /codeissue\.dev\/issues\/001/);
+  assert.match(hero, /HeroWorkspaceHeader/);
   assert.match(hero, /rounded-xl border border-white\/15/);
   assert.match(authShell, /max-w-5xl/);
   assert.match(adminLayout, /grid-cols-\[15rem_minmax\(0,1fr\)\]/);

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
-import type { Dictionary, Locale } from '@/lib/i18n';
+import { LandingPage } from '@/features/landing';
+import type { Dictionary } from '@/lib/i18n';
+import { toLocale } from '@/lib/i18n/locales';
 import { getT } from '@/lib/i18n/server';
-import { LandingPage } from '@/components/landing-page';
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t, lng } = await getT('common');
@@ -33,5 +34,5 @@ export default async function Home() {
   const { i18n, lng } = await getT('common');
   const copy = i18n.getResourceBundle(lng, 'common') as Dictionary;
 
-  return <LandingPage locale={lng as Locale} copy={copy} />;
+  return <LandingPage locale={toLocale(lng)} copy={copy} />;
 }

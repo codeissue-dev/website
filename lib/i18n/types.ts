@@ -1,4 +1,5 @@
-import en from '@/app/i18n/locales/en/common.json';
+import en from '@/locales/en/common.json';
+import type { Locale as SupportedLocale } from '@/lib/i18n/locales';
 
 export type Dictionary = typeof en;
-export type Locale = 'en' | 'ru';
+export type Locale = SupportedLocale;

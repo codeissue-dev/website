@@ -63,7 +63,7 @@ test('ships Auth.js, protected admin pages, APIs, and live event monitor', async
   const [auth, guard, stream] = await Promise.all([
     readText('auth.ts'),
     readText('lib/auth/guards.ts'),
-    readText('components/admin/event-stream.tsx'),
+    readText('features/admin/events/use-event-stream.ts'),
   ]);
   assert.doesNotMatch(auth, /DrizzleAdapter/);
   assert.match(auth, /Credentials/);
@@ -215,10 +215,10 @@ test('supports username-only registration and issue intake without email', async
   ] = await Promise.all([
     readText('auth.ts'),
     readText('db/schema.ts'),
-    readText('app/register/actions.ts'),
-    readText('components/auth/register-form.tsx'),
-    readText('app/issues/new/actions.ts'),
-    readText('components/issues/new-issue-form.tsx'),
+    readText('features/auth/actions.ts'),
+    readText('features/auth/register-form.tsx'),
+    readText('features/issues/actions.ts'),
+    readText('features/issues/new-issue-form.tsx'),
     readText('drizzle/0001_username_issue_intake.sql'),
   ]);
 
