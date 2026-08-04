@@ -1,24 +1,156 @@
-# Codeissue landing page
+# Codeissue ecosystem foundation
 
-OLED-first bilingual landing page for Codeissue, built with Next.js App Router, React, Tailwind CSS, and local shadcn-style open-code components.
+Codeissue is no longer structured as a landing-only project. The public OLED website remains at `/`, while the same Next.js application now includes a protected operations workspace for orders, cross-channel conversations, integrations, API traffic, and live backend events.
 
-## Positioning
+## Stack
 
-The site is structured around two statements:
+- Next.js 16 App Router and React 19
+- next-i18next in cookie-based `localeInPath: false` mode
+- Auth.js / NextAuth with credentials and optional GitHub OAuth
+- Drizzle ORM with PostgreSQL 18
+- Docker Compose for the application, database, migrations, and seed data
+- Tailwind CSS 4 and local shadcn-style components
+- Node test runner for architecture, security, i18n, contact, and design checks
 
-- “Every idea starts as an issue. We turn yours into a working product.”
-- “Your idea. Our next issue.”
+## Product surfaces
 
-The visual system treats a product idea as an issue moving through definition, design, implementation, human review, and release. The interface intentionally avoids generic AI imagery and keeps the emphasis on product work, process, and accountability.
+- `/` — bilingual public website without locale prefixes
+- `/login` — localized operator sign-in
+- `/admin` — protected operational overview
+- `/admin/inbox` — unified cross-channel inbox
+- `/admin/orders` — order pipeline
+- `/admin/integrations` — adapters and backend endpoints
+- `/admin/events` — persisted API events and authenticated WebSocket monitor
+- `/api/health` — database readiness check
 
-## Local development
+## Start with Docker
 
 ```bash
+cp .env.example .env
+# Set AUTH_SECRET, ADMIN_PASSWORD, database and integration secrets.
+docker compose up --build
+```
+
+In another terminal, create the initial owner and demo workspace:
+
+```bash
+docker compose --profile tools run --rm seed
+```
+
+Open `http://localhost:3000`. PostgreSQL 18 is exposed on port `5432` by default and stores data in the version-aware `/var/lib/postgresql/18/docker` layout.
+
+## Start without Docker
+
+Use Node.js 22.22.1 or newer and provide a PostgreSQL 18 database:
+
+```bash
+cp .env.example .env
 npm install
+npm run db:migrate
+npm run db:seed
 npm run dev
 ```
 
-Open `http://localhost:3000`. The request is redirected to `/en` or `/ru` using the saved language preference and the browser `Accept-Language` header.
+## Database workflow
+
+```bash
+npm run db:generate   # generate migrations from db/schema.ts
+npm run db:migrate    # apply committed migrations
+npm run db:push       # direct schema sync for local prototyping
+npm run db:studio     # inspect the database
+npm run db:seed       # idempotent owner/workspace/demo seed
+```
+
+The schema includes Auth.js tables plus users and roles, workspaces and memberships, integrations, contacts, conversations, messages, orders, and an append-only integration event log. External IDs have compound uniqueness constraints so webhook retries do not duplicate contacts, threads, or messages.
+
+## Internationalization
+
+The URL never contains a language segment. next-i18next selects `en` or `ru` from the `codeissue-locale` cookie and browser language, then the client switch updates the cookie without moving to another route.
+
+- Configuration: `i18n.config.ts`
+- Server helpers: `lib/i18n/server.ts`
+- Translation bundles: `app/i18n/locales/{en,ru}/common.json`
+- Proxy: `proxy.ts`
+
+The old `/en` and `/ru` files are retained only as compatibility redirects to `/`.
+
+## Authentication and roles
+
+Auth.js is configured in `auth.ts` with the Drizzle adapter. Local operator accounts use scrypt password hashes; optional GitHub OAuth is enabled only when both GitHub environment variables are present.
+
+Admin routes accept `owner`, `admin`, and `operator`. A `viewer` can authenticate but cannot enter the operations workspace. The seed command creates or updates the configured owner account and is safe to run repeatedly.
+
+## Unified message ingestion
+
+Channel adapters send normalized JSON to:
+
+```text
+POST /api/webhooks/{provider}
+X-Codeissue-Webhook-Secret: <INTEGRATION_WEBHOOK_SECRET>
+Content-Type: application/json
+```
+
+Example envelope:
+
+```json
+{
+  "eventId": "telegram:update:4815",
+  "eventType": "message.received",
+  "occurredAt": "2026-08-04T10:30:00.000Z",
+  "contact": {
+    "externalId": "telegram:user:42",
+    "displayName": "Alex",
+    "email": "alex@example.com"
+  },
+  "thread": {
+    "externalId": "telegram:chat:91",
+    "subject": "New product request"
+  },
+  "message": {
+    "externalId": "telegram:message:4815",
+    "direction": "inbound",
+    "authorName": "Alex",
+    "text": "We need a customer operations portal."
+  }
+}
+```
+
+The route validates the envelope, records the raw event, upserts the integration and contact, opens or updates the conversation, inserts the message, and marks the event as processed in one transaction. Non-message events are still stored in the event log for a worker or backend service to process later.
+
+## Backend API and WebSocket bridge
+
+Authenticated operators can call external backend endpoints through:
+
+```text
+/api/admin/backend/[...path]
+```
+
+The browser's authorization header is never forwarded. The server injects the current Codeissue user ID and role, and optionally authenticates to the backend with `BACKEND_API_TOKEN`.
+
+The event console does not expose a permanent WebSocket credential. On connect it calls `POST /api/admin/socket`. That protected route requests a short-lived ticket from `BACKEND_WS_TICKET_PATH`, appends it to `BACKEND_WS_URL`, and returns the one-time connection URL to the browser. The backend ticket endpoint should return:
+
+```json
+{
+  "ticket": "short-lived-signed-ticket",
+  "expiresAt": "2026-08-04T10:31:00.000Z"
+}
+```
+
+Persisted events remain available through `GET /api/admin/events`, so the console still works as an API monitor when the WebSocket backend is offline.
+
+## Environment
+
+See `.env.example`. Important production values:
+
+- `DATABASE_URL`
+- `AUTH_SECRET`
+- `ADMIN_EMAIL` and `ADMIN_PASSWORD` for initial seeding
+- `AUTH_GITHUB_ID` and `AUTH_GITHUB_SECRET` when GitHub OAuth is needed
+- `BACKEND_API_URL` and `BACKEND_API_TOKEN`
+- `BACKEND_WS_URL` and `BACKEND_WS_TICKET_PATH`
+- `INTEGRATION_WEBHOOK_SECRET`
+
+Never expose backend or webhook secrets through `NEXT_PUBLIC_*` variables.
 
 ## Quality checks
 
@@ -30,25 +162,6 @@ npm run prettier:check
 npm run build
 ```
 
-## Internationalization
+The source-level tests can run without the application dependencies installed. Type checking, linting, and the production build require a successful `npm install`.
 
-- English copy: `dictionaries/en.json`
-- Russian copy: `dictionaries/ru.json`
-- Locale helpers: `lib/locales.ts`
-- Locale-aware route: `app/[lang]/page.tsx`
-- Browser-language redirect: `proxy.ts`
-
-The language switch stores a `codeissue-locale` cookie and moves between `/en` and `/ru`. Localized metadata includes canonical and alternate-language URLs.
-
-## Structure
-
-- `components/landing-page.tsx` — page composition and scroll interactions
-- `components/social-icons.tsx` — visual marks for every social destination
-- `components/ui/` — local shadcn-style primitives
-- `lib/site-data.js` — stable links, domains, and contact data
-- `app/globals.css` — OLED visual system and responsive behavior
-- `tests/` — contact, translation, route, icon, and contrast checks
-
-## Motion and accessibility
-
-The page uses intersection-based reveals, a scroll-driven process panel, subtle ticket parallax, and a reading-progress line. Motion is disabled when `prefers-reduced-motion` is enabled. Primary actions use an opaque high-contrast cyan surface rather than transparent glow-only styling.
+More detail is available in [`docs/architecture.md`](docs/architecture.md).

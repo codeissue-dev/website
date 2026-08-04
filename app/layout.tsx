@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import { headers } from 'next/headers';
+import { I18nProvider } from 'next-i18next/client';
 import type { ReactNode } from 'react';
+
+import { getResources, getT } from '@/lib/i18n/server';
 
 import './globals.css';
 
@@ -33,13 +35,16 @@ export const viewport: Viewport = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  const requestHeaders = await headers();
-  const locale =
-    requestHeaders.get('x-codeissue-locale') === 'ru' ? 'ru' : 'en';
+  const { i18n, lng } = await getT('common');
+  const resources = getResources(i18n);
 
   return (
-    <html lang={locale} className="h-full antialiased">
-      <body className="min-h-full">{children}</body>
+    <html lang={lng} className="h-full antialiased">
+      <body className="min-h-full">
+        <I18nProvider language={lng} resources={resources}>
+          {children}
+        </I18nProvider>
+      </body>
     </html>
   );
 }

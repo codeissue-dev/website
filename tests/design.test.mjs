@@ -49,11 +49,27 @@ test('provides a visual brand icon for every social destination', async () => {
   }
 });
 
-test('ships locale routes and request-language routing', async () => {
+test('uses next-i18next in no-locale-path mode', async () => {
+  const [config, proxy, landing, legacyRoute] = await Promise.all([
+    readFile(new URL('../i18n.config.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../proxy.ts', import.meta.url), 'utf8'),
+    readFile(
+      new URL('../components/landing-page.tsx', import.meta.url),
+      'utf8',
+    ),
+    readFile(new URL('../app/[lang]/page.tsx', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(config, /localeInPath:\s*false/);
+  assert.match(config, /next-i18next\/proxy/);
+  assert.match(proxy, /createProxy/);
+  assert.match(landing, /useChangeLanguage/);
+  assert.doesNotMatch(landing, /href={`\/${nextLocale}`}/);
+  assert.match(legacyRoute, /redirect\('\/'\)/);
+
   await Promise.all([
-    access(new URL('../app/[lang]/page.tsx', import.meta.url)),
-    access(new URL('../proxy.ts', import.meta.url)),
-    access(new URL('../dictionaries/en.json', import.meta.url)),
-    access(new URL('../dictionaries/ru.json', import.meta.url)),
+    access(new URL('../app/page.tsx', import.meta.url)),
+    access(new URL('../app/i18n/locales/en/common.json', import.meta.url)),
+    access(new URL('../app/i18n/locales/ru/common.json', import.meta.url)),
   ]);
 });

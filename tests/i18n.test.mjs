@@ -6,20 +6,18 @@ import { socials } from '../lib/site-data.js';
 
 const readDictionary = async (locale) =>
   JSON.parse(
-    await readFile(new URL(`../dictionaries/${locale}.json`, import.meta.url)),
+    await readFile(
+      new URL(`../app/i18n/locales/${locale}/common.json`, import.meta.url),
+    ),
   );
 
 function valueShape(value) {
-  if (Array.isArray(value)) {
-    return value.map(valueShape);
-  }
-
+  if (Array.isArray(value)) return value.map(valueShape);
   if (value && typeof value === 'object') {
     return Object.fromEntries(
       Object.entries(value).map(([key, child]) => [key, valueShape(child)]),
     );
   }
-
   return typeof value;
 }
 
@@ -50,7 +48,7 @@ test('keeps the approved positioning at the center of both locales', async () =>
   assert.match(russian.approach.title, /Ваша идея/);
 });
 
-test('translates copy for every social link', async () => {
+test('translates the ecosystem workspace and every social link', async () => {
   const [english, russian] = await Promise.all([
     readDictionary('en'),
     readDictionary('ru'),
@@ -59,4 +57,8 @@ test('translates copy for every social link', async () => {
 
   assert.deepEqual(Object.keys(english.network.socials).sort(), socialIds);
   assert.deepEqual(Object.keys(russian.network.socials).sort(), socialIds);
+  assert.equal(english.admin.navigation.events, 'Event stream');
+  assert.equal(russian.admin.navigation.events, 'Поток событий');
+  assert.ok(english.auth.title.length > 10);
+  assert.ok(russian.auth.title.length > 10);
 });

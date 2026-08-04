@@ -1,11 +1,10 @@
 'use client';
 
-import Link from 'next/link';
+import { useChangeLanguage } from 'next-i18next/client';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { Dictionary } from '@/lib/i18n';
-import type { Locale } from '@/lib/locales';
+import type { Dictionary, Locale } from '@/lib/i18n';
 import { contactEmail, domains, navigation, socials } from '@/lib/site-data.js';
 import { cn } from '@/lib/utils';
 
@@ -55,23 +54,19 @@ function LanguageSwitch({
   locale: Locale;
   copy: Dictionary;
 }) {
+  const changeLanguage = useChangeLanguage('codeissue-locale');
   const nextLocale: Locale = locale === 'en' ? 'ru' : 'en';
 
-  const rememberLocale = () => {
-    document.cookie = `codeissue-locale=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
-  };
-
   return (
-    <Link
-      href={`/${nextLocale}`}
+    <button
+      type="button"
       className="language-switch"
       aria-label={copy.language.switchLabel}
-      hrefLang={nextLocale}
-      onClick={rememberLocale}
+      onClick={() => changeLanguage(nextLocale)}
     >
       <GlobeIcon className="size-4" />
       <span>{nextLocale.toUpperCase()}</span>
-    </Link>
+    </button>
   );
 }
 
@@ -347,6 +342,16 @@ export function LandingPage({
 
         <div className="site-header__actions">
           <LanguageSwitch locale={locale} copy={copy} />
+          <a
+            href="/admin"
+            className={buttonVariants({
+              variant: 'secondary',
+              size: 'sm',
+              className: 'header-workspace',
+            })}
+          >
+            {copy.nav.workspace}
+          </a>
           <a
             href={`mailto:${contactEmail}`}
             className={buttonVariants({
