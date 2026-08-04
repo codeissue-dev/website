@@ -1,4 +1,5 @@
 import { createOrder } from '@/app/admin/orders/actions';
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { getOrders } from '@/lib/admin';
 import { formatMoney, formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
@@ -14,52 +15,52 @@ export default async function OrdersPage() {
 
   return (
     <main>
-      <div className="admin-page-heading">
-        <div>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-        <details className="new-order">
-          <summary className="admin-primary-action">+ {page.new}</summary>
-          <form action={createOrder}>
-            <label>
-              <span>{page.titleLabel}</span>
-              <input
-                type="text"
-                name="title"
-                minLength={3}
-                maxLength={200}
-                placeholder={page.titlePlaceholder}
-                required
-              />
-            </label>
-            <div>
+      <AdminPageHeader
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
+        action={
+          <details className="new-order">
+            <summary className="admin-primary-action">+ {page.new}</summary>
+            <form action={createOrder}>
               <label>
-                <span>{page.valueLabel}</span>
+                <span>{page.titleLabel}</span>
                 <input
-                  type="number"
-                  name="value"
-                  min="0"
-                  max="100000000"
-                  step="0.01"
-                  defaultValue="0"
+                  type="text"
+                  name="title"
+                  minLength={3}
+                  maxLength={200}
+                  placeholder={page.titlePlaceholder}
                   required
                 />
               </label>
-              <label>
-                <span>{page.currencyLabel}</span>
-                <select name="currency" defaultValue="USD">
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="RUB">RUB</option>
-                </select>
-              </label>
-            </div>
-            <button type="submit">{page.create}</button>
-          </form>
-        </details>
-      </div>
+              <div>
+                <label>
+                  <span>{page.valueLabel}</span>
+                  <input
+                    type="number"
+                    name="value"
+                    min="0"
+                    max="100000000"
+                    step="0.01"
+                    defaultValue="0"
+                    required
+                  />
+                </label>
+                <label>
+                  <span>{page.currencyLabel}</span>
+                  <select name="currency" defaultValue="USD">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="RUB">RUB</option>
+                  </select>
+                </label>
+              </div>
+              <button type="submit">{page.create}</button>
+            </form>
+          </details>
+        }
+      />
 
       <section className="orders-board">
         <div className="orders-board__head">

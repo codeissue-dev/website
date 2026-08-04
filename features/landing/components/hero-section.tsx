@@ -1,5 +1,4 @@
 import { ArrowDownIcon, ArrowUpRightIcon } from '@/components/icons';
-import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import type { Dictionary } from '@/lib/i18n';
 import { contactEmail, domains } from '@/lib/site-data';
@@ -12,10 +11,10 @@ export function HeroSection({ copy }: { copy: Dictionary }) {
     <section id="top" className="hero-section">
       <div className="section-frame hero-grid">
         <div className="hero-copy">
-          <Badge className="section-label" data-reveal>
-            <span className="section-label__dot" aria-hidden="true" />
-            {copy.hero.eyebrow}
-          </Badge>
+          <p className="hero-kicker" data-reveal>
+            <span>Codeissue / 2026</span>
+            <span>{copy.hero.eyebrow}</span>
+          </p>
 
           <h1 className="hero-title">
             <span data-reveal>{copy.hero.lineOne}</span>
@@ -24,58 +23,41 @@ export function HeroSection({ copy }: { copy: Dictionary }) {
             </span>
           </h1>
 
-          <p className="hero-description" data-reveal>
-            {copy.hero.description}
-          </p>
-
-          <div className="hero-actions" data-reveal>
-            <a
-              href={`mailto:${contactEmail}`}
-              className={buttonVariants({
-                size: 'lg',
-                className: 'primary-cta',
-              })}
-            >
-              {copy.hero.primary}
-              <ArrowUpRightIcon className="size-4" />
-            </a>
-            <a
-              href="#approach"
-              className={buttonVariants({
-                variant: 'secondary',
-                size: 'lg',
-                className: 'secondary-cta',
-              })}
-            >
-              {copy.hero.secondary}
-              <ArrowDownIcon className="size-4" />
-            </a>
-          </div>
-
-          <div className="hero-domains" data-reveal>
-            {domains.map((domain) => (
-              <ExternalLink key={domain.href} href={domain.href}>
-                <span aria-hidden="true" />
-                {domain.label}
-              </ExternalLink>
-            ))}
+          <div className="hero-summary" data-reveal>
+            <p>{copy.hero.description}</p>
+            <div className="hero-actions">
+              <a
+                href={`mailto:${contactEmail}`}
+                className={buttonVariants({ size: 'lg' })}
+              >
+                {copy.hero.primary}
+                <ArrowUpRightIcon className="size-4" />
+              </a>
+              <a
+                href="#process"
+                className={buttonVariants({ variant: 'secondary', size: 'lg' })}
+              >
+                {copy.hero.secondary}
+                <ArrowDownIcon className="size-4" />
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="hero-ticket-wrap" data-reveal>
-          <div className="hero-ticket-backdrop" aria-hidden="true">
-            <span>IDEA</span>
-            <span>SYSTEM</span>
-            <span>PRODUCT</span>
-          </div>
-          <IssueTicket copy={copy.hero.ticket} />
-        </div>
+        <IssueTicket copy={copy.hero.ticket} />
       </div>
 
-      <a href="#approach" className="scroll-cue">
+      <div className="section-frame hero-footnote" data-reveal>
         <span>{copy.hero.scroll}</span>
-        <ArrowDownIcon className="size-4" />
-      </a>
+        <div className="hero-domains">
+          {domains.map((domain) => (
+            <ExternalLink key={domain.href} href={domain.href}>
+              {domain.label}
+              <ArrowUpRightIcon className="size-4" />
+            </ExternalLink>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

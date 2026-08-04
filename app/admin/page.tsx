@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ArrowRightIcon } from '@/components/icons';
 import { getOverview } from '@/lib/admin';
 import { formatMoney, formatRelativeTime } from '@/lib/format';
@@ -38,17 +39,17 @@ export default async function AdminOverviewPage() {
 
   return (
     <main>
-      <div className="admin-page-heading">
-        <div>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-        <span className="admin-data-mode">
-          <i className={overview.fallback ? 'is-demo' : 'is-live'} />
-          {overview.fallback ? copy.admin.common.demoData : page.liveData}
-        </span>
-      </div>
+      <AdminPageHeader
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
+        action={
+          <span className="admin-data-mode">
+            <i className={overview.fallback ? 'is-demo' : 'is-live'} />
+            {overview.fallback ? copy.admin.common.demoData : page.liveData}
+          </span>
+        }
+      />
 
       <section className="admin-metrics" aria-label={page.metricsLabel}>
         {metricItems.map((metric) => (

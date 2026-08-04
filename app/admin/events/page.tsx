@@ -1,3 +1,4 @@
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { EventStream } from '@/components/admin/event-stream';
 import { getEvents } from '@/lib/admin';
 import type { Dictionary } from '@/lib/i18n';
@@ -13,13 +14,11 @@ export default async function EventsPage() {
 
   return (
     <main>
-      <div className="admin-page-heading">
-        <div>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-      </div>
+      <AdminPageHeader
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
+      />
 
       <EventStream copy={page} initialEvents={result.data} />
     </main>

@@ -1,4 +1,5 @@
 import { queueReply } from '@/app/admin/inbox/actions';
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { getConversations } from '@/lib/admin';
 import { formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
@@ -15,13 +16,12 @@ export default async function InboxPage() {
 
   return (
     <main>
-      <div className="admin-page-heading admin-page-heading--compact">
-        <div>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-      </div>
+      <AdminPageHeader
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
+        compact
+      />
 
       <section className="inbox-workspace">
         <aside className="inbox-list-pane">

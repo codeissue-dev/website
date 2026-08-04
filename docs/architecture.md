@@ -25,14 +25,15 @@ The Next.js application owns the public website, Auth.js identity boundary, oper
 ## Code boundaries
 
 - `app/` contains transport concerns: pages, layouts, route handlers, and server actions.
-- `features/landing/` owns the public landing composition, sections, and scroll/pointer interactions.
+- `features/landing/` owns the server-rendered public composition. Only the scroll progress and reveal observer cross the client boundary.
+- `styles/` owns the shared visual language: design tokens, base rules, landing surfaces, admin shell, operational workflows, authentication, and responsive behavior.
 - `lib/admin/` builds read models for the operations UI. Queries, fallback data, and DTO types are separate modules.
 - `lib/workspaces/` owns tenant discovery and membership checks used by every mutation.
 - `lib/integrations/` validates normalized contracts, parses webhook requests, and persists events transactionally.
 - `lib/backend/` constructs validated backend URLs and trusted server-to-server headers.
 - `db/` defines Drizzle schema and connectivity; `drizzle/` contains committed migrations.
 
-Compatibility barrels remain at older import paths, but new code should import the domain module directly.
+Compatibility barrels remain at older import paths, but new code should import the domain module directly. Shared public and admin headings are componentized so page files stay focused on composition and data.
 
 ## Tenant and data model
 

@@ -1,0 +1,466 @@
+@media (max-width: 1180px) {
+  .site-header__inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(330px, 0.7fr);
+  }
+
+  .hero-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .social-directory__item {
+    grid-template-columns: 44px minmax(110px, 0.5fr) minmax(0, 1fr);
+  }
+
+  .social-directory__open {
+    grid-column: 2 / -1;
+  }
+
+  .orders-board {
+    overflow-x: auto;
+  }
+
+  .orders-board__head,
+  .orders-board > article {
+    min-width: 900px;
+  }
+
+  .admin-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .integration-endpoints {
+    grid-template-columns: 1fr;
+  }
+
+  .event-log > article {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .event-log pre {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 940px) {
+  .section-frame,
+  .site-header__inner {
+    width: min(calc(100% - 2rem), var(--section-width));
+  }
+
+  .hero-grid {
+    display: block;
+    min-height: auto;
+  }
+
+  .hero-copy {
+    min-height: 78svh;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .issue-ticket {
+    min-height: 620px;
+  }
+
+  .section-heading {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .principle-row,
+  .process-row,
+  .service-row {
+    grid-template-columns: 60px minmax(0, 1fr);
+  }
+
+  .principle-row p,
+  .process-row__deliverables,
+  .service-row p {
+    grid-column: 2;
+  }
+
+  .service-row > svg {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .social-directory {
+    grid-template-columns: 1fr;
+  }
+
+  .social-directory__item:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .cta-panel {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .cta-panel__actions {
+    grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .admin-shell {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .admin-brand {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .admin-brand > span:last-child,
+  .admin-nav a span,
+  .admin-profile > div,
+  .admin-signout,
+  .admin-topbar__status small {
+    display: none;
+  }
+
+  .admin-nav a {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .admin-sidebar__footer {
+    justify-items: center;
+  }
+
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-panel--wide {
+    grid-row: auto;
+  }
+
+  .inbox-workspace {
+    grid-template-columns: 310px minmax(450px, 1fr);
+    overflow-x: auto;
+  }
+
+  .integration-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-page {
+    grid-template-columns: 0.7fr minmax(390px, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .section-frame,
+  .site-header__inner {
+    width: min(calc(100% - 1.25rem), var(--section-width));
+  }
+
+  .section-pad {
+    padding-block: 5rem;
+  }
+
+  .site-header__inner {
+    min-height: 64px;
+  }
+
+  .brand__copy small,
+  .header-workspace {
+    display: none;
+  }
+
+  .language-switch {
+    min-width: 36px;
+    padding-inline: 0.45rem;
+  }
+
+  .language-switch svg {
+    display: none;
+  }
+
+  .header-contact {
+    padding-inline: 0.75rem !important;
+  }
+
+  .hero-section {
+    padding-top: 64px;
+  }
+
+  .hero-copy {
+    min-height: auto;
+    padding: 1.5rem 1.25rem 2.5rem;
+  }
+
+  .hero-kicker {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .hero-title {
+    margin-top: 5rem;
+    font-size: clamp(3.15rem, 15vw, 5.4rem);
+  }
+
+  .hero-summary {
+    margin-top: 4rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions a {
+    width: 100%;
+  }
+
+  .issue-ticket {
+    min-height: 560px;
+    padding: 1.25rem;
+  }
+
+  .issue-ticket__statement {
+    margin-top: 4rem;
+  }
+
+  .issue-ticket__stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.4rem;
+  }
+
+  .issue-ticket__stages li:nth-child(2)::after {
+    display: none;
+  }
+
+  .hero-footnote {
+    min-height: 88px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-domains {
+    flex-wrap: wrap;
+    gap: 0.7rem 1rem;
+  }
+
+  .section-heading__title h2 {
+    font-size: clamp(2.75rem, 13vw, 4.5rem);
+  }
+
+  .principle-row,
+  .process-row,
+  .service-row {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .social-directory__item {
+    min-height: 0;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    padding: 1rem 0;
+  }
+
+  .social-directory__item > p {
+    grid-column: 2 / -1;
+  }
+
+  .social-directory__open {
+    grid-column: auto;
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .cta-panel {
+    display: block;
+    padding: 2rem 1.25rem;
+  }
+
+  .cta-panel__index {
+    margin-bottom: 4rem;
+  }
+
+  .cta-panel h2 {
+    font-size: clamp(3rem, 14vw, 5rem);
+  }
+
+  .cta-panel__actions {
+    display: grid;
+    margin-top: 2rem;
+  }
+
+  .site-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-block: 2rem;
+  }
+
+  .site-footer > .section-frame > p {
+    text-align: left;
+  }
+
+  .site-footer__links {
+    align-items: flex-start;
+  }
+
+  .admin-shell {
+    display: block;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 50;
+    width: 100%;
+    height: 64px;
+    border-top: 1px solid var(--border);
+    border-right: 0;
+  }
+
+  .admin-brand,
+  .admin-sidebar__footer {
+    display: none;
+  }
+
+  .admin-nav {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0;
+  }
+
+  .admin-nav a {
+    min-height: 64px;
+    border-top: 2px solid transparent;
+    border-left: 0;
+  }
+
+  .admin-nav a:hover,
+  .admin-nav a.is-active {
+    border-top-color: var(--primary);
+    border-left-color: transparent;
+  }
+
+  .admin-main {
+    padding-bottom: 64px;
+  }
+
+  .admin-topbar {
+    min-height: 64px;
+    padding-inline: 1rem;
+  }
+
+  .admin-topbar__status small,
+  .admin-topbar__actions > a {
+    display: none;
+  }
+
+  .admin-content {
+    padding: 1.25rem;
+  }
+
+  .admin-page-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-page-heading h1 {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+
+  .admin-data-mode {
+    align-self: flex-start;
+  }
+
+  .admin-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-metrics article {
+    min-height: 140px;
+  }
+
+  .admin-dashboard-grid {
+    display: block;
+    border: 0;
+    background: transparent;
+  }
+
+  .admin-panel {
+    margin-top: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  .inbox-workspace {
+    display: block;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .inbox-list-pane {
+    border-right: 0;
+  }
+
+  .inbox-thread-pane {
+    min-height: 650px;
+    border-top: 1px solid var(--border);
+  }
+
+  .integration-endpoints article {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .event-console__toolbar,
+  .event-console__hint {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .event-console__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .event-log > article {
+    grid-template-columns: 1fr;
+  }
+
+  .event-log pre {
+    grid-column: auto;
+  }
+
+  .login-page {
+    display: block;
+  }
+
+  .login-page__grid {
+    display: none;
+  }
+
+  .login-card {
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  .login-card__brand {
+    margin-bottom: 4rem;
+  }
+
+  .login-card__footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,19 +1,21 @@
 import { ArrowRightIcon, CheckIcon } from '@/components/icons';
 import type { Dictionary } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
 
 export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
   return (
-    <div className="issue-ticket" aria-label={copy.title}>
-      <div className="issue-ticket__topline">
+    <aside className="issue-ticket" aria-label={copy.title} data-reveal>
+      <header className="issue-ticket__topline">
         <span className="issue-ticket__id">{copy.id}</span>
         <span className="issue-ticket__status">
           <i aria-hidden="true" />
           {copy.status}
         </span>
-      </div>
+      </header>
 
-      <h2>{copy.title}</h2>
+      <div className="issue-ticket__statement">
+        <span>Brief</span>
+        <h2>{copy.title}</h2>
+      </div>
 
       <div className="issue-ticket__io">
         <div>
@@ -29,13 +31,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
 
       <ol className="issue-ticket__stages">
         {copy.stages.map((stage, index) => (
-          <li
-            key={stage}
-            className={cn(
-              index === 0 && 'is-complete',
-              index === 1 && 'is-current',
-            )}
-          >
+          <li key={stage}>
             <span className="issue-ticket__stage-mark">
               {index === 0 ? <CheckIcon className="size-3.5" /> : index + 1}
             </span>
@@ -44,7 +40,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
         ))}
       </ol>
 
-      <div className="issue-ticket__footer">
+      <footer className="issue-ticket__footer">
         <div>
           <span>{copy.ownerLabel}</span>
           <strong>{copy.ownerValue}</strong>
@@ -53,7 +49,7 @@ export function IssueTicket({ copy }: { copy: Dictionary['hero']['ticket'] }) {
           <span>{copy.reviewLabel}</span>
           <strong>{copy.reviewValue}</strong>
         </div>
-      </div>
-    </div>
+      </footer>
+    </aside>
   );
 }

@@ -1,3 +1,4 @@
+import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { SocialIcon } from '@/components/social-icons';
 import type { SocialIconName } from '@/components/social-icons';
 import { getIntegrations } from '@/lib/admin';
@@ -28,13 +29,11 @@ export default async function IntegrationsPage() {
 
   return (
     <main>
-      <div className="admin-page-heading">
-        <div>
-          <p className="eyebrow">{page.eyebrow}</p>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-      </div>
+      <AdminPageHeader
+        eyebrow={page.eyebrow}
+        title={page.title}
+        description={page.description}
+      />
 
       <section className="integration-endpoints">
         <article>

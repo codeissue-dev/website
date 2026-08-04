@@ -38,7 +38,8 @@ npm run db:seed      # create/update the initial owner and demo data
 ## Project boundaries
 
 - `app/` — routes, layouts, route handlers, and server actions
-- `features/landing/` — public landing UI and browser interactions
+- `features/landing/` — server-rendered public sections and a minimal browser interaction boundary
+- `styles/` — shared tokens plus isolated landing, admin shell, operations, auth, and responsive layers
 - `components/` — shared UI and admin components
 - `lib/admin/` — admin read models and fallback data
 - `lib/integrations/` — normalized event contracts and ingestion service

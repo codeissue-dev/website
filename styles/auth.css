@@ -1,0 +1,147 @@
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.62fr);
+  background: var(--background);
+}
+
+.login-page__grid {
+  position: relative;
+  border-right: 1px solid var(--border);
+  background:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px),
+    var(--background);
+  background-size: 72px 72px;
+}
+
+.login-page__grid::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(72%, 660px);
+  content: 'CODEISSUE / OPERATIONS';
+  color: var(--foreground);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 650;
+  letter-spacing: -0.07em;
+  line-height: 0.85;
+  transform: translate(-50%, -50%);
+}
+
+.login-page__grid::after {
+  position: absolute;
+  right: 2rem;
+  bottom: 2rem;
+  content: 'AUTHENTICATED WORKSPACE — 2026';
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+.login-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 6rem);
+  background: var(--surface-raised);
+}
+
+.login-card__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.login-card__brand .brand__mark {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--border);
+  color: var(--primary);
+}
+
+.login-card h1 {
+  max-width: 10ch;
+  margin: 0.9rem 0 0;
+  font-size: clamp(2.7rem, 5vw, 4.8rem);
+  font-weight: 620;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.login-card__description {
+  max-width: 48ch;
+  margin: 1.2rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+.login-form input {
+  height: 48px;
+}
+
+.login-submit,
+.login-oauth {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.4rem;
+}
+
+.login-oauth {
+  border-color: var(--border-strong);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-block: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.6rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+  height: 1px;
+  flex: 1;
+  content: '';
+  background: var(--border);
+}
+
+.login-error {
+  margin: 0;
+  color: var(--destructive);
+  font-size: 0.68rem;
+}
+
+.login-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 0.6rem;
+}
+
+.login-card__footer a:hover {
+  color: var(--foreground);
+}

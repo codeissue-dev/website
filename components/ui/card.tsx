@@ -9,7 +9,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-[1.25rem] border border-white/10 bg-card text-card-foreground shadow-2xl shadow-black/30',
+        'border border-border bg-card text-card-foreground',
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn('text-xl font-medium tracking-[-0.03em]', className)}
+      className={cn('text-xl font-semibold tracking-[-0.03em]', className)}
       {...props}
     />
   );

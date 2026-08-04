@@ -16,46 +16,46 @@ export function SiteHeader({
 }) {
   return (
     <header className="site-header">
-      <a href="#top" className="brand" aria-label="Codeissue">
-        <span className="brand__mark">
-          <CodeIssueMark className="size-5" />
-        </span>
-        <span className="brand__copy">
-          <strong>Codeissue</strong>
-          <small>{copy.brand.descriptor}</small>
-        </span>
-      </a>
-
-      <nav className="site-nav" aria-label="Primary navigation">
-        {navigation.map((item) => (
-          <a key={item.id} href={item.href}>
-            {copy.nav[item.id]}
-          </a>
-        ))}
-      </nav>
-
-      <div className="site-header__actions">
-        <LanguageSwitch locale={locale} copy={copy} />
-        <Link
-          href="/admin"
-          className={buttonVariants({
-            variant: 'secondary',
-            size: 'sm',
-            className: 'header-workspace',
-          })}
-        >
-          {copy.nav.workspace}
-        </Link>
-        <a
-          href={`mailto:${contactEmail}`}
-          className={buttonVariants({
-            size: 'sm',
-            className: 'header-contact',
-          })}
-        >
-          {copy.nav.contact}
-          <ArrowUpRightIcon className="size-4" />
+      <div className="site-header__inner">
+        <a href="#top" className="brand" aria-label="Codeissue">
+          <CodeIssueMark className="brand__mark size-5" />
+          <span className="brand__copy">
+            <strong>Codeissue</strong>
+            <small>{copy.brand.descriptor}</small>
+          </span>
         </a>
+
+        <nav className="site-nav" aria-label="Primary navigation">
+          {navigation.map((item) => (
+            <a key={item.id} href={item.href}>
+              {copy.nav[item.id]}
+            </a>
+          ))}
+        </nav>
+
+        <div className="site-header__actions">
+          <LanguageSwitch locale={locale} label={copy.language.switchLabel} />
+          <Link
+            href="/admin"
+            className={buttonVariants({
+              variant: 'ghost',
+              size: 'sm',
+              className: 'header-workspace',
+            })}
+          >
+            {copy.nav.workspace}
+          </Link>
+          <a
+            href={`mailto:${contactEmail}`}
+            className={buttonVariants({
+              size: 'sm',
+              className: 'header-contact',
+            })}
+          >
+            {copy.nav.contact}
+            <ArrowUpRightIcon className="size-4" />
+          </a>
+        </div>
       </div>
     </header>
   );

@@ -31,8 +31,8 @@ function contrastRatio(first: string, second: string) {
   return (brighter + 0.05) / (darker + 0.05);
 }
 
-test('primary action colors keep strong OLED contrast', async () => {
-  const css = await readText('app/globals.css');
+test('primary action colors keep strong editorial contrast', async () => {
+  const css = await readText('styles/tokens.css');
   const primary = css.match(/--primary:\s*(#[0-9a-f]{6})/i)?.[1];
   const foreground = css.match(/--primary-foreground:\s*(#[0-9a-f]{6})/i)?.[1];
 
@@ -65,4 +65,20 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   assert.match(proxy, /createProxy/);
   assert.match(switcher, /useChangeLanguage/);
   assert.match(legacyRoute, /redirect\('\/'\)/);
+});
+
+test('uses a restrained single-accent design system', async () => {
+  const [tokens, landing, globals] = await Promise.all([
+    readText('styles/tokens.css'),
+    readText('styles/landing.css'),
+    readText('app/globals.css'),
+  ]);
+
+  assert.match(tokens, /--primary:\s*#ff6a45/i);
+  assert.match(tokens, /--radius:\s*2px/);
+  assert.doesNotMatch(landing, /radial-gradient|box-shadow:\s*0\s+0/);
+  assert.match(globals, /styles\/landing\.css/);
+  assert.match(globals, /styles\/admin\.css/);
+  assert.match(globals, /styles\/operations\.css/);
+  assert.match(globals, /styles\/auth\.css/);
 });

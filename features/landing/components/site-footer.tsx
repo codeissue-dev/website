@@ -9,9 +9,7 @@ export function SiteFooter({ copy }: { copy: Dictionary }) {
     <footer className="site-footer">
       <div className="section-frame site-footer__grid">
         <div className="site-footer__brand">
-          <span className="brand__mark">
-            <CodeIssueMark className="size-5" />
-          </span>
+          <CodeIssueMark className="size-5" />
           <div>
             <strong>Codeissue</strong>
             <span>{copy.footer.rights}</span>

@@ -7,6 +7,14 @@ test('organizes public UI, admin queries, and integration services by feature', 
   const files = [
     'features/landing/landing-page.tsx',
     'features/landing/hooks/use-landing-interactions.ts',
+    'features/landing/components/section-heading.tsx',
+    'features/landing/components/scroll-progress.tsx',
+    'components/admin/admin-page-header.tsx',
+    'styles/tokens.css',
+    'styles/landing.css',
+    'styles/admin.css',
+    'styles/operations.css',
+    'styles/auth.css',
     'lib/admin/types.ts',
     'lib/admin/fallback-data.ts',
     'lib/admin/queries.ts',
@@ -42,4 +50,16 @@ test('ships concise development and deployment documentation', async () => {
     assertFile('docs/deployment.md'),
     assertFile('docs/README.ru.md'),
   ]);
+});
+
+test('keeps the public page server-rendered and isolates browser behavior', async () => {
+  const [landingPage, progress, interactions] = await Promise.all([
+    readText('features/landing/landing-page.tsx'),
+    readText('features/landing/components/scroll-progress.tsx'),
+    readText('features/landing/hooks/use-landing-interactions.ts'),
+  ]);
+
+  assert.doesNotMatch(landingPage, /['"]use client['"]/);
+  assert.match(progress, /['"]use client['"]/);
+  assert.doesNotMatch(interactions, /pointermove|--pointer-x|--page-scroll/);
 });

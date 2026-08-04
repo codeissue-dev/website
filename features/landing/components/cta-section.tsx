@@ -10,6 +10,7 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
   return (
     <section className="cta-section section-pad">
       <div className="section-frame cta-panel" data-reveal>
+        <p className="cta-panel__index">CI / CONTACT</p>
         <div>
           <p className="eyebrow">{copy.cta.eyebrow}</p>
           <h2>{copy.cta.title}</h2>
@@ -18,10 +19,7 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
         <div className="cta-panel__actions">
           <a
             href={`mailto:${contactEmail}`}
-            className={buttonVariants({
-              size: 'lg',
-              className: 'primary-cta',
-            })}
+            className={buttonVariants({ size: 'lg', className: 'cta-primary' })}
           >
             <MailIcon className="size-4" />
             {copy.cta.primary}
@@ -29,9 +27,9 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
           <ExternalLink
             href="https://discord.gg/uckqayVRmy"
             className={buttonVariants({
-              variant: 'secondary',
+              variant: 'outline',
               size: 'lg',
-              className: 'secondary-cta',
+              className: 'cta-secondary',
             })}
           >
             <SocialIcon name="discord" className="size-4" />

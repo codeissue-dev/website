@@ -1,33 +1,25 @@
-import type { CSSProperties } from 'react';
-
+import { ArrowUpRightIcon } from '@/components/icons';
 import type { Dictionary } from '@/lib/i18n';
+
+import { SectionHeading } from './section-heading';
 
 export function ServicesSection({ copy }: { copy: Dictionary }) {
   return (
     <section className="services-section section-pad">
       <div className="section-frame">
-        <div className="section-heading services-heading">
-          <div>
-            <p className="eyebrow" data-reveal>
-              {copy.services.eyebrow}
-            </p>
-            <h2 data-reveal>{copy.services.title}</h2>
-          </div>
-          <p data-reveal>{copy.services.description}</p>
-        </div>
+        <SectionHeading
+          eyebrow={copy.services.eyebrow}
+          title={copy.services.title}
+          description={copy.services.description}
+        />
 
-        <div className="services-grid">
-          {copy.services.items.map((item, index) => (
-            <article
-              key={item.number}
-              className="service-card"
-              data-reveal
-              style={{ '--reveal-delay': `${index * 70}ms` } as CSSProperties}
-            >
+        <div className="services-index">
+          {copy.services.items.map((item) => (
+            <article key={item.number} className="service-row" data-reveal>
               <span>{item.number}</span>
               <h3>{item.title}</h3>
               <p>{item.copy}</p>
-              <div className="service-card__line" aria-hidden="true" />
+              <ArrowUpRightIcon className="size-5" />
             </article>
           ))}
         </div>
