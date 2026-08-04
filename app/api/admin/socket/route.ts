@@ -1,15 +1,12 @@
 import { getAdminSessionForApi } from '@/lib/auth/guards';
+import {
+  SOCKET_TICKET_TIMEOUT_MS,
+  buildBackendIdentityHeaders,
+  buildSocketTicketTarget,
+  buildSocketUrl,
+} from '@/lib/backend/client';
 
 export const dynamic = 'force-dynamic';
-
-function isWebSocketUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === 'ws:' || url.protocol === 'wss:';
-  } catch {
-    return false;
-  }
-}
 
 export async function POST() {
   const session = await getAdminSessionForApi();
@@ -17,50 +14,30 @@ export async function POST() {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const apiBaseUrl = process.env.BACKEND_API_URL;
-  const configuredSocketUrl = process.env.BACKEND_WS_URL;
-  if (!apiBaseUrl || !configuredSocketUrl) {
-    return Response.json(
-      { error: 'Backend WebSocket bridge is not configured.' },
-      { status: 503 },
-    );
-  }
-
-  if (!isWebSocketUrl(configuredSocketUrl)) {
-    return Response.json(
-      { error: 'BACKEND_WS_URL must use ws:// or wss://.' },
-      { status: 503 },
-    );
-  }
-
-  const ticketPath = process.env.BACKEND_WS_TICKET_PATH ?? '/ws/ticket';
   let ticketUrl: URL;
   try {
-    const base = new URL(apiBaseUrl);
-    if (base.protocol !== 'http:' && base.protocol !== 'https:') {
-      throw new Error('Unsupported backend protocol.');
-    }
-    ticketUrl = new URL(ticketPath, `${base.toString().replace(/\/$/, '')}/`);
-  } catch {
+    ticketUrl = buildSocketTicketTarget();
+    buildSocketUrl('configuration-check');
+  } catch (error) {
     return Response.json(
-      { error: 'Backend ticket endpoint is invalid.' },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Backend WebSocket bridge is not configured.',
+      },
       { status: 503 },
     );
   }
 
-  const headers = new Headers({ accept: 'application/json' });
-  headers.set('x-codeissue-user-id', session.user.id);
-  headers.set('x-codeissue-user-role', session.user.role);
-  if (process.env.BACKEND_API_TOKEN) {
-    headers.set('authorization', `Bearer ${process.env.BACKEND_API_TOKEN}`);
-  }
+  const headers = buildBackendIdentityHeaders(session.user);
 
   try {
     const response = await fetch(ticketUrl, {
       method: 'POST',
       headers,
       cache: 'no-store',
-      signal: AbortSignal.timeout(8_000),
+      signal: AbortSignal.timeout(SOCKET_TICKET_TIMEOUT_MS),
     });
 
     if (!response.ok) {
@@ -81,8 +58,7 @@ export async function POST() {
       );
     }
 
-    const socketUrl = new URL(configuredSocketUrl);
-    socketUrl.searchParams.set('ticket', payload.ticket);
+    const socketUrl = buildSocketUrl(payload.ticket);
 
     return Response.json({
       url: socketUrl.toString(),

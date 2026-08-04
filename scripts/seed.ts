@@ -13,6 +13,7 @@ import {
   workspaces,
 } from '@/db/schema';
 import { hashPassword } from '@/lib/auth/password';
+import { DEFAULT_WORKSPACE_SLUG } from '@/lib/workspaces/service';
 
 const adminEmail = (process.env.ADMIN_EMAIL ?? 'admin@codeissue.dev')
   .trim()
@@ -62,7 +63,7 @@ async function seed() {
 
   const [workspace] = await db
     .insert(workspaces)
-    .values({ name: 'Codeissue', slug: 'codeissue' })
+    .values({ name: 'Codeissue', slug: DEFAULT_WORKSPACE_SLUG })
     .onConflictDoUpdate({
       target: workspaces.slug,
       set: { name: 'Codeissue' },

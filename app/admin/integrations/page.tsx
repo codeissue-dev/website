@@ -1,6 +1,6 @@
 import { SocialIcon } from '@/components/social-icons';
 import type { SocialIconName } from '@/components/social-icons';
-import { getIntegrations } from '@/lib/admin-data';
+import { getIntegrations } from '@/lib/admin';
 import { formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
 import { getT } from '@/lib/i18n/server';

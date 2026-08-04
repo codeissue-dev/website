@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { EventSummary } from '@/lib/admin-data';
+import type { EventSummary } from '@/lib/admin';
 import { cn } from '@/lib/utils';
 
 type ConnectionState = 'connected' | 'connecting' | 'disconnected' | 'error';

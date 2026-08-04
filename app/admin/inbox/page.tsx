@@ -1,5 +1,5 @@
 import { queueReply } from '@/app/admin/inbox/actions';
-import { getConversations } from '@/lib/admin-data';
+import { getConversations } from '@/lib/admin';
 import { formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
 import { getT } from '@/lib/i18n/server';

@@ -1,5 +1,5 @@
 import { EventStream } from '@/components/admin/event-stream';
-import { getEvents } from '@/lib/admin-data';
+import { getEvents } from '@/lib/admin';
 import type { Dictionary } from '@/lib/i18n';
 import { getT } from '@/lib/i18n/server';
 

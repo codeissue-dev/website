@@ -1,5 +1,5 @@
 import { createOrder } from '@/app/admin/orders/actions';
-import { getOrders } from '@/lib/admin-data';
+import { getOrders } from '@/lib/admin';
 import { formatMoney, formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
 import { getT } from '@/lib/i18n/server';

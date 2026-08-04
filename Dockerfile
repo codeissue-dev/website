@@ -5,7 +5,7 @@ RUN apk add --no-cache libc6-compat
 
 FROM base AS dependencies
 COPY package.json package-lock.json ./
-RUN npm install --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 FROM base AS development
 ENV NODE_ENV=development

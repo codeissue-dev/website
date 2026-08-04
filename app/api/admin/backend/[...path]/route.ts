@@ -1,3 +1,8 @@
+import {
+  BACKEND_TIMEOUT_MS,
+  buildBackendIdentityHeaders,
+  buildBackendTarget,
+} from '@/lib/backend/client';
 import { getAdminSessionForApi } from '@/lib/auth/guards';
 
 export const dynamic = 'force-dynamic';
@@ -12,40 +17,17 @@ async function proxyBackend(request: Request, context: RouteContext) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const baseUrl = process.env.BACKEND_API_URL;
-  if (!baseUrl) {
-    return Response.json(
-      { error: 'BACKEND_API_URL is not configured.' },
-      { status: 503 },
-    );
-  }
-
   const { path } = await context.params;
-  if (
-    path.some(
-      (segment) =>
-        segment === '.' ||
-        segment === '..' ||
-        !/^[a-zA-Z0-9._~-]+$/.test(segment),
-    )
-  ) {
-    return Response.json({ error: 'Invalid backend path.' }, { status: 400 });
-  }
-
   let target: URL;
   try {
-    const base = new URL(baseUrl);
-    if (base.protocol !== 'http:' && base.protocol !== 'https:') {
-      throw new Error('Unsupported backend protocol.');
-    }
-    const incomingUrl = new URL(request.url);
-    target = new URL(path.join('/'), `${base.toString().replace(/\/$/, '')}/`);
-    target.search = incomingUrl.search;
-  } catch {
-    return Response.json(
-      { error: 'BACKEND_API_URL is invalid.' },
-      { status: 503 },
-    );
+    target = buildBackendTarget(path, request.url);
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'Backend configuration is invalid.';
+    const status = message === 'Invalid backend path.' ? 400 : 503;
+    return Response.json({ error: message }, { status });
   }
 
   const contentLength = Number(request.headers.get('content-length') ?? 0);
@@ -67,16 +49,11 @@ async function proxyBackend(request: Request, context: RouteContext) {
     }
   }
 
-  const headers = new Headers();
+  const headers = buildBackendIdentityHeaders(session.user);
   headers.set('accept', request.headers.get('accept') ?? 'application/json');
-  headers.set('x-codeissue-user-id', session.user.id);
-  headers.set('x-codeissue-user-role', session.user.role);
 
   const contentType = request.headers.get('content-type');
   if (contentType) headers.set('content-type', contentType);
-  if (process.env.BACKEND_API_TOKEN) {
-    headers.set('authorization', `Bearer ${process.env.BACKEND_API_TOKEN}`);
-  }
 
   try {
     const response = await fetch(target, {
@@ -85,7 +62,7 @@ async function proxyBackend(request: Request, context: RouteContext) {
       body,
       redirect: 'manual',
       cache: 'no-store',
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(BACKEND_TIMEOUT_MS),
     });
 
     const responseHeaders = new Headers();

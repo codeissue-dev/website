@@ -1,4 +1,4 @@
-import { getEvents } from '@/lib/admin-data';
+import { getEvents } from '@/lib/admin';
 import { getAdminSessionForApi } from '@/lib/auth/guards';
 
 export const dynamic = 'force-dynamic';

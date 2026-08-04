@@ -56,6 +56,18 @@ services:
       - app_node_modules:/app/node_modules
     command: sh -c "npm run db:migrate && npm run dev"
 
+  migrate:
+    build:
+      context: .
+      target: development
+    profiles: ['tools']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-codeissue}:${POSTGRES_PASSWORD:-codeissue-local-password}@postgres:5432/${POSTGRES_DB:-codeissue}
+    command: npm run db:migrate
+
   seed:
     build:
       context: .

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { ArrowRightIcon } from '@/components/icons';
-import { getOverview } from '@/lib/admin-data';
+import { getOverview } from '@/lib/admin';
 import { formatMoney, formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
 import { getT } from '@/lib/i18n/server';
