@@ -73,4 +73,4 @@ Production readiness still requires provider adapters, worker queues, observabil
 
 ## Interface system
 
-The public site, login flow, and operations workspace share one utility-first visual language: a true black canvas, warm white type, a violet signal color, square controls, fine grid lines, and issue-routing diagrams. Feature components own their responsive Tailwind classes; the legacy files under `styles/` remain as empty compatibility placeholders and are not imported.
+The public site, authentication flow, issue intake, and operations workspace share one utility-first visual language. The system uses a true black canvas, warm white type, neutral zinc surfaces, one restrained violet state color, compact radii, and one-pixel borders. The direction borrows the clarity of Next.js and Vercel without copying their page composition: Codeissue keeps the issue lifecycle as its central visual model. Repeated surfaces live in `components/ui`, while feature components own their responsive Tailwind composition. The legacy files under `styles/` remain compatibility placeholders and are not imported.

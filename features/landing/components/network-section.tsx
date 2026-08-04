@@ -15,13 +15,14 @@ export function NetworkSection({ copy }: { copy: Dictionary }) {
           title={copy.network.title}
           description={copy.network.description}
           aside={
-            <span className="font-mono text-sm tracking-[0.1em] text-signal">
+            <span className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground">
+              <i className="size-1.5 rounded-full bg-positive" />
               {copy.network.channelsLabel}
             </span>
           }
         />
 
-        <div className="mt-14 grid border-t border-border lg:mt-16 lg:grid-cols-2 lg:gap-x-10">
+        <div className="mt-14 grid gap-2 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 xl:grid-cols-5">
           {socials.map((social, index) => (
             <SocialCard
               key={social.id}

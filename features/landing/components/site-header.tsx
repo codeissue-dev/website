@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { BrandLogo } from '@/components/brand/brand-logo';
-import { ArrowUpRightIcon } from '@/components/icons';
+import { ArrowUpRightIcon, CloseIcon, MenuIcon } from '@/components/icons';
 import { buttonVariants } from '@/components/ui/button';
 import type { Dictionary, Locale } from '@/lib/i18n';
 import { navigation } from '@/lib/site-data';
@@ -41,54 +41,45 @@ export function SiteHeader({
   }, [menuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-black/95">
-      <div
-        className={cn(
-          pageFrame,
-          'grid min-h-16 grid-cols-[1fr_auto] items-stretch border-x border-border lg:min-h-[4.5rem] lg:grid-cols-[1fr_auto_1fr]',
-        )}
-      >
+    <header className="sticky inset-x-0 top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl supports-[backdrop-filter]:bg-black/70">
+      <div className={cn(pageFrame, 'flex h-16 items-center justify-between')}>
         <a
           href="#top"
-          className="flex min-w-0 items-center gap-3 px-3 sm:px-4"
+          className="flex min-w-0 items-center gap-2.5"
           aria-label="Codeissue"
           onClick={() => setMenuOpen(false)}
         >
-          <BrandLogo className="size-9" priority />
-          <span className="flex min-w-0 flex-col">
-            <strong className="text-sm font-semibold tracking-[-0.02em]">
-              Codeissue
-            </strong>
-            <small className="hidden truncate font-mono text-sm tracking-[0.1em] text-muted-foreground sm:block">
-              {copy.brand.descriptor}
-            </small>
+          <BrandLogo className="size-8" priority />
+          <span className="text-sm font-semibold tracking-[-0.02em]">
+            Codeissue
+          </span>
+          <span className="hidden h-4 w-px bg-border sm:block" />
+          <span className="hidden truncate text-sm text-muted-foreground sm:block">
+            {copy.brand.descriptor}
           </span>
         </a>
 
         <nav
-          className="hidden h-full items-center border-x border-border lg:flex"
+          className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex"
           aria-label="Primary navigation"
         >
           {navigation.map((item) => (
             <a
               key={item.id}
               href={item.href}
-              className="inline-flex h-full items-center border-r border-border px-5 font-mono text-sm tracking-[0.08em] text-muted-foreground transition-colors last:border-r-0 hover:bg-white hover:text-black"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
             >
               {copy.nav[item.id]}
             </a>
           ))}
         </nav>
 
-        <div className="flex items-center justify-end px-2 sm:px-3">
+        <div className="flex items-center gap-2">
           <div className="hidden items-center gap-2 lg:flex">
             <LanguageSwitch locale={locale} label={copy.language.switchLabel} />
             <Link
               href="/admin"
-              className={buttonVariants({
-                variant: 'ghost',
-                size: 'sm',
-              })}
+              className={buttonVariants({ variant: 'ghost', size: 'sm' })}
             >
               {copy.nav.workspace}
             </Link>
@@ -102,32 +93,17 @@ export function SiteHeader({
             <LanguageSwitch locale={locale} label={copy.language.switchLabel} />
             <button
               type="button"
-              className="grid size-10 place-items-center border border-border text-foreground transition-colors hover:border-signal hover:text-signal"
+              className="grid size-10 place-items-center rounded-md border border-border bg-surface text-foreground transition-colors hover:border-border-strong hover:bg-surface-soft"
               aria-label={menuOpen ? copy.nav.close : copy.nav.menu}
               aria-expanded={menuOpen}
               aria-controls="mobile-navigation"
               onClick={() => setMenuOpen((open) => !open)}
             >
-              <span className="relative block h-3.5 w-4" aria-hidden="true">
-                <span
-                  className={cn(
-                    'absolute left-0 top-0 h-px w-4 bg-current transition-transform',
-                    menuOpen && 'translate-y-[6px] rotate-45',
-                  )}
-                />
-                <span
-                  className={cn(
-                    'absolute left-0 top-[6px] h-px w-4 bg-current transition-opacity',
-                    menuOpen && 'opacity-0',
-                  )}
-                />
-                <span
-                  className={cn(
-                    'absolute bottom-0 left-0 h-px w-4 bg-current transition-transform',
-                    menuOpen && '-translate-y-[7px] -rotate-45',
-                  )}
-                />
-              </span>
+              {menuOpen ? (
+                <CloseIcon className="size-4" />
+              ) : (
+                <MenuIcon className="size-4" />
+              )}
             </button>
           </div>
         </div>
@@ -136,37 +112,30 @@ export function SiteHeader({
       <div
         id="mobile-navigation"
         className={cn(
-          'absolute inset-x-0 top-full h-[calc(100dvh-4rem)] border-b border-border bg-black transition-[opacity,visibility] duration-200 lg:hidden',
-          menuOpen ? 'visible opacity-100' : 'invisible opacity-0',
+          'absolute inset-x-0 top-full h-[calc(100dvh-4rem)] border-b border-border bg-black transition-[opacity,visibility,transform] duration-200 lg:hidden',
+          menuOpen
+            ? 'visible translate-y-0 opacity-100'
+            : 'invisible -translate-y-2 opacity-0',
         )}
       >
-        <div
-          className={cn(
-            pageFrame,
-            'flex h-full flex-col border-x border-border',
-          )}
-        >
-          <nav
-            className="grid border-b border-border"
-            aria-label="Mobile navigation"
-          >
+        <div className={cn(pageFrame, 'flex h-full flex-col py-5')}>
+          <nav className="grid gap-1" aria-label="Mobile navigation">
             {navigation.map((item, index) => (
               <a
                 key={item.id}
                 href={item.href}
-                className="grid min-h-16 grid-cols-[3rem_1fr_auto] items-center border-b border-border px-4 text-lg font-medium last:border-b-0 hover:bg-white hover:text-black"
+                className="flex min-h-14 items-center justify-between rounded-lg px-4 text-lg font-medium transition-colors hover:bg-white/[0.06]"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="font-mono text-sm text-signal">
+                <span>{copy.nav[item.id]}</span>
+                <span className="font-mono text-sm text-muted-foreground">
                   0{index + 1}
                 </span>
-                <span>{copy.nav[item.id]}</span>
-                <span aria-hidden="true">+</span>
               </a>
             ))}
           </nav>
 
-          <div className="grid gap-3 p-4 sm:grid-cols-2">
+          <div className="mt-5 grid gap-2 border-t border-border pt-5 sm:grid-cols-2">
             <Link
               href="/admin"
               className={buttonVariants({ variant: 'secondary', size: 'lg' })}
@@ -184,10 +153,9 @@ export function SiteHeader({
             </Link>
           </div>
 
-          <div className="mt-auto border-t border-border p-4 font-mono text-sm leading-5 text-muted-foreground">
-            codeissue.dev
-            <br />
-            codeissue@outlook.com
+          <div className="mt-auto border-t border-border pt-5 text-sm leading-6 text-muted-foreground">
+            <p>codeissue.dev</p>
+            <p>codeissue@outlook.com</p>
           </div>
         </div>
       </div>

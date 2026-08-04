@@ -41,4 +41,4 @@ Commit both the schema change and generated files under `drizzle/`. The username
 
 ## Styling and motion
 
-Use Tailwind CSS v4 utilities in `className`. Keep shared tokens in `app/globals.css`, repeated utility groups in `lib/ui/styles.ts`, and browser behavior in `features/landing/hooks/use-landing-interactions.ts`. New text labels should not be smaller than `text-xs`. Every animation must remain usable with `prefers-reduced-motion`.
+Use Tailwind CSS v4 utilities in `className`. Keep shared tokens in `app/globals.css`, repeated utility groups in `lib/ui/styles.ts`, and browser behavior in `features/landing/hooks/use-landing-interactions.ts`. New text labels should not be smaller than `text-sm`. Every animation must remain usable with `prefers-reduced-motion`.

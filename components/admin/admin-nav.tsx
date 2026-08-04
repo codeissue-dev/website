@@ -15,10 +15,10 @@ function NavIcon({ name }: { name: NavigationItem['icon'] }) {
   const paths = {
     overview: (
       <>
-        <rect x="3" y="3" width="7" height="7" rx="2" />
-        <rect x="14" y="3" width="7" height="7" rx="2" />
-        <rect x="3" y="14" width="7" height="7" rx="2" />
-        <rect x="14" y="14" width="7" height="7" rx="2" />
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
       </>
     ),
     inbox: (
@@ -67,7 +67,7 @@ export function AdminNav({ items }: { items: NavigationItem[] }) {
 
   return (
     <nav
-      className="flex gap-1 overflow-x-auto border-t border-border p-2 lg:grid lg:overflow-visible lg:border-t-0 lg:p-3"
+      className="flex gap-1 overflow-x-auto p-2 lg:grid lg:overflow-visible lg:p-3"
       aria-label="Admin navigation"
     >
       {items.map((item) => {
@@ -81,13 +81,15 @@ export function AdminNav({ items }: { items: NavigationItem[] }) {
             key={item.href}
             href={item.href}
             className={cn(
-              'group relative inline-flex min-h-10 shrink-0 items-center gap-2.5 border border-transparent px-3 text-sm font-semibold text-muted-foreground transition-colors hover:border-border hover:bg-surface-soft hover:text-foreground lg:w-full',
-              active &&
-                'border-border bg-surface-soft text-foreground before:absolute before:inset-y-2 before:left-0 before:w-0.5 before:bg-signal',
+              'group inline-flex min-h-10 shrink-0 items-center gap-2.5 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/[0.05] hover:text-foreground lg:w-full',
+              active && 'bg-white/[0.08] text-foreground',
             )}
           >
             <NavIcon name={item.icon} />
             <span>{item.label}</span>
+            {active ? (
+              <span className="ml-auto hidden size-1.5 rounded-full bg-signal lg:block" />
+            ) : null}
           </Link>
         );
       })}

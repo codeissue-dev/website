@@ -29,12 +29,12 @@ export default async function RegisterPage({
       description={copy.register.description}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="hover:text-signal-soft">
+          <Link href="/" className="hover:text-foreground">
             &lt;- {copy.auth.back}
           </Link>
           <Link
             href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="hover:text-signal-soft"
+            className="hover:text-foreground"
           >
             {copy.register.haveAccount}
           </Link>

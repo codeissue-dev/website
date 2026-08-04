@@ -1,127 +1,135 @@
 import Image from 'next/image';
 
+import { CheckIcon } from '@/components/icons';
 import type { Dictionary } from '@/lib/i18n';
-import { eyebrow, pageFrame, reveal, sectionSpacing } from '@/lib/ui/styles';
+import { pageFrame, reveal, sectionSpacing } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
+
+import { SectionHeading } from './section-heading';
 
 export function ProcessSection({ copy }: { copy: Dictionary }) {
   return (
-    <section id="process" className={cn(sectionSpacing, 'bg-black')}>
+    <section id="process" className={sectionSpacing}>
       <div className={pageFrame}>
-        <div className="border-y border-border">
-          <div className="grid min-h-12 grid-cols-[1fr_auto] items-center border-b border-border px-4 font-mono text-sm tracking-[0.08em] text-muted-foreground sm:px-6">
-            <span>{copy.process.currentLabel}</span>
-            <span className="flex items-center gap-2 text-positive">
-              <i className="size-2 bg-positive" aria-hidden="true" />
-              {copy.process.status}
-            </span>
-          </div>
-
-          <header className="grid gap-8 border-b border-border p-5 sm:p-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(24rem,1.18fr)] lg:p-10">
-            <div>
-              <p className={cn(eyebrow, reveal)} data-reveal>
-                {copy.process.eyebrow}
-              </p>
-              <h2
-                className={cn(
-                  reveal,
-                  'mt-6 max-w-[14ch] text-[clamp(2rem,3.5vw,3.55rem)] font-medium leading-[1.02] tracking-[-0.045em]',
-                )}
-                data-reveal
-              >
-                {copy.process.title}
-              </h2>
-              <p
-                className={cn(
-                  reveal,
-                  'mt-6 max-w-xl text-base leading-7 text-muted-foreground',
-                )}
-                data-reveal
-              >
-                {copy.process.description}
-              </p>
-              <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 border-t border-border pt-5 font-mono text-sm text-muted-foreground">
-                {copy.process.facts.map((fact) => (
-                  <span key={fact}>+ {fact}</span>
-                ))}
-              </div>
+        <SectionHeading
+          eyebrow={copy.process.eyebrow}
+          title={copy.process.title}
+          description={copy.process.description}
+          aside={
+            <div className="flex flex-wrap gap-2">
+              {copy.process.facts.map((fact) => (
+                <span
+                  key={fact}
+                  className="rounded-full border border-border bg-white/[0.03] px-2.5 py-1 text-sm text-muted-foreground"
+                >
+                  {fact}
+                </span>
+              ))}
             </div>
+          }
+        />
 
-            <div className="relative min-h-64 overflow-hidden border border-border bg-surface sm:min-h-80">
-              <div
-                className="absolute inset-0 [transform:translate3d(0,var(--parallax-y,0px),0)] transition-transform duration-200 motion-reduce:transform-none"
-                data-parallax="0.11"
-              >
-                <Image
-                  src="/images/avatar.png"
-                  alt="Codeissue workflow illustration"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover opacity-55 grayscale"
-                />
+        <div className="mt-14 grid gap-10 lg:mt-20 lg:grid-cols-[minmax(18rem,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
+          <div className="lg:sticky lg:top-28 lg:h-fit">
+            <div
+              className={cn(
+                reveal,
+                'relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-[0_20px_60px_rgba(0,0,0,0.45)] sm:p-6',
+              )}
+              data-reveal
+            >
+              <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-black">
+                <div
+                  className="absolute inset-0 [transform:translate3d(0,var(--parallax-y,0px),0)] transition-transform duration-200 motion-reduce:transform-none"
+                  data-parallax="0.1"
+                >
+                  <Image
+                    src="/images/avatar.png"
+                    alt="Codeissue workflow illustration"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 36vw"
+                    className="object-cover opacity-45 grayscale"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,#000_100%)]" />
+                <div className="absolute inset-x-4 bottom-4 rounded-lg border border-white/10 bg-black/75 p-4 backdrop-blur-md">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-mono text-sm text-muted-foreground">
+                      {copy.process.currentLabel}
+                    </span>
+                    <span className="inline-flex items-center gap-2 text-sm text-positive">
+                      <i className="size-1.5 rounded-full bg-positive" />
+                      {copy.process.status}
+                    </span>
+                  </div>
+                  <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/5">
+                    <span className="block h-full w-3/4 rounded-full bg-linear-to-r from-signal to-signal-soft" />
+                  </div>
+                </div>
               </div>
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,#000_0%,transparent_34%,transparent_70%,#000_100%)]" />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,transparent_28%,#000_100%)]" />
-              <div className="absolute inset-x-5 bottom-5 grid grid-cols-4 border border-border bg-black/80 backdrop-blur-sm sm:inset-x-7 sm:bottom-7">
+
+              <div className="mt-5 grid grid-cols-4 gap-2">
                 {copy.process.steps.map((step, index) => (
                   <div
                     key={step.number}
-                    className="border-r border-border p-3 last:border-r-0 sm:p-4"
+                    className="rounded-md border border-border bg-black p-3 text-center"
                   >
-                    <span className="font-mono text-sm text-signal">
+                    <span className="font-mono text-sm text-signal-soft">
                       0{index + 1}
-                    </span>
-                    <span className="mt-2 hidden text-sm text-muted-foreground sm:block">
-                      {step.title}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
-          </header>
+          </div>
 
-          <ol className="grid lg:grid-cols-2">
+          <ol className="relative border-l border-border pl-6 sm:pl-8">
             {copy.process.steps.map((step, index) => (
               <li
                 key={step.number}
                 className={cn(
                   reveal,
-                  'group relative grid min-h-72 content-between gap-8 border-b border-border p-5 opacity-65 transition-[opacity,background-color] duration-500 last:border-b-0 [&.is-current]:bg-surface/70 [&.is-current]:opacity-100 sm:p-8 lg:border-r lg:[&:nth-child(2n)]:border-r-0 lg:[&:nth-last-child(-n+2)]:border-b-0 lg:p-10',
+                  'group relative pb-12 last:pb-0 sm:pb-16',
                 )}
                 data-reveal
                 data-process-step
               >
-                <div className="flex items-start justify-between gap-6">
-                  <span className="font-mono text-sm text-signal">
-                    {step.number}
-                  </span>
-                  <span className="font-mono text-sm text-muted-foreground">
-                    {String(index + 1).padStart(2, '0')} / 04
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="max-w-[18ch] text-2xl font-medium leading-tight tracking-[-0.035em] sm:text-3xl">
+                <span
+                  className="absolute -left-[1.93rem] top-1 grid size-4 place-items-center rounded-full border border-border-strong bg-black transition-colors group-[.is-current]:border-signal group-[.is-current]:bg-signal sm:-left-[2.43rem]"
+                  aria-hidden="true"
+                >
+                  <i className="size-1 rounded-full bg-black" />
+                </span>
+                <div className="rounded-xl border border-border bg-card p-5 transition-[border-color,background-color,transform] duration-300 group-[.is-current]:translate-x-1 group-[.is-current]:border-signal/45 group-[.is-current]:bg-surface-soft sm:p-7">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-mono text-sm text-signal-soft">
+                      {step.number}
+                    </span>
+                    <span className="font-mono text-sm text-muted-foreground">
+                      {String(index + 1).padStart(2, '0')} / 04
+                    </span>
+                  </div>
+                  <h3 className="mt-7 max-w-[18ch] text-2xl font-semibold leading-tight tracking-[-0.04em] sm:text-3xl">
                     {step.title}
                   </h3>
-                  <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
+                  <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
                     {step.copy}
                   </p>
-                </div>
-
-                <div className="border-t border-border pt-5">
-                  <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-                    {copy.process.deliverablesLabel}
-                  </span>
-                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
-                    {step.deliverables.map((deliverable) => (
-                      <span
-                        key={deliverable}
-                        className="text-sm text-foreground"
-                      >
-                        + {deliverable}
-                      </span>
-                    ))}
+                  <div className="mt-7 border-t border-border pt-5">
+                    <span className="text-sm font-medium text-foreground">
+                      {copy.process.deliverablesLabel}
+                    </span>
+                    <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+                      {step.deliverables.map((deliverable) => (
+                        <li
+                          key={deliverable}
+                          className="flex items-center gap-2 text-sm text-muted-foreground"
+                        >
+                          <CheckIcon className="size-4 shrink-0 text-positive" />
+                          {deliverable}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </li>

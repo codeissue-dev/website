@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { buttonVariants } from '@/components/ui/button';
+import { Panel } from '@/components/ui/panel';
 import type { EventSummary } from '@/lib/admin';
 import { cn } from '@/lib/utils';
 
@@ -163,17 +165,16 @@ export function EventStream({
     error: 'bg-danger',
   }[connection];
 
-  const controlClass =
-    'inline-flex h-9 items-center justify-center border border-border px-3 font-mono text-sm font-semibold uppercase tracking-[0.1em] text-muted-foreground transition-colors hover:border-signal hover:text-foreground disabled:pointer-events-none disabled:opacity-50';
-
   return (
-    <div className="mt-8 border border-border bg-surface/40">
-      <div className="flex flex-col gap-4 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+    <Panel className="mt-8 overflow-hidden">
+      <div className="flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={cn('size-2 shrink-0', connectionDot)} />
+          <span className={cn('size-2 shrink-0 rounded-full', connectionDot)} />
           <div className="min-w-0">
-            <strong className="block text-sm">{labels[connection]}</strong>
-            <span className="mt-1 block truncate font-mono text-sm text-muted-foreground">
+            <strong className="block text-sm font-medium">
+              {labels[connection]}
+            </strong>
+            <span className="mt-1 block truncate text-sm text-muted-foreground">
               {endpoint ?? copy.wsMissing}
             </span>
           </div>
@@ -181,17 +182,18 @@ export function EventStream({
 
         <div className="flex flex-wrap gap-2">
           {connection === 'connected' || connection === 'connecting' ? (
-            <button type="button" onClick={disconnect} className={controlClass}>
+            <button
+              type="button"
+              onClick={disconnect}
+              className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+            >
               {copy.disconnect}
             </button>
           ) : (
             <button
               type="button"
               onClick={connect}
-              className={cn(
-                controlClass,
-                'border-signal bg-signal text-primary-foreground hover:bg-signal-soft hover:text-primary-foreground',
-              )}
+              className={buttonVariants({ size: 'sm' })}
             >
               {copy.connect}
             </button>
@@ -200,23 +202,25 @@ export function EventStream({
             type="button"
             onClick={refreshApi}
             disabled={apiLoading}
-            className={controlClass}
+            className={buttonVariants({ variant: 'secondary', size: 'sm' })}
           >
-            {apiLoading ? '…' : copy.refresh}
+            {apiLoading ? '...' : copy.refresh}
           </button>
           <button
             type="button"
             onClick={() => setEvents([])}
-            className={controlClass}
+            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
           >
             {copy.clear}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-surface-quiet px-4 py-3 font-mono text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-white/[0.02] px-5 py-3 text-sm text-muted-foreground sm:px-6">
         <span>{copy.apiReady}</span>
-        <code className="text-signal-soft">/api/admin/backend/[...path]</code>
+        <code className="font-mono text-signal-soft">
+          /api/admin/backend/[...path]
+        </code>
       </div>
 
       <div aria-live="polite">
@@ -225,54 +229,58 @@ export function EventStream({
             {copy.empty}
           </div>
         ) : (
-          events.map((event) => (
-            <article
-              key={`${event.transport}-${event.id}`}
-              className="grid gap-4 border-b border-border p-4 last:border-b-0 lg:grid-cols-[13rem_12rem_minmax(0,1fr)] lg:p-5"
-            >
-              <div className="flex flex-col gap-2">
-                <span
-                  className={cn(
-                    'w-fit border px-2.5 py-1 font-mono text-sm uppercase tracking-[0.1em]',
-                    event.transport === 'websocket'
-                      ? 'border-positive/40 bg-positive/10 text-positive'
-                      : 'border-border text-muted-foreground',
-                  )}
-                >
-                  {event.transport === 'websocket' ? copy.live : copy.persisted}
-                </span>
-                <strong className="break-words text-sm">
-                  {event.eventType}
-                </strong>
-                <span className="font-mono text-sm text-muted-foreground">
-                  {event.status}
-                </span>
-                <time
-                  dateTime={event.receivedAt}
-                  className="font-mono text-sm text-muted-foreground"
-                >
-                  {new Intl.DateTimeFormat(undefined, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                  }).format(new Date(event.receivedAt))}
-                </time>
-              </div>
-              <div>
-                <span className="font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground">
-                  {copy.source}
-                </span>
-                <code className="mt-2 block break-all text-sm text-signal-soft">
-                  {event.source}
-                </code>
-              </div>
-              <pre className="max-h-80 overflow-auto border border-border bg-background p-4 text-sm leading-5 text-muted-foreground">
-                {JSON.stringify(event.payload, null, 2)}
-              </pre>
-            </article>
-          ))
+          <div className="divide-y divide-border">
+            {events.map((event) => (
+              <article
+                key={`${event.transport}-${event.id}`}
+                className="grid gap-5 px-5 py-5 lg:grid-cols-[11rem_11rem_minmax(0,1fr)] lg:px-6"
+              >
+                <div className="flex flex-col items-start gap-2">
+                  <span
+                    className={cn(
+                      'rounded-full border px-2.5 py-1 text-sm font-medium',
+                      event.transport === 'websocket'
+                        ? 'border-positive/25 bg-positive/10 text-positive'
+                        : 'border-border bg-white/[0.03] text-muted-foreground',
+                    )}
+                  >
+                    {event.transport === 'websocket'
+                      ? copy.live
+                      : copy.persisted}
+                  </span>
+                  <strong className="break-words text-sm font-medium">
+                    {event.eventType}
+                  </strong>
+                  <span className="text-sm text-muted-foreground">
+                    {event.status}
+                  </span>
+                  <time
+                    dateTime={event.receivedAt}
+                    className="text-sm text-muted-foreground"
+                  >
+                    {new Intl.DateTimeFormat(undefined, {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    }).format(new Date(event.receivedAt))}
+                  </time>
+                </div>
+                <div>
+                  <span className="text-sm text-muted-foreground">
+                    {copy.source}
+                  </span>
+                  <code className="mt-2 block break-all font-mono text-sm text-signal-soft">
+                    {event.source}
+                  </code>
+                </div>
+                <pre className="max-h-80 overflow-auto rounded-lg border border-border bg-black p-4 font-mono text-sm leading-5 text-muted-foreground">
+                  {JSON.stringify(event.payload, null, 2)}
+                </pre>
+              </article>
+            ))}
+          </div>
         )}
       </div>
-    </div>
+    </Panel>
   );
 }

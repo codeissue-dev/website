@@ -4,24 +4,32 @@ import { ArrowUpRightIcon } from '@/components/icons';
 import { SocialIcon } from '@/components/social-icons';
 import { buttonVariants } from '@/components/ui/button';
 import type { Dictionary } from '@/lib/i18n';
-import { pageFrame, reveal, sectionSpacing } from '@/lib/ui/styles';
+import { pageFrame, reveal, sectionSpacing, subtleGrid } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
 import { ExternalLink } from './external-link';
 
 export function CtaSection({ copy }: { copy: Dictionary }) {
   return (
-    <section className={sectionSpacing}>
+    <section className={cn(sectionSpacing, 'pt-6 sm:pt-8 lg:pt-12')}>
       <div className={pageFrame}>
-        <div className="grid border-y border-border lg:grid-cols-[8rem_minmax(0,1fr)_minmax(18rem,0.38fr)]">
-          <div className="border-b border-border p-5 font-mono text-sm tracking-[0.08em] text-signal lg:border-r lg:border-b-0 lg:p-7">
-            CI / NEW
-          </div>
-          <div className="border-b border-border p-5 sm:p-8 lg:border-r lg:border-b-0 lg:p-10">
+        <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-card px-5 py-14 text-center shadow-[0_30px_100px_rgba(0,0,0,0.65)] sm:px-8 sm:py-20">
+          <div
+            className={cn(
+              subtleGrid,
+              'pointer-events-none absolute inset-0 [mask-image:radial-gradient(circle_at_center,black,transparent_78%)] opacity-80',
+            )}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute left-1/2 top-0 h-48 w-[36rem] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.18),transparent_70%)] blur-2xl"
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto max-w-3xl">
             <p
               className={cn(
                 reveal,
-                'font-mono text-sm tracking-[0.08em] text-muted-foreground',
+                'font-mono text-sm tracking-[0.08em] text-signal-soft',
               )}
               data-reveal
             >
@@ -30,7 +38,7 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
             <h2
               className={cn(
                 reveal,
-                'mt-6 max-w-[14ch] text-[clamp(2rem,3.8vw,3.85rem)] font-medium leading-[1.01] tracking-[-0.045em]',
+                'mt-5 text-[clamp(2.1rem,5vw,4.6rem)] font-semibold leading-[1] tracking-[-0.06em]',
               )}
               data-reveal
             >
@@ -39,28 +47,34 @@ export function CtaSection({ copy }: { copy: Dictionary }) {
             <p
               className={cn(
                 reveal,
-                'mt-6 max-w-2xl text-base leading-7 text-muted-foreground',
+                'mx-auto mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg',
               )}
               data-reveal
             >
               {copy.cta.description}
             </p>
-          </div>
-          <div className="grid content-end gap-2 p-5 sm:grid-cols-2 sm:p-8 lg:grid-cols-1 lg:p-7">
-            <Link href="/issues/new" className={buttonVariants({ size: 'lg' })}>
-              {copy.cta.primary}
-              <ArrowUpRightIcon className="size-4" />
-            </Link>
-            <ExternalLink
-              href="https://discord.gg/uckqayVRmy"
-              className={buttonVariants({
-                variant: 'secondary',
-                size: 'lg',
-              })}
+            <div
+              className={cn(
+                reveal,
+                'mt-8 flex flex-col justify-center gap-2 sm:flex-row',
+              )}
+              data-reveal
             >
-              <SocialIcon name="discord" className="size-4" />
-              {copy.cta.secondary}
-            </ExternalLink>
+              <Link
+                href="/issues/new"
+                className={buttonVariants({ size: 'lg' })}
+              >
+                {copy.cta.primary}
+                <ArrowUpRightIcon className="size-4" />
+              </Link>
+              <ExternalLink
+                href="https://discord.gg/uckqayVRmy"
+                className={buttonVariants({ variant: 'secondary', size: 'lg' })}
+              >
+                <SocialIcon name="discord" className="size-4" />
+                {copy.cta.secondary}
+              </ExternalLink>
+            </div>
           </div>
         </div>
       </div>

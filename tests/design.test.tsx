@@ -76,8 +76,8 @@ test('uses Geist, pure black surfaces, readable labels, and a compact hero', asy
   assert.match(globals, /--font-sans:\s*var\(--font-geist-sans\)/);
   assert.match(globals, /--font-mono:/);
   assert.match(layout, /Geist, Geist_Mono/);
-  assert.match(hero, /text-\[clamp\(2\.15rem,4vw,4rem\)\]/);
-  assert.match(landing, /bg-black text-foreground/);
+  assert.match(hero, /text-\[clamp\(2\.55rem,6\.1vw,5\.4rem\)\]/);
+  assert.match(landing, /bg-black[^"]*text-foreground/);
 
   const source = [globals, layout, hero, landing].join('\n');
   assert.doesNotMatch(source, /text-\[0\.[0-6][0-9]?rem\]/);
@@ -105,7 +105,7 @@ test('restores illustration, scroll reveal, pointer parallax, and process intera
 
   assert.match(heroArt, /next\/image/);
   assert.match(heroArt, /banner\.png/);
-  assert.match(heroArt, /codeissue-mark\.svg/);
+  assert.match(heroArt, /CodeIssueMark/);
   assert.match(heroArt, /data-parallax/);
   assert.match(process, /avatar\.png/);
   assert.match(process, /data-process-step/);
@@ -121,4 +121,25 @@ test('ships an accessible mobile burger menu', async () => {
   assert.match(header, /aria-controls="mobile-navigation"/);
   assert.match(header, /h-\[calc\(100dvh-4rem\)\]/);
   assert.match(header, /event\.key === 'Escape'/);
+});
+
+test('uses a restrained Next and Vercel inspired interface system', async () => {
+  const [globals, header, hero, authShell, adminLayout, panel] =
+    await Promise.all([
+      readText('app/globals.css'),
+      readText('features/landing/components/site-header.tsx'),
+      readText('features/landing/components/hero-art.tsx'),
+      readText('components/auth/auth-shell.tsx'),
+      readText('app/admin/layout.tsx'),
+      readText('components/ui/panel.tsx'),
+    ]);
+
+  assert.match(globals, /--color-primary:\s*#ffffff/i);
+  assert.match(globals, /--color-signal:\s*#8b5cf6/i);
+  assert.match(header, /backdrop-blur-xl/);
+  assert.match(hero, /codeissue\.dev\/issues\/001/);
+  assert.match(hero, /rounded-xl border border-white\/15/);
+  assert.match(authShell, /max-w-5xl/);
+  assert.match(adminLayout, /grid-cols-\[15rem_minmax\(0,1fr\)\]/);
+  assert.match(panel, /rounded-xl border border-border bg-card/);
 });

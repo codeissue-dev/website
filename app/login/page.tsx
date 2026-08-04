@@ -29,12 +29,12 @@ export default async function LoginPage({
       description={copy.auth.description}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="hover:text-signal-soft">
+          <Link href="/" className="hover:text-foreground">
             &lt;- {copy.auth.back}
           </Link>
           <Link
             href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="hover:text-signal-soft"
+            className="hover:text-foreground"
           >
             {copy.auth.createAccount}
           </Link>

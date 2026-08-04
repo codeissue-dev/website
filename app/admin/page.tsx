@@ -4,6 +4,7 @@ import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ChannelAvatar } from '@/components/admin/channel-avatar';
 import { StatusPill } from '@/components/admin/status-pill';
 import { ArrowRightIcon } from '@/components/icons';
+import { Panel, PanelHeader } from '@/components/ui/panel';
 import { getOverview } from '@/lib/admin';
 import { formatMoney, formatRelativeTime } from '@/lib/format';
 import type { Dictionary } from '@/lib/i18n';
@@ -27,22 +28,22 @@ export default async function AdminOverviewPage() {
     {
       label: page.metrics.openConversations,
       value: overview.metrics.openConversations,
-      code: 'INBOX',
+      code: 'Inbox',
     },
     {
       label: page.metrics.activeOrders,
       value: overview.metrics.activeOrders,
-      code: 'ORDER',
+      code: 'Orders',
     },
     {
       label: page.metrics.connectedSources,
       value: overview.metrics.connectedSources,
-      code: 'SOURCE',
+      code: 'Sources',
     },
     {
       label: page.metrics.eventsToday,
       value: overview.metrics.eventsToday,
-      code: 'EVENT',
+      code: 'Events',
     },
   ];
 
@@ -60,126 +61,112 @@ export default async function AdminOverviewPage() {
       />
 
       <section
-        className="mt-8 grid border-t border-l border-border sm:grid-cols-2 xl:grid-cols-4"
+        className="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
         aria-label={page.metricsLabel}
       >
         {metricItems.map((metric, index) => (
           <article
             key={metric.code}
-            className="group relative min-h-40 border-r border-b border-border bg-surface/50 p-5"
+            className="rounded-xl border border-border bg-card p-5 shadow-[0_1px_0_rgba(255,255,255,0.035)_inset]"
           >
-            <div className="flex items-center justify-between font-mono text-sm uppercase tracking-[0.12em] text-muted-foreground">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>{metric.code}</span>
-              <span className="text-signal">0{index + 1}</span>
+              <span className="font-mono">0{index + 1}</span>
             </div>
-            <strong className="mt-8 block text-5xl font-semibold tracking-[-0.065em] sm:text-6xl">
+            <strong className="mt-7 block text-4xl font-semibold tracking-[-0.06em] sm:text-5xl">
               {metric.value.toString().padStart(2, '0')}
             </strong>
-            <p className="mt-3 text-sm leading-5 text-muted-foreground">
+            <p className="mt-2 text-sm leading-5 text-muted-foreground">
               {metric.label}
             </p>
-            <span className="absolute inset-x-5 bottom-0 h-px origin-left scale-x-0 bg-signal transition-transform duration-300 group-hover:scale-x-100" />
           </article>
         ))}
       </section>
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
-        <section className="border border-border bg-surface/50 xl:row-span-2">
-          <div className="flex items-end justify-between gap-4 border-b border-border p-5 sm:p-6">
-            <div>
-              <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
-                {page.inboxLabel}
-              </span>
-              <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em]">
-                {page.inboxTitle}
-              </h2>
-            </div>
-            <Link
-              href="/admin/inbox"
-              className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
-            >
-              {page.viewAll} <ArrowRightIcon className="size-3.5" />
-            </Link>
-          </div>
-          <div>
+      <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(20rem,0.72fr)]">
+        <Panel className="xl:row-span-2">
+          <PanelHeader
+            eyebrow={page.inboxLabel}
+            title={page.inboxTitle}
+            action={
+              <Link
+                href="/admin/inbox"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {page.viewAll}
+                <ArrowRightIcon className="size-3.5" />
+              </Link>
+            }
+          />
+          <div className="divide-y divide-border">
             {overview.conversations.slice(0, 5).map((conversation) => (
               <article
                 key={conversation.id}
-                className="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 border-b border-border p-4 last:border-b-0 transition-colors hover:bg-surface-soft sm:p-5"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-3 px-5 py-4 transition-colors hover:bg-white/[0.025] sm:px-6"
               >
                 <ChannelAvatar source={conversation.source} />
                 <div className="min-w-0">
                   <div className="flex items-center justify-between gap-3">
-                    <strong className="truncate text-sm">
+                    <strong className="truncate text-sm font-medium">
                       {conversation.contact}
                     </strong>
-                    <time className="shrink-0 font-mono text-sm text-muted-foreground">
+                    <time className="shrink-0 text-sm text-muted-foreground">
                       {formatRelativeTime(conversation.lastMessageAt, lng)}
                     </time>
                   </div>
                   <span className="mt-1 block truncate text-sm text-foreground/80">
                     {conversation.subject}
                   </span>
-                  <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">
+                  <p className="mt-1.5 line-clamp-1 text-sm text-muted-foreground">
                     {conversation.preview}
                   </p>
                 </div>
                 {conversation.unreadCount > 0 ? (
-                  <b className="grid size-6 place-items-center bg-signal font-mono text-sm text-primary-foreground">
+                  <b className="grid size-6 place-items-center rounded-full bg-white text-sm font-medium text-black">
                     {conversation.unreadCount}
                   </b>
                 ) : null}
               </article>
             ))}
           </div>
-        </section>
+        </Panel>
 
-        <section className="border border-border bg-surface/50">
-          <div className="flex items-end justify-between gap-4 border-b border-border p-5">
-            <div>
-              <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
-                {page.pipelineLabel}
-              </span>
-              <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-                {page.ordersTitle}
-              </h2>
-            </div>
-            <Link
-              href="/admin/orders"
-              className="inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-muted-foreground hover:text-signal-soft"
-            >
-              {page.viewAll} <ArrowRightIcon className="size-3.5" />
-            </Link>
-          </div>
+        <Panel>
+          <PanelHeader
+            eyebrow={page.pipelineLabel}
+            title={page.ordersTitle}
+            action={
+              <Link
+                href="/admin/orders"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {page.viewAll}
+                <ArrowRightIcon className="size-3.5" />
+              </Link>
+            }
+          />
           <div className="divide-y divide-border">
             {overview.orders.slice(0, 4).map((order) => (
-              <article key={order.id} className="p-5">
+              <article key={order.id} className="px-5 py-4 sm:px-6">
                 <div className="flex items-center justify-between gap-3">
                   <StatusPill tone={orderTone(order.status)}>
                     {copy.admin.orders.statuses[order.status]}
                   </StatusPill>
-                  <time className="font-mono text-sm text-muted-foreground">
+                  <time className="text-sm text-muted-foreground">
                     {formatRelativeTime(order.updatedAt, lng)}
                   </time>
                 </div>
-                <h3 className="mt-4 text-sm font-semibold">{order.title}</h3>
-                <strong className="mt-2 block font-mono text-sm text-signal-soft">
+                <h3 className="mt-3 text-sm font-medium">{order.title}</h3>
+                <strong className="mt-1.5 block font-mono text-sm text-signal-soft">
                   {formatMoney(order.valueCents, order.currency, lng)}
                 </strong>
               </article>
             ))}
           </div>
-        </section>
+        </Panel>
 
-        <section className="border border-border bg-surface/50">
-          <div className="border-b border-border p-5">
-            <span className="font-mono text-sm uppercase tracking-[0.14em] text-signal">
-              {page.systemLabel}
-            </span>
-            <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em]">
-              {page.systemTitle}
-            </h2>
-          </div>
+        <Panel>
+          <PanelHeader eyebrow={page.systemLabel} title={page.systemTitle} />
           <div className="divide-y divide-border">
             {[
               [
@@ -199,25 +186,25 @@ export default async function AdminOverviewPage() {
             ].map(([label, value, tone]) => (
               <div
                 key={label}
-                className="flex items-center justify-between gap-4 p-4 text-sm"
+                className="flex items-center justify-between gap-4 px-5 py-3.5 text-sm sm:px-6"
               >
-                <span className="inline-flex items-center gap-2">
+                <span className="inline-flex items-center gap-2.5">
                   <i
                     className={
                       tone === 'positive'
-                        ? 'size-1.5 bg-positive'
-                        : 'size-1.5 bg-warning'
+                        ? 'size-1.5 rounded-full bg-positive'
+                        : 'size-1.5 rounded-full bg-warning'
                     }
                   />
                   {label}
                 </span>
-                <strong className="font-mono text-sm uppercase tracking-[0.08em] text-muted-foreground">
+                <strong className="text-sm font-medium text-muted-foreground">
                   {value}
                 </strong>
               </div>
             ))}
           </div>
-        </section>
+        </Panel>
       </div>
     </main>
   );

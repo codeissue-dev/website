@@ -63,6 +63,6 @@ npm run db:seed      # create/update the initial owner and demo data
 
 ## Interface rules
 
-The interface uses Tailwind CSS v4 utilities directly in React components. Geist is the default font, while `font-mono` maps to Geist Mono. The base canvas is `#000000`; interface text stays at 14px or larger, while form controls use 16px text. Motion is limited to reveal, scroll progress, process state, and parallax on supplied visual assets, with `prefers-reduced-motion` support.
+The interface uses Tailwind CSS v4 utilities directly in React components. Geist is the default font, while `font-mono` maps to Geist Mono. The visual system is intentionally restrained: a true black canvas, warm white type, neutral zinc surfaces, subtle violet state accents, compact radii, and fine one-pixel borders. Public, authentication, intake, and admin screens reuse the same buttons, panels, fields, status badges, spacing scale, and motion rules. Motion is limited to reveal, scroll progress, process state, and parallax, with `prefers-reduced-motion` support.
 
 See [development](docs/development.md), [deployment](docs/deployment.md), [architecture](docs/architecture.md), or the [Russian quick guide](docs/README.ru.md).

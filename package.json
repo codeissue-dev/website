@@ -12,6 +12,7 @@
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write . --ignore-unknown",
     "check": "npm run typecheck && npm run lint:check && npm run test",
+    "secret:generate": "node -e \"console.log(require('node:crypto').randomBytes(32).toString('base64url'))\"",
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",

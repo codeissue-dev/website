@@ -34,11 +34,17 @@ function SubmitButton({ copy }: { copy: NewIssueCopy }) {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-12 items-center justify-between border border-signal bg-signal px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-signal-soft disabled:pointer-events-none disabled:opacity-50"
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-white bg-white px-5 text-sm font-medium text-black transition-colors hover:bg-zinc-200 disabled:pointer-events-none disabled:opacity-50"
     >
       {pending ? copy.submitting : copy.submit}
       <span aria-hidden="true">-&gt;</span>
     </button>
+  );
+}
+
+function FieldLabel({ children }: { children: string }) {
+  return (
+    <span className="text-sm font-medium text-foreground">{children}</span>
   );
 }
 
@@ -49,12 +55,10 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
     : null;
 
   return (
-    <form action={action} className="grid gap-6">
-      <div className="grid gap-6 md:grid-cols-2">
+    <form action={action} className="grid gap-7">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className="grid gap-2">
-          <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-            {copy.fields.title}
-          </span>
+          <FieldLabel>{copy.fields.title}</FieldLabel>
           <input
             type="text"
             name="title"
@@ -66,9 +70,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
           />
         </label>
         <label className="grid gap-2">
-          <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-            {copy.fields.projectType}
-          </span>
+          <FieldLabel>{copy.fields.projectType}</FieldLabel>
           <select
             name="projectType"
             required
@@ -85,9 +87,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
       </div>
 
       <label className="grid gap-2">
-        <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-          {copy.fields.brief}
-        </span>
+        <FieldLabel>{copy.fields.brief}</FieldLabel>
         <textarea
           name="brief"
           minLength={30}
@@ -99,9 +99,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
       </label>
 
       <label className="grid gap-2">
-        <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-          {copy.fields.outcome}
-        </span>
+        <FieldLabel>{copy.fields.outcome}</FieldLabel>
         <textarea
           name="desiredOutcome"
           minLength={10}
@@ -112,11 +110,9 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
         />
       </label>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2">
         <label className="grid gap-2">
-          <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-            {copy.fields.contactChannel}
-          </span>
+          <FieldLabel>{copy.fields.contactChannel}</FieldLabel>
           <select
             name="contactChannel"
             required
@@ -132,9 +128,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
           </select>
         </label>
         <label className="grid gap-2">
-          <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-            {copy.fields.contactHandle}
-          </span>
+          <FieldLabel>{copy.fields.contactHandle}</FieldLabel>
           <input
             type="text"
             name="contactHandle"
@@ -148,9 +142,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
       </div>
 
       <label className="grid gap-2">
-        <span className="font-mono text-sm tracking-[0.08em] text-muted-foreground">
-          {copy.fields.budget}
-        </span>
+        <FieldLabel>{copy.fields.budget}</FieldLabel>
         <input
           type="text"
           name="budgetRange"
@@ -160,8 +152,14 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
         />
       </label>
 
-      {error ? <p className="m-0 text-sm text-danger">{error}</p> : null}
-      <SubmitButton copy={copy} />
+      {error ? (
+        <p className="rounded-md border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm text-danger">
+          {error}
+        </p>
+      ) : null}
+      <div className="flex justify-end border-t border-border pt-6">
+        <SubmitButton copy={copy} />
+      </div>
     </form>
   );
 }

@@ -52,8 +52,8 @@ export function useLandingInteractions(locale: Locale) {
 
     const updatePointer = (event: PointerEvent) => {
       if (reduceMotion || event.pointerType === 'touch') return;
-      const x = (event.clientX / window.innerWidth - 0.5) * 18;
-      const y = (event.clientY / window.innerHeight - 0.5) * 14;
+      const x = (event.clientX / window.innerWidth - 0.5) * 10;
+      const y = (event.clientY / window.innerHeight - 0.5) * 8;
       root.style.setProperty('--pointer-x', `${x.toFixed(2)}px`);
       root.style.setProperty('--pointer-y', `${y.toFixed(2)}px`);
     };

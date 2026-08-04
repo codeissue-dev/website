@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
 
-import { eyebrow } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
 export function AdminPageHeader({
-  eyebrow: eyebrowText,
+  eyebrow,
   title,
   description,
   action,
@@ -19,20 +18,20 @@ export function AdminPageHeader({
   return (
     <header
       className={cn(
-        'grid gap-6 border-b border-border pb-8 md:grid-cols-[minmax(0,1fr)_auto] md:items-end',
-        compact && 'pb-6',
+        'flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between',
+        compact && 'pb-5',
       )}
     >
-      <div>
-        <p className={eyebrow}>{eyebrowText}</p>
-        <h1 className="mt-4 max-w-[16ch] text-[clamp(2rem,3.5vw,3.7rem)] font-medium leading-[0.98] tracking-[-0.05em]">
+      <div className="min-w-0">
+        <p className="font-mono text-sm text-signal-soft">{eyebrow}</p>
+        <h1 className="mt-3 max-w-[18ch] text-[clamp(2rem,4vw,3.45rem)] font-semibold leading-[1.03] tracking-[-0.055em]">
           {title}
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+        <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
           {description}
         </p>
       </div>
-      {action}
+      {action ? <div className="shrink-0">{action}</div> : null}
     </header>
   );
 }

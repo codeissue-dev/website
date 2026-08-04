@@ -19,7 +19,7 @@ export function SectionHeading({
   return (
     <header
       className={cn(
-        'grid gap-8 border-t border-border pt-5 md:grid-cols-[minmax(0,1.15fr)_minmax(16rem,0.85fr)] md:gap-12',
+        'grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.6fr)] lg:items-end lg:gap-16',
         className,
       )}
     >
@@ -30,24 +30,18 @@ export function SectionHeading({
         <h2
           className={cn(
             reveal,
-            'mt-6 max-w-[14ch] text-[clamp(2.1rem,4vw,4.25rem)] font-medium leading-[0.98] tracking-[-0.05em]',
+            'mt-5 max-w-[17ch] text-[clamp(2rem,4.2vw,4rem)] font-semibold leading-[1.02] tracking-[-0.055em]',
           )}
           data-reveal
         >
           {title}
         </h2>
       </div>
-      <div
-        className={cn(
-          reveal,
-          'flex flex-col justify-between gap-8 md:border-l md:border-border md:pl-8',
-        )}
-        data-reveal
-      >
+      <div className={cn(reveal, 'lg:pb-1')} data-reveal>
         <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
           {description}
         </p>
-        {aside}
+        {aside ? <div className="mt-6">{aside}</div> : null}
       </div>
     </header>
   );
