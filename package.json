@@ -1,6 +1,5 @@
 {
-  "name": "codeissue",
-  "version": "0.2.0",
+  "name": "codeissue-website",
   "private": true,
   "type": "module",
   "lint-staged": {
@@ -14,7 +13,7 @@
     "prettier:write": "prettier --write . --ignore-unknown",
     "check": "npm run typecheck && npm run lint:check && npm run test",
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "prepare": "husky",
     "test": "node --import tsx --test tests/index.ts",
