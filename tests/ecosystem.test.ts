@@ -35,6 +35,8 @@ test('installs the ecosystem stack and runs typed tests through tsx', async () =
     'node --import tsx --test tests/index.ts',
   );
   assert.equal(packageJson.scripts['db:migrate'], 'drizzle-kit migrate');
+  assert.equal(packageJson.scripts['db:doctor'], 'tsx scripts/db-doctor.ts');
+  assert.match(packageJson.scripts['db:studio'], /db:doctor/);
 });
 
 test('ships Auth.js, protected admin pages, APIs, and live event monitor', async () => {
@@ -99,6 +101,7 @@ test('defines the operational data model and tenant boundary', async () => {
 
   assert.match(workspaceService, /DEFAULT_WORKSPACE_SLUG/);
   assert.match(workspaceService, /requireWorkspaceAccess/);
+  assert.match(workspaceService, /ensureDefaultWorkspace/);
   assert.match(schema, /contacts_integration_external_unique/);
   assert.match(schema, /messages_conversation_external_unique/);
 });
@@ -212,6 +215,9 @@ test('supports username-only registration and issue intake without email', async
     issueAction,
     issueForm,
     migration,
+    workspaceMigration,
+    drizzleConfig,
+    databaseDoctor,
   ] = await Promise.all([
     readText('auth.ts'),
     readText('db/schema.ts'),
@@ -220,6 +226,9 @@ test('supports username-only registration and issue intake without email', async
     readText('features/issues/actions.ts'),
     readText('features/issues/new-issue-form.tsx'),
     readText('drizzle/0001_username_issue_intake.sql'),
+    readText('drizzle/0002_default_workspace.sql'),
+    readText('drizzle.config.ts'),
+    readText('scripts/db-doctor.ts'),
   ]);
 
   assert.match(auth, /credentials:\s*\{[\s\S]*?username/);
@@ -227,6 +236,8 @@ test('supports username-only registration and issue intake without email', async
   assert.doesNotMatch(registerForm, /type="email"|name="email"/);
   assert.match(register, /db\.transaction/);
   assert.match(register, /workspaceMembers/);
+  assert.match(register, /ensureDefaultWorkspace/);
+  assert.match(register, /service_unavailable/);
   assert.match(schema, /username: text\('username'\)\.notNull\(\)/);
   assert.match(schema, /requestedById/);
   assert.match(schema, /intake: jsonb/);
@@ -234,4 +245,8 @@ test('supports username-only registration and issue intake without email', async
   assert.doesNotMatch(issueAction, /email/);
   assert.doesNotMatch(issueForm, /type="email"|name="email"/);
   assert.match(migration, /ALTER COLUMN "email" DROP NOT NULL/);
+  assert.match(workspaceMigration, /ON CONFLICT \("slug"\)/);
+  assert.match(drizzleConfig, /load-local-env/);
+  assert.doesNotMatch(drizzleConfig, /postgresql:\/\/codeissue:codeissue@/);
+  assert.match(databaseDoctor, /28P01/);
 });

@@ -15,7 +15,7 @@
   ],
   "ignore": [],
   "forceInclude": [
-    "./node_modules/next/dist/docs/**"
+    ".env"
   ],
   "forceIgnore": [],
   "dot": true,

@@ -7,12 +7,25 @@ The public website and operations workspace for Codeissue.
 ```bash
 cp .env.example .env
 npm ci
-npm run db:migrate
-npm run db:seed
+docker compose up -d postgres
+npm run db:setup
 npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Database checks
+
+```bash
+npm run db:doctor
+npm run db:studio
+```
+
+If Docker reports a password authentication error after `.env` changed:
+
+```bash
+npm run db:password:sync
+```
 
 ## Documentation
 

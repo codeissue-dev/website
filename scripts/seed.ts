@@ -1,3 +1,5 @@
+import '@/lib/env/load-local-env';
+
 import { and, eq } from 'drizzle-orm';
 
 import { db, pool } from '@/db/client';

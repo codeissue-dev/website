@@ -11,6 +11,7 @@ const required = [
   'docs/technical/README.md',
   'docs/technical/architecture.md',
   'docs/technical/development.md',
+  'docs/technical/database.md',
   'docs/technical/testing.md',
   'docs/technical/localization.md',
   'docs/technical/deployment.md',

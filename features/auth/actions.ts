@@ -8,7 +8,7 @@ import { db } from '@/db/client';
 import { users, workspaceMembers } from '@/db/schema';
 import { parseRegistrationDraft } from '@/lib/auth/credentials';
 import { hashPassword } from '@/lib/auth/password';
-import { requireDefaultWorkspace } from '@/lib/workspaces/service';
+import { ensureDefaultWorkspace } from '@/lib/workspaces/service';
 
 export type LoginState = { error?: string };
 export type RegisterState = { error?: string };
@@ -65,18 +65,20 @@ export async function registerAccount(
     return { error: error instanceof Error ? error.message : 'unknown' };
   }
 
-  const [existing] = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.username, draft.username))
-    .limit(1);
-
-  if (existing) return { error: 'username_taken' };
-
-  const workspace = await requireDefaultWorkspace();
-  const passwordHash = await hashPassword(draft.password);
-
   try {
+    const [existing] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.username, draft.username))
+      .limit(1);
+
+    if (existing) return { error: 'username_taken' };
+
+    const [workspace, passwordHash] = await Promise.all([
+      ensureDefaultWorkspace(),
+      hashPassword(draft.password),
+    ]);
+
     await db.transaction(async (tx) => {
       const [user] = await tx
         .insert(users)
@@ -99,7 +101,8 @@ export async function registerAccount(
     });
   } catch (error) {
     if (isUniqueViolation(error)) return { error: 'username_taken' };
-    throw error;
+    console.error('Registration database operation failed.', error);
+    return { error: 'service_unavailable' };
   }
 
   await signIn('credentials', {

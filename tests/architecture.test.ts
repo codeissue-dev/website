@@ -53,6 +53,9 @@ test('organizes interface code by feature and shared responsibility', async () =
     'lib/config/site.ts',
     'lib/i18n/locales.ts',
     'scripts/check-boundaries.ts',
+    'lib/env/load-local-env.ts',
+    'scripts/db-doctor.ts',
+    'scripts/sync-db-password.ts',
   ];
 
   await Promise.all(files.map(assertFile));
@@ -134,6 +137,7 @@ test('separates concise user docs from detailed technical docs in English', asyn
     'docs/technical/README.md',
     'docs/technical/architecture.md',
     'docs/technical/development.md',
+    'docs/technical/database.md',
     'docs/technical/testing.md',
     'docs/technical/localization.md',
     'docs/technical/deployment.md',
@@ -149,8 +153,14 @@ test('separates concise user docs from detailed technical docs in English', asyn
     );
   }
   assert.ok(sources[0].split('\n').length < 60);
-  assert.match(sources[6], /Feature boundaries/);
-  assert.match(sources[10], /Release sequence/);
+  assert.match(
+    await readText('docs/technical/architecture.md'),
+    /Feature boundaries/,
+  );
+  assert.match(
+    await readText('docs/technical/deployment.md'),
+    /Release sequence/,
+  );
 });
 
 test('uses feature public entrypoints and enforces package boundaries', async () => {

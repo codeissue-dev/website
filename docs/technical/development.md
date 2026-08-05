@@ -11,8 +11,9 @@
 ```bash
 cp .env.example .env
 npm ci
-npm run db:migrate
-npm run db:seed
+docker compose up -d postgres
+npm run db:setup
+npm run db:doctor
 npm run dev
 ```
 
@@ -41,7 +42,10 @@ npm run dev
 3. Review the generated SQL.
 4. Run `npm run db:migrate`.
 5. Update seed data and tests when the schema contract changes.
-6. Commit the schema and migration together.
+6. Run `npm run db:doctor`.
+7. Commit the schema and migration together.
+
+See [Database operations](database.md) for Drizzle Studio and Docker password troubleshooting.
 
 ## Server actions
 

@@ -2,6 +2,7 @@
 
 - [Architecture](architecture.md)
 - [Development](development.md)
+- [Database operations](database.md)
 - [Testing and quality gates](testing.md)
 - [Localization](localization.md)
 - [Deployment](deployment.md)

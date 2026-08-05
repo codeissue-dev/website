@@ -1,5 +1,6 @@
 {
   "name": "@codeissue/website",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "lint-staged": {
@@ -22,12 +23,15 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio --port 4984",
+    "db:studio": "npm run db:doctor && drizzle-kit studio --port 4984",
     "db:seed": "tsx scripts/seed.ts",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
     "docs:check": "node --import tsx scripts/check-docs.ts",
-    "boundaries:check": "node --import tsx scripts/check-boundaries.ts"
+    "boundaries:check": "node --import tsx scripts/check-boundaries.ts",
+    "db:setup": "npm run db:migrate && npm run db:seed",
+    "db:doctor": "tsx scripts/db-doctor.ts",
+    "db:password:sync": "tsx scripts/sync-db-password.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",

@@ -326,7 +326,8 @@
       "invalid_display_name": "Enter a display name between 2 and 80 characters.",
       "invalid_password": "Use a password with at least 12 characters.",
       "username_taken": "This username is already taken.",
-      "unknown": "Account could not be created. Try again."
+      "unknown": "Account could not be created. Try again.",
+      "service_unavailable": "Registration is temporarily unavailable. Check the database setup and try again."
     }
   },
   "newIssue": {

@@ -49,6 +49,24 @@ export async function requireWorkspaceAccess(
   }
 }
 
+export async function ensureDefaultWorkspace() {
+  const [workspace] = await db
+    .insert(workspaces)
+    .values({ name: 'Codeissue', slug: DEFAULT_WORKSPACE_SLUG })
+    .onConflictDoUpdate({
+      target: workspaces.slug,
+      set: { name: 'Codeissue' },
+    })
+    .returning({
+      id: workspaces.id,
+      slug: workspaces.slug,
+      name: workspaces.name,
+    });
+
+  if (!workspace) throw new Error('Workspace could not be initialized.');
+  return workspace;
+}
+
 export async function requireDefaultWorkspace() {
   const workspace = await findWorkspaceBySlug();
   if (!workspace) throw new Error('Workspace is not initialized.');

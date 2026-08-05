@@ -15,6 +15,13 @@
       "when": 1785860000000,
       "tag": "0001_username_issue_intake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785902400000,
+      "tag": "0002_default_workspace",
+      "breakpoints": true
     }
   ]
 }
