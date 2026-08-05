@@ -80,3 +80,9 @@ Runtime translations live only in `locales/`. Historical translation paths are r
 ## Backend bridge
 
 The admin bridge validates backend paths, removes browser credentials, adds trusted account identity, and forwards requests with server-only credentials. WebSocket connections use short-lived tickets so persistent backend secrets never enter browser JavaScript.
+
+The sibling `@codeissue/backend` NestJS service is the trusted operational boundary behind that bridge. It validates the service token and forwarded administrator identity, re-checks the account and workspace administrator membership in PostgreSQL, and scopes every order, conversation, integration, and event operation to the configured workspace.
+
+The website owns Auth.js sessions and Drizzle migrations. The backend shares the resulting PostgreSQL schema rather than introducing a second identity store or a competing migration history. Mutations that enqueue external work persist their `integration_events` record in the same transaction.
+
+Realtime delivery is derived from persisted events. The backend issues one-time, short-lived WebSocket tickets bound to an administrator and workspace, validates the browser origin during upgrade, and sends only events from that workspace. A database poller also captures events written by the website or external workers, so the live stream is not limited to changes initiated through the backend API.
