@@ -1,4 +1,7 @@
 import { CheckIcon } from '@/components/icons';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import type { Dictionary } from '@/lib/i18n';
 import { reveal } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
@@ -19,11 +22,11 @@ export function ProcessTimeline({ copy }: { copy: Dictionary['process'] }) {
           >
             <i className="size-1 rounded-full bg-black" />
           </span>
-          <div className="rounded-xl border border-border bg-card p-5 transition-[border-color,background-color,transform] duration-300 group-[.is-current]:translate-x-1 group-[.is-current]:border-signal/45 group-[.is-current]:bg-surface-soft sm:p-7">
+          <Card className="p-5 transition-[border-color,background-color,transform] duration-300 group-[.is-current]:translate-x-1 group-[.is-current]:border-signal/45 group-[.is-current]:bg-surface-soft sm:p-7">
             <div className="flex items-center justify-between gap-4">
-              <span className="font-mono text-sm text-signal-soft">
+              <Badge className="border-signal/15 bg-signal/5 text-signal-soft">
                 {step.number}
-              </span>
+              </Badge>
               <span className="font-mono text-sm text-muted-foreground">
                 {String(index + 1).padStart(2, '0')} /{' '}
                 {String(copy.steps.length).padStart(2, '0')}
@@ -35,23 +38,22 @@ export function ProcessTimeline({ copy }: { copy: Dictionary['process'] }) {
             <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
               {step.copy}
             </p>
-            <div className="mt-7 border-t border-border pt-5">
-              <span className="text-sm font-medium text-foreground">
-                {copy.deliverablesLabel}
-              </span>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-                {step.deliverables.map((deliverable) => (
-                  <li
-                    key={deliverable}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
-                  >
-                    <CheckIcon className="size-4 shrink-0 text-positive" />
-                    {deliverable}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+            <Separator className="my-5" />
+            <span className="text-sm font-medium text-foreground">
+              {copy.deliverablesLabel}
+            </span>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+              {step.deliverables.map((deliverable) => (
+                <li
+                  key={deliverable}
+                  className="flex items-center gap-2 text-sm text-muted-foreground"
+                >
+                  <CheckIcon className="size-4 shrink-0 text-positive" />
+                  {deliverable}
+                </li>
+              ))}
+            </ul>
+          </Card>
         </li>
       ))}
     </ol>

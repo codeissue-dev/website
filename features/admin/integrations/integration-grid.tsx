@@ -1,4 +1,5 @@
 import { StatusPill } from '@/components/admin/status-pill';
+import { Button } from '@/components/ui/button';
 import { SocialIcon, type SocialIconName } from '@/components/social-icons';
 import { Panel, PanelHeader } from '@/components/ui/panel';
 import type { IntegrationSummary } from '@/lib/admin';
@@ -75,12 +76,9 @@ export function IntegrationGrid({
                     ? formatRelativeTime(integration.lastEventAt, locale)
                     : copy.noEvents}
                 </span>
-                <button
-                  type="button"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
+                <Button type="button" variant="ghost" size="sm">
                   {copy.configure} -&gt;
-                </button>
+                </Button>
               </footer>
             </article>
           );

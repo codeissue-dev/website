@@ -1,4 +1,5 @@
 import { signOut } from '@/auth';
+import { Button } from '@/components/ui/button';
 import type { Dictionary } from '@/lib/i18n';
 
 import type { AdminSessionUser } from './types';
@@ -31,12 +32,14 @@ export function AdminAccount({
           await signOut({ redirectTo: '/' });
         }}
       >
-        <button
+        <Button
           type="submit"
-          className="h-9 w-full rounded-md px-3 text-left text-sm text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger"
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start hover:bg-danger/10 hover:text-danger"
         >
           {copy.signOut}
-        </button>
+        </Button>
       </form>
     </div>
   );

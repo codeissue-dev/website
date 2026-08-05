@@ -5,7 +5,7 @@ import { useActionState } from 'react';
 import { authenticate, type LoginState } from './actions';
 import { FormError, FormField } from '@/components/forms/form-field';
 import { SubmitButton } from '@/components/forms/submit-button';
-import { fieldClass } from '@/lib/ui/styles';
+import { Input } from '@/components/ui/input';
 
 type LoginCopy = {
   username: string;
@@ -30,22 +30,15 @@ export function LoginForm({
     <form action={action} className="mt-8 grid gap-5">
       <input type="hidden" name="callbackUrl" value={callbackUrl} />
       <FormField label={copy.username}>
-        <input
-          type="text"
-          name="username"
-          autoComplete="username"
-          required
-          className={fieldClass}
-        />
+        <Input type="text" name="username" autoComplete="username" required />
       </FormField>
       <FormField label={copy.password}>
-        <input
+        <Input
           type="password"
           name="password"
           autoComplete="current-password"
           minLength={12}
           required
-          className={fieldClass}
         />
       </FormField>
       <FormError>{state.error ? copy.error : null}</FormError>

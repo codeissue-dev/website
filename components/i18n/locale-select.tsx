@@ -1,9 +1,14 @@
 'use client';
 
 import { useChangeLanguage } from 'next-i18next/client';
-import type { ChangeEvent } from 'react';
 
-import { ChevronDownIcon } from '@/components/icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { siteConfig } from '@/lib/config/site';
 import {
   getLocaleOption,
@@ -24,38 +29,30 @@ export function LocaleSelect({
   const changeLanguage = useChangeLanguage(siteConfig.localeCookie);
   const current = getLocaleOption(locale);
 
-  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
-    changeLanguage(event.target.value as Locale);
-  }
-
   return (
-    <label
-      className={cn(
-        'relative inline-flex h-9 items-center gap-2 rounded-md border border-border bg-surface px-2.5 text-sm text-muted-foreground transition-colors hover:border-border-strong hover:bg-surface-soft hover:text-foreground',
-        className,
-      )}
+    <Select
+      value={locale}
+      onValueChange={(value) => changeLanguage(value as Locale)}
+      className={className}
     >
-      <span aria-hidden="true" className="text-base leading-none">
-        {current.flag}
-      </span>
-      <span className="sr-only">{label}</span>
-      <select
-        value={locale}
-        onChange={handleChange}
-        aria-label={label}
-        className="min-w-[5.25rem] cursor-pointer appearance-none bg-transparent pr-5 text-sm font-medium text-current outline-none"
-      >
+      <SelectTrigger aria-label={label} className={cn('min-w-36', className)}>
+        <SelectValue>
+          <span aria-hidden="true" className="text-base leading-none">
+            {current.flag}
+          </span>
+          <span className="truncate">{current.label}</span>
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent align="end">
         {localeOptions.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            className="bg-black text-white"
-          >
-            {option.flag} {option.label}
-          </option>
+          <SelectItem key={option.value} value={option.value}>
+            <span aria-hidden="true" className="text-base leading-none">
+              {option.flag}
+            </span>
+            <span>{option.label}</span>
+          </SelectItem>
         ))}
-      </select>
-      <ChevronDownIcon className="pointer-events-none absolute right-2.5 size-3.5" />
-    </label>
+      </SelectContent>
+    </Select>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useFormStatus } from 'react-dom';
 
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export function SubmitButton({
@@ -19,17 +19,14 @@ export function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <button
+    <Button
       type="submit"
+      size="lg"
       disabled={pending}
-      className={cn(
-        buttonVariants({ size: 'lg' }),
-        fullWidth && 'w-full',
-        className,
-      )}
+      className={cn(fullWidth && 'w-full', className)}
     >
       {pending ? pendingLabel : idle}
       <span aria-hidden="true">-&gt;</span>
-    </button>
+    </Button>
   );
 }

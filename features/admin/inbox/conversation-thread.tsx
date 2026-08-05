@@ -1,10 +1,9 @@
 import { queueReply } from './actions';
 import { ChannelAvatar } from '@/components/admin/channel-avatar';
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import type { ConversationSummary } from '@/lib/admin';
 import { formatRelativeTime } from '@/lib/format';
-import { textareaClass } from '@/lib/ui/styles';
-import { cn } from '@/lib/utils';
 
 export function ConversationThread({
   conversation,
@@ -79,24 +78,21 @@ export function ConversationThread({
         action={queueReply}
       >
         <input type="hidden" name="conversationId" value={conversation.id} />
-        <textarea
+        <Textarea
           name="body"
           maxLength={10_000}
           placeholder={copy.replyPlaceholder}
           aria-label={copy.replyPlaceholder}
           required
-          className={cn(textareaClass, 'min-h-24 resize-y')}
+          className="min-h-24"
         />
         <div className="mt-3 flex items-center justify-between gap-4">
           <span className="hidden text-sm text-muted-foreground sm:block">
             {conversation.source} / {conversation.contact}
           </span>
-          <button
-            type="submit"
-            className={buttonVariants({ size: 'md', className: 'ml-auto' })}
-          >
+          <Button type="submit" className="ml-auto">
             {copy.send} -&gt;
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { CloseIcon, MenuIcon } from '@/components/icons';
 import { BrandLink } from '@/components/layout/brand-link';
+import { Button } from '@/components/ui/button';
 import type { Dictionary, Locale } from '@/lib/i18n';
 import { pageFrame } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
@@ -55,9 +56,11 @@ export function SiteHeader({
           <SiteHeaderActions locale={locale} copy={copy} />
         </div>
 
-        <button
+        <Button
           type="button"
-          className="grid size-10 place-items-center rounded-md border border-border bg-surface text-foreground transition-colors hover:border-border-strong hover:bg-surface-soft lg:hidden"
+          variant="secondary"
+          size="icon"
+          className="lg:hidden"
           aria-label={menuOpen ? copy.nav.close : copy.nav.menu}
           aria-expanded={menuOpen}
           aria-controls="mobile-navigation"
@@ -68,7 +71,7 @@ export function SiteHeader({
           ) : (
             <MenuIcon className="size-4" />
           )}
-        </button>
+        </Button>
       </div>
 
       <MobileNavigation

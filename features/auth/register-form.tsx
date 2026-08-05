@@ -5,7 +5,7 @@ import { useActionState } from 'react';
 import { registerAccount, type RegisterState } from './actions';
 import { FormError, FormField } from '@/components/forms/form-field';
 import { SubmitButton } from '@/components/forms/submit-button';
-import { fieldClass } from '@/lib/ui/styles';
+import { Input } from '@/components/ui/input';
 
 type RegisterCopy = {
   displayName: string;
@@ -36,18 +36,17 @@ export function RegisterForm({
     <form action={action} className="mt-8 grid gap-5">
       <input type="hidden" name="callbackUrl" value={callbackUrl} />
       <FormField label={copy.displayName}>
-        <input
+        <Input
           type="text"
           name="displayName"
           autoComplete="name"
           minLength={2}
           maxLength={80}
           required
-          className={fieldClass}
         />
       </FormField>
       <FormField label={copy.username} hint={copy.usernameHint}>
-        <input
+        <Input
           type="text"
           name="username"
           autoComplete="username"
@@ -55,18 +54,16 @@ export function RegisterForm({
           maxLength={32}
           pattern="[a-zA-Z0-9][a-zA-Z0-9_-]{2,31}"
           required
-          className={fieldClass}
         />
       </FormField>
       <FormField label={copy.password} hint={copy.passwordHint}>
-        <input
+        <Input
           type="password"
           name="password"
           autoComplete="new-password"
           minLength={12}
           maxLength={128}
           required
-          className={fieldClass}
         />
       </FormField>
       <FormError>{error}</FormError>

@@ -1,8 +1,12 @@
 import { CheckIcon } from '@/components/icons';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import type { Dictionary } from '@/lib/i18n';
 import { pageFrame, reveal, sectionSpacing } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
+import { ApproachVisual } from './approach-visual';
 import { SectionHeading } from './section-heading';
 
 export function ApproachSection({ copy }: { copy: Dictionary }) {
@@ -20,42 +24,42 @@ export function ApproachSection({ copy }: { copy: Dictionary }) {
           title={copy.approach.title}
           description={copy.approach.description}
           aside={
-            <span className="font-mono text-sm text-muted-foreground">
+            <Badge className="border-white/10 bg-black text-muted-foreground">
               {copy.approach.label}
-            </span>
+            </Badge>
           }
         />
 
-        <div className="mt-12 grid gap-3 lg:mt-16 lg:grid-cols-3">
-          {copy.approach.principles.map((principle) => (
-            <article
-              key={principle.number}
-              className={cn(
-                reveal,
-                'group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-[border-color,background-color,transform] duration-300 hover:-translate-y-1 hover:border-border-strong hover:bg-surface-soft sm:p-7',
-              )}
-              data-reveal
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-sm text-signal-soft">
-                  {principle.number}
-                </span>
-                <span className="grid size-8 place-items-center rounded-md border border-border bg-black text-muted-foreground transition-colors group-hover:border-signal/40 group-hover:text-signal-soft">
-                  <CheckIcon className="size-4" />
-                </span>
-              </div>
-              <h3 className="mt-10 max-w-[18ch] text-xl font-semibold tracking-[-0.035em] sm:text-2xl">
-                {principle.title}
-              </h3>
-              <p className="mt-4 text-base leading-7 text-muted-foreground">
-                {principle.copy}
-              </p>
-              <span
-                className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-linear-to-r from-signal to-transparent transition-transform duration-500 group-hover:scale-x-100"
-                aria-hidden="true"
-              />
-            </article>
-          ))}
+        <div className="mt-12 grid gap-4 lg:mt-16 lg:grid-cols-[minmax(18rem,0.72fr)_minmax(0,1.28fr)]">
+          <div className="grid gap-3">
+            {copy.approach.principles.map((principle) => (
+              <Card
+                key={principle.number}
+                className={cn(
+                  reveal,
+                  'group p-5 transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-soft sm:p-6',
+                )}
+                data-reveal
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <span className="font-mono text-sm text-signal-soft">
+                    {principle.number}
+                  </span>
+                  <span className="grid size-8 place-items-center rounded-md border border-border bg-black text-muted-foreground transition-colors group-hover:border-signal/40 group-hover:text-signal-soft">
+                    <CheckIcon className="size-4" />
+                  </span>
+                </div>
+                <h3 className="mt-7 text-xl font-semibold tracking-[-0.035em]">
+                  {principle.title}
+                </h3>
+                <Separator className="my-4" />
+                <p className="text-base leading-7 text-muted-foreground">
+                  {principle.copy}
+                </p>
+              </Card>
+            ))}
+          </div>
+          <ApproachVisual copy={copy.approach} />
         </div>
       </div>
     </section>

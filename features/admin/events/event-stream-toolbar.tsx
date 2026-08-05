@@ -1,6 +1,6 @@
 'use client';
 
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import type { ConnectionState, EventStreamCopy } from './types';
@@ -56,31 +56,26 @@ export function EventStreamToolbar({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
+          <Button
             type="button"
             onClick={active ? onDisconnect : onConnect}
-            className={buttonVariants({
-              variant: active ? 'secondary' : 'default',
-              size: 'sm',
-            })}
+            variant={active ? 'secondary' : 'default'}
+            size="sm"
           >
             {active ? copy.disconnect : copy.connect}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={onRefresh}
             disabled={apiLoading}
-            className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+            variant="secondary"
+            size="sm"
           >
             {apiLoading ? '...' : copy.refresh}
-          </button>
-          <button
-            type="button"
-            onClick={onClear}
-            className={buttonVariants({ variant: 'ghost', size: 'sm' })}
-          >
+          </Button>
+          <Button type="button" onClick={onClear} variant="ghost" size="sm">
             {copy.clear}
-          </button>
+          </Button>
         </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-white/[0.02] px-5 py-3 text-sm text-muted-foreground sm:px-6">

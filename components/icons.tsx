@@ -264,3 +264,86 @@ export function ChevronDownIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function FileTextIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M6 3h8l4 4v14H6V3Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 3v5h5M9 12h6M9 16h6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function CursorIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="m5 3 13 9-6 2-3 6L5 3Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function GitBranchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <circle cx="6" cy="5" r="2" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="18" cy="7" r="2" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="6" cy="19" r="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M6 7v10M8 9h4a6 6 0 0 0 6-6v2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+export function RocketIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M14 4c2.7-1.4 5-1 6-1-0 1 .4 3.3-1 6l-5.8 5.8-4-4L14 4Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m9 9-4 .8L3 13l5 1M15 15l-.8 4L11 21l-1-5M8 16l-3 3"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="16" cy="7" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function ChartIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M4 19V5M4 19h16M7 15l4-4 3 2 5-6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

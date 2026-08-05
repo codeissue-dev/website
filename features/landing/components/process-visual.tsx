@@ -1,61 +1,150 @@
 import Image from 'next/image';
 
+import {
+  ChartIcon,
+  CursorIcon,
+  FileTextIcon,
+  GitBranchIcon,
+} from '@/components/icons';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
 import type { Dictionary } from '@/lib/i18n';
 import { reveal } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
+const scenes = [
+  {
+    image: '/images/process/discovery.webp',
+    icon: FileTextIcon,
+  },
+  {
+    image: '/images/process/design.webp',
+    icon: CursorIcon,
+  },
+  {
+    image: '/images/process/build.webp',
+    icon: GitBranchIcon,
+  },
+  {
+    image: '/images/process/review.webp',
+    icon: ChartIcon,
+  },
+] as const;
+
 export function ProcessVisual({ copy }: { copy: Dictionary['process'] }) {
   return (
     <div className="lg:sticky lg:top-28 lg:h-fit">
-      <div
+      <Card
         className={cn(
           reveal,
-          'relative overflow-hidden rounded-xl border border-border bg-card p-5 shadow-[0_20px_60px_rgba(0,0,0,0.45)] sm:p-6',
+          'overflow-hidden border-white/12 bg-card shadow-[0_24px_80px_rgba(0,0,0,0.55)]',
         )}
         data-reveal
+        data-process-visual
+        data-active-step="0"
       >
-        <div className="relative aspect-4/3 overflow-hidden rounded-lg border border-border bg-black">
-          <div
-            className="absolute inset-0 transform-[translate3d(0,var(--parallax-y,0px),0)] transition-transform duration-200 motion-reduce:transform-none"
-            data-parallax="0.1"
-          >
-            <Image
-              src="/images/avatar.png"
-              alt="Codeissue workflow illustration"
-              fill
-              sizes="(max-width: 1024px) 100vw, 36vw"
-              className="object-cover opacity-45 grayscale"
-            />
-          </div>
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_35%,#000_100%)]" />
-          <div className="absolute inset-x-4 bottom-4 rounded-lg border border-white/10 bg-black/75 p-4 backdrop-blur-md">
-            <div className="flex items-center justify-between gap-4">
-              <span className="font-mono text-sm text-muted-foreground">
-                {copy.currentLabel}
-              </span>
-              <span className="inline-flex items-center gap-2 text-sm text-positive">
-                <i className="size-1.5 rounded-full bg-positive" />
-                {copy.status}
-              </span>
-            </div>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/5">
-              <span className="block h-full w-3/4 rounded-full bg-linear-to-r from-signal to-signal-soft" />
-            </div>
-          </div>
-        </div>
-        <div className="mt-5 grid grid-cols-4 gap-2">
-          {copy.steps.map((step, index) => (
-            <div
-              key={step.number}
-              className="rounded-md border border-border bg-black p-3 text-center"
+        <div className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6">
+          <div>
+            <p className="font-mono text-sm text-muted-foreground">
+              {copy.currentLabel}
+            </p>
+            <p
+              className="mt-1 text-sm font-medium text-foreground"
+              data-process-stage-title
             >
-              <span className="font-mono text-sm text-signal-soft">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-            </div>
-          ))}
+              {copy.steps[0]?.title}
+            </p>
+          </div>
+          <Badge className="gap-2 border-positive/25 bg-positive/8 text-positive">
+            <i
+              className="size-1.5 rounded-full bg-positive"
+              aria-hidden="true"
+            />
+            {copy.status}
+          </Badge>
         </div>
-      </div>
+
+        <Separator />
+
+        <div className="relative aspect-[4/3] overflow-hidden bg-black">
+          {copy.steps.map((step, index) => {
+            const scene = scenes[index] ?? scenes[0];
+            const Icon = scene.icon;
+
+            return (
+              <div
+                key={step.number}
+                className={cn(
+                  'absolute inset-0 opacity-0 transition-[opacity,transform] duration-500 ease-out [transform:scale(1.025)]',
+                  index === 0 && 'is-active opacity-100 [transform:scale(1)]',
+                )}
+                data-process-scene
+                data-scene-index={index}
+                aria-hidden={index !== 0}
+              >
+                <Image
+                  src={scene.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 36vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black via-black/10 to-transparent" />
+                <div className="absolute inset-x-4 bottom-4 border border-white/12 bg-black/82 p-4 backdrop-blur-md sm:inset-x-5 sm:bottom-5">
+                  <div className="flex items-start gap-3">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-md border border-white/12 bg-white/[0.045] text-signal-soft">
+                      <Icon className="size-4.5" />
+                    </span>
+                    <div className="min-w-0">
+                      <span className="font-mono text-sm text-signal-soft">
+                        {step.number}
+                      </span>
+                      <h3 className="mt-1 truncate text-base font-semibold tracking-[-0.025em]">
+                        {step.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4 px-5 py-5 sm:px-6">
+          <div className="flex items-center justify-between gap-4 text-sm">
+            <span className="text-muted-foreground">{copy.currentLabel}</span>
+            <span
+              className="font-mono text-foreground"
+              data-process-progress-value
+            >
+              0%
+            </span>
+          </div>
+          <Progress
+            value={0}
+            data-process-progress
+            indicatorClassName="bg-linear-to-r from-signal to-signal-soft duration-100"
+            indicatorProps={{ 'data-process-progress-indicator': '' }}
+          />
+          <div className="grid grid-cols-4 gap-2" aria-hidden="true">
+            {copy.steps.map((step, index) => (
+              <span
+                key={step.number}
+                className={cn(
+                  'h-1 rounded-full bg-border transition-colors duration-300',
+                  index === 0 && 'bg-signal',
+                )}
+                data-process-marker
+                data-marker-index={index}
+              />
+            ))}
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

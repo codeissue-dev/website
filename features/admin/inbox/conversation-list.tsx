@@ -1,7 +1,8 @@
 import { ChannelAvatar } from '@/components/admin/channel-avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { ConversationSummary } from '@/lib/admin';
 import { formatRelativeTime } from '@/lib/format';
-import { compactButton, fieldClass } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
 export function ConversationList({
@@ -16,25 +17,18 @@ export function ConversationList({
   return (
     <aside className="border-b border-border lg:border-r lg:border-b-0">
       <div className="border-b border-border p-4">
-        <input
+        <Input
           type="search"
           placeholder={copy.search}
           aria-label={copy.search}
-          className={fieldClass}
         />
         <div className="mt-3 flex gap-2">
-          <button
-            type="button"
-            className={cn(
-              compactButton,
-              'border-white/15 bg-white/[0.08] text-foreground',
-            )}
-          >
+          <Button type="button" variant="secondary" size="sm">
             {copy.all}
-          </button>
-          <button type="button" className={compactButton}>
+          </Button>
+          <Button type="button" variant="ghost" size="sm">
             {copy.unread}
-          </button>
+          </Button>
         </div>
       </div>
       <div className="max-h-[28rem] overflow-y-auto lg:max-h-[calc(42rem-7rem)]">

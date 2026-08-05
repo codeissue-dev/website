@@ -1,17 +1,12 @@
-import {
-  ArrowUpRightIcon,
-  DatabaseIcon,
-  LayersIcon,
-  SparkIcon,
-  TerminalIcon,
-} from '@/components/icons';
+import { ArrowUpRightIcon } from '@/components/icons';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import type { Dictionary } from '@/lib/i18n';
 import { pageFrame, reveal, sectionSpacing } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
 
 import { SectionHeading } from './section-heading';
-
-const icons = [LayersIcon, TerminalIcon, SparkIcon, DatabaseIcon] as const;
+import { ServiceVisual } from './service-visual';
 
 export function ServicesSection({ copy }: { copy: Dictionary }) {
   return (
@@ -34,41 +29,33 @@ export function ServicesSection({ copy }: { copy: Dictionary }) {
         />
 
         <div className="mt-14 grid gap-3 md:grid-cols-2 lg:mt-16">
-          {copy.services.items.map((item, index) => {
-            const Icon = icons[index] ?? LayersIcon;
-            return (
-              <article
-                key={item.number}
-                className={cn(
-                  reveal,
-                  'group relative min-h-64 overflow-hidden rounded-xl border border-border bg-card p-6 transition-[border-color,background-color,transform] duration-300 hover:-translate-y-1 hover:border-border-strong hover:bg-surface-soft sm:p-8',
-                )}
-                data-reveal
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <span className="grid size-10 place-items-center rounded-lg border border-border bg-black text-muted-foreground transition-colors group-hover:border-signal/40 group-hover:text-signal-soft">
-                    <Icon className="size-5" />
-                  </span>
-                  <ArrowUpRightIcon className="size-4 text-muted-foreground transition-[color,transform] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
-                </div>
-                <div className="mt-14">
+          {copy.services.items.map((item, index) => (
+            <Card
+              key={item.number}
+              className={cn(
+                reveal,
+                'group overflow-hidden transition-[border-color,background-color,transform] duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:bg-surface-soft',
+              )}
+              data-reveal
+            >
+              <ServiceVisual index={index} />
+              <div className="p-6 sm:p-7">
+                <div className="flex items-center justify-between gap-4">
                   <span className="font-mono text-sm text-signal-soft">
                     {item.number}
                   </span>
-                  <h3 className="mt-3 text-xl font-semibold tracking-[-0.035em] sm:text-2xl">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
-                    {item.copy}
-                  </p>
+                  <ArrowUpRightIcon className="size-4 text-muted-foreground transition-[color,transform] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
                 </div>
-                <div
-                  className="pointer-events-none absolute -bottom-20 -right-16 size-48 rounded-full bg-signal/10 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  aria-hidden="true"
-                />
-              </article>
-            );
-          })}
+                <h3 className="mt-5 text-xl font-semibold tracking-[-0.035em] sm:text-2xl">
+                  {item.title}
+                </h3>
+                <Separator className="my-4" />
+                <p className="max-w-xl text-base leading-7 text-muted-foreground">
+                  {item.copy}
+                </p>
+              </div>
+            </Card>
+          ))}
         </div>
       </div>
     </section>

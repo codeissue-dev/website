@@ -1,8 +1,14 @@
 import { createOrder } from './actions';
 import { FormField } from '@/components/forms/form-field';
-import { buttonVariants } from '@/components/ui/button';
+import { FormSelect } from '@/components/forms/form-select';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import type { Dictionary } from '@/lib/i18n';
-import { fieldClass } from '@/lib/ui/styles';
+
+const currencyOptions = ['USD', 'EUR', 'RUB'].map((currency) => ({
+  value: currency,
+  label: currency,
+}));
 
 export function NewOrderMenu({
   copy,
@@ -24,19 +30,17 @@ export function NewOrderMenu({
         className="absolute right-0 top-[calc(100%_+_0.75rem)] z-20 grid w-[min(25rem,calc(100vw_-_2rem))] gap-4 rounded-xl border border-border bg-card p-5 shadow-2xl shadow-black/60"
       >
         <FormField label={copy.titleLabel}>
-          <input
-            type="text"
+          <Input
             name="title"
             minLength={3}
             maxLength={200}
             placeholder={copy.titlePlaceholder}
             required
-            className={fieldClass}
           />
         </FormField>
         <div className="grid grid-cols-[1fr_7rem] gap-3">
           <FormField label={copy.valueLabel}>
-            <input
+            <Input
               type="number"
               name="value"
               min="0"
@@ -44,20 +48,18 @@ export function NewOrderMenu({
               step="0.01"
               defaultValue="0"
               required
-              className={fieldClass}
             />
           </FormField>
           <FormField label={copy.currencyLabel}>
-            <select name="currency" defaultValue="USD" className={fieldClass}>
-              <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              <option value="RUB">RUB</option>
-            </select>
+            <FormSelect
+              name="currency"
+              defaultValue="USD"
+              options={currencyOptions}
+              ariaLabel={copy.currencyLabel}
+            />
           </FormField>
         </div>
-        <button type="submit" className={buttonVariants({ size: 'md' })}>
-          {copy.create}
-        </button>
+        <Button type="submit">{copy.create}</Button>
       </form>
     </details>
   );

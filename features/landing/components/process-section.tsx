@@ -7,7 +7,7 @@ import { SectionHeading } from './section-heading';
 
 export function ProcessSection({ copy }: { copy: Dictionary }) {
   return (
-    <section id="process" className={sectionSpacing}>
+    <section id="process" className={sectionSpacing} data-process-section>
       <div className={pageFrame}>
         <SectionHeading
           eyebrow={copy.process.eyebrow}

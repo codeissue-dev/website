@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
 export function FormField({
@@ -14,13 +15,15 @@ export function FormField({
   className?: string;
 }) {
   return (
-    <label className={cn('grid gap-2', className)}>
-      <span className="text-sm font-medium text-foreground">{label}</span>
+    <Label className={cn('grid gap-2', className)}>
+      <span>{label}</span>
       {children}
       {hint ? (
-        <span className="text-sm leading-5 text-muted-foreground">{hint}</span>
+        <span className="text-sm font-normal leading-5 text-muted-foreground">
+          {hint}
+        </span>
       ) : null}
-    </label>
+    </Label>
   );
 }
 

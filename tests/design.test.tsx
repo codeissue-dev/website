@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 
 import { SocialIcon } from '../components/social-icons';
 import { socials } from '../lib/site-data';
-import { readText } from './helpers/project';
+import { assertFile, readText } from './helpers/project';
 
 function relativeLuminance(hex: string) {
   const channels = hex
@@ -61,7 +61,9 @@ test('keeps next-i18next in no-locale-path mode', async () => {
   assert.match(config, /next-i18next\/proxy/);
   assert.match(proxy, /createProxy/);
   assert.match(switcher, /useChangeLanguage/);
-  assert.match(switcher, /<select/);
+  assert.match(switcher, /components\/ui\/select/);
+  assert.match(switcher, /<SelectTrigger/);
+  assert.doesNotMatch(switcher, /<select/);
   assert.match(switcher, /current\.flag/);
   assert.match(switcher, /option\.flag/);
   assert.match(legacyRoute, /redirect\('\/'\)/);
@@ -114,11 +116,15 @@ test('restores illustration, scroll reveal, pointer parallax, and process intera
   assert.match(heroOverview, /banner\.png/);
   assert.match(heroOverview, /CodeIssueMark/);
   assert.match(heroArt, /data-parallax/);
-  assert.match(processVisual, /avatar\.png/);
+  assert.match(processVisual, /images\/process\//);
+  assert.match(processVisual, /data-process-progress-indicator/);
+  assert.match(processVisual, /Progress/);
   assert.match(processTimeline, /data-process-step/);
   assert.match(interactions, /pointermove/);
   assert.match(interactions, /IntersectionObserver/);
   assert.match(interactions, /--parallax-y/);
+  assert.match(interactions, /data-process-progress-indicator/);
+  assert.match(interactions, /processPercent/);
 });
 
 test('ships an accessible mobile burger menu', async () => {
@@ -152,4 +158,73 @@ test('uses a restrained Next and Vercel inspired interface system', async () => 
   assert.match(authShell, /max-w-5xl/);
   assert.match(adminLayout, /grid-cols-\[15rem_minmax\(0,1fr\)\]/);
   assert.match(panel, /rounded-xl border border-border bg-card/);
+});
+
+test('configures Turbopack for the website Git root', async () => {
+  const config = await readText('next.config.ts');
+  assert.match(config, /turbopack:\s*\{/);
+  assert.match(config, /root:\s*process\.cwd\(\)/);
+});
+
+test('uses a shadcn locale select with one flag per visible option', async () => {
+  const [localeSelect, selectPrimitive] = await Promise.all([
+    readText('components/i18n/locale-select.tsx'),
+    readText('components/ui/select.tsx'),
+  ]);
+
+  assert.match(localeSelect, /SelectTrigger/);
+  assert.match(localeSelect, /SelectContent/);
+  assert.match(localeSelect, /SelectItem/);
+  assert.doesNotMatch(localeSelect, /<select/);
+  assert.equal((localeSelect.match(/current\.flag/g) ?? []).length, 1);
+  assert.equal((localeSelect.match(/option\.flag/g) ?? []).length, 1);
+  assert.match(selectPrimitive, /role="combobox"/);
+  assert.match(selectPrimitive, /role="listbox"/);
+});
+
+test('ships custom process artwork and branded app icons', async () => {
+  const files = [
+    'public/images/process/discovery.webp',
+    'public/images/process/design.webp',
+    'public/images/process/build.webp',
+    'public/images/process/review.webp',
+    'app/favicon.ico',
+    'app/icon.png',
+    'app/apple-icon.png',
+  ];
+
+  await Promise.all(files.map(assertFile));
+
+  const processVisual = await readText(
+    'features/landing/components/process-visual.tsx',
+  );
+  assert.match(processVisual, /FileTextIcon/);
+  assert.match(processVisual, /CursorIcon/);
+  assert.match(processVisual, /GitBranchIcon/);
+  assert.match(processVisual, /ChartIcon/);
+});
+
+test('routes visible form controls through local shadcn primitives', async () => {
+  const files = [
+    'features/auth/login-form.tsx',
+    'features/auth/register-form.tsx',
+    'features/issues/components/issue-product-fields.tsx',
+    'features/issues/components/issue-contact-fields.tsx',
+    'features/admin/orders/new-order-menu.tsx',
+    'features/admin/inbox/conversation-list.tsx',
+    'features/admin/inbox/conversation-thread.tsx',
+    'features/admin/events/event-stream-toolbar.tsx',
+    'features/admin/shell/admin-account.tsx',
+    'features/admin/integrations/integration-grid.tsx',
+    'features/landing/components/site-header.tsx',
+  ];
+  const source = (await Promise.all(files.map(readText))).join('\n');
+
+  assert.match(source, /components\/ui\/input/);
+  assert.match(source, /components\/ui\/textarea/);
+  assert.match(source, /components\/forms\/form-select/);
+  assert.doesNotMatch(source, /<select/);
+  assert.doesNotMatch(source, /<textarea/);
+  assert.doesNotMatch(source, /<input(?![^>]*type="hidden")/);
+  assert.doesNotMatch(source, /<button/);
 });
