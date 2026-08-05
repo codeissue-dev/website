@@ -12,12 +12,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 
-export const userRoleEnum = pgEnum('user_role', [
-  'owner',
-  'admin',
-  'operator',
-  'viewer',
-]);
+export const userRoleEnum = pgEnum('user_role', ['user', 'admin']);
 export const integrationStatusEnum = pgEnum('integration_status', [
   'connected',
   'degraded',
@@ -63,7 +58,7 @@ export const users = pgTable(
     emailVerified: timestamp('email_verified', { mode: 'date' }),
     image: text('image'),
     passwordHash: text('password_hash'),
-    role: userRoleEnum('role').notNull().default('viewer'),
+    role: userRoleEnum('role').notNull().default('user'),
     createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),
   },
@@ -155,7 +150,7 @@ export const workspaceMembers = pgTable(
     userId: text('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    role: userRoleEnum('role').notNull().default('viewer'),
+    role: userRoleEnum('role').notNull().default('user'),
     createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
   },
   (table) => [primaryKey({ columns: [table.workspaceId, table.userId] })],

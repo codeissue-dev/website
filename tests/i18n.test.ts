@@ -17,27 +17,31 @@ test('English and Russian dictionaries have the same complete shape', async () =
   assert.deepEqual(valueShape(russian), valueShape(english));
 });
 
-test('keeps compatibility dictionaries synchronized with active resources', async () => {
-  const [
-    activeEnglish,
-    activeRussian,
-    appEnglish,
-    appRussian,
-    legacyEnglish,
-    legacyRussian,
-  ] = await Promise.all([
-    readJson<Dictionary>('locales/en/common.json'),
-    readJson<Dictionary>('locales/ru/common.json'),
-    readJson<Dictionary>('app/i18n/locales/en/common.json'),
-    readJson<Dictionary>('app/i18n/locales/ru/common.json'),
-    readJson<Dictionary>('dictionaries/en.json'),
-    readJson<Dictionary>('dictionaries/ru.json'),
-  ]);
+test('uses locales as the only runtime translation source', async () => {
+  const compatibilityFiles = [
+    'app/i18n/locales/en/common.json',
+    'app/i18n/locales/ru/common.json',
+    'dictionaries/en.json',
+    'dictionaries/ru.json',
+  ];
 
-  assert.deepEqual(appEnglish, activeEnglish);
-  assert.deepEqual(appRussian, activeRussian);
-  assert.deepEqual(legacyEnglish, activeEnglish);
-  assert.deepEqual(legacyRussian, activeRussian);
+  for (const file of compatibilityFiles) {
+    const marker = await readJson<{ _deprecated: string }>(file);
+    assert.match(marker._deprecated, /^Use locales\//);
+  }
+
+  const runtimeSources = await Promise.all([
+    import('node:fs/promises').then(({ readFile }) =>
+      readFile('i18n.config.ts', 'utf8'),
+    ),
+    import('node:fs/promises').then(({ readFile }) =>
+      readFile('lib/i18n/types.ts', 'utf8'),
+    ),
+  ]);
+  const source = runtimeSources.join('\n');
+  assert.match(source, /locales\/en\/common\.json|localesDir/);
+  assert.doesNotMatch(source, /dictionaries\//);
+  assert.doesNotMatch(source, /app\/i18n\/locales/);
 });
 
 test('keeps the approved positioning at the center of both locales', async () => {

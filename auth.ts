@@ -5,11 +5,12 @@ import Credentials from 'next-auth/providers/credentials';
 import { db } from '@/db/client';
 import { users } from '@/db/schema';
 import { normalizeUsername } from '@/lib/auth/credentials';
+import { brandConfig } from '@/lib/brand/config';
 import { verifyPassword } from '@/lib/auth/password';
 
 const providers: NextAuthConfig['providers'] = [
   Credentials({
-    name: 'Codeissue account',
+    name: `${brandConfig.name} account`,
     credentials: {
       username: { label: 'Username', type: 'text' },
       password: { label: 'Password', type: 'password' },
@@ -59,7 +60,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = String(token.id ?? token.sub ?? '');
-        session.user.role = token.role ?? 'viewer';
+        session.user.role = token.role ?? 'user';
         session.user.username = String(token.username ?? '');
       }
       return session;

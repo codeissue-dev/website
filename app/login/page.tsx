@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
+import { getAccountHome } from '@/lib/auth/roles';
 import { AuthRouteFooter, AuthShell, LoginForm } from '@/features/auth';
 import type { Dictionary } from '@/lib/i18n';
 import { toLocale } from '@/lib/i18n/locales';
@@ -12,9 +13,9 @@ export default async function LoginPage({
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
   const session = await auth();
-  if (session?.user) redirect('/admin');
+  if (session?.user) redirect(getAccountHome());
 
-  const [{ callbackUrl = '/admin' }, { i18n, lng }] = await Promise.all([
+  const [{ callbackUrl = '/account' }, { i18n, lng }] = await Promise.all([
     searchParams,
     getT('common'),
   ]);

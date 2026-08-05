@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
+import { getAccountHome } from '@/lib/auth/roles';
 import { AuthRouteFooter, AuthShell, RegisterForm } from '@/features/auth';
 import type { Dictionary } from '@/lib/i18n';
 import { toLocale } from '@/lib/i18n/locales';
@@ -12,9 +13,9 @@ export default async function RegisterPage({
   searchParams: Promise<{ callbackUrl?: string }>;
 }) {
   const session = await auth();
-  if (session?.user) redirect('/issues/new');
+  if (session?.user) redirect(getAccountHome());
 
-  const [{ callbackUrl = '/issues/new' }, { i18n, lng }] = await Promise.all([
+  const [{ callbackUrl = '/dashboard' }, { i18n, lng }] = await Promise.all([
     searchParams,
     getT('common'),
   ]);

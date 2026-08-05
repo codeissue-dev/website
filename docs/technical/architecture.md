@@ -2,74 +2,81 @@
 
 ## Application package
 
-The repository contains one deployable application package named `@codeissue/website`. Its internal boundaries are designed so the package can later move to `apps/website` without rewriting package-local imports.
+The repository contains one deployable package named `@codeissue/website`. Its boundaries allow the package to move to `apps/website` later without rewriting package-local imports.
 
 ```text
-app/          Next.js routes, layouts, route handlers, compatibility action exports
+app/          Next.js routes, layouts, route handlers, compatibility exports
 features/     Product features and their public entrypoints
-components/   Shared UI, forms, layout elements, icons, compatibility exports
-lib/          Domain services, configuration, localization, and data access
+components/   Shared UI, forms, layout elements, icons
+lib/          Domain services, branding, localization, and data access
  db/          Drizzle schema and PostgreSQL client
  drizzle/     Committed database migrations
+ locales/     Canonical runtime translation resources
  tests/       TypeScript and TSX tests
- scripts/     Package-local quality and maintenance scripts
+ scripts/     Package-local quality and maintenance tools
 ```
 
 ## Dependency direction
-
-The intended dependency direction is:
 
 ```text
 app -> features -> components/lib -> db
 ```
 
-`features`, `components`, `lib`, and `db` must never import from `app`. `npm run boundaries:check` enforces that rule. Route pages should import feature public entrypoints such as `@/features/auth` or `@/features/admin/inbox` instead of reaching into internal component files.
+`features`, `components`, `lib`, and `db` must not import from `app`. `npm run boundaries:check` enforces this rule. Routes import feature public entrypoints instead of internal component files.
 
 ## Feature boundaries
 
-- `features/landing` owns the public product website and browser interactions.
-- `features/auth` owns login, registration, authentication forms, and auth actions.
-- `features/issues` owns public issue intake and its validation-facing UI.
-- `features/admin/shell` owns the workspace frame.
-- `features/admin/overview` owns overview composition.
-- `features/admin/inbox` owns conversations and replies.
-- `features/admin/orders` owns order views and creation.
-- `features/admin/integrations` owns connected channel status.
-- `features/admin/events` owns persisted events and WebSocket monitoring.
+- `features/landing` owns the public website and restrained browser motion.
+- `features/auth` owns username/password login and registration.
+- `features/issues` owns project intake.
+- `features/dashboard` owns the personal workspace, project list, and project discussions.
+- `features/admin/*` owns privileged operations, inbox, orders, integrations, and event monitoring.
 
-Each feature exposes a small `index.ts` public API. Internal files can change without forcing route-level import churn.
+The personal workspace and the admin console are separate products. Every account can use `/dashboard`. Only a user whose `users.role` is `admin` can enter `/admin` or call administrative APIs.
 
-## Route composition
+## Authentication and authorization
 
-Pages and layouts are server components by default. They authenticate, load localized copy and data, then compose one feature screen. Browser state is isolated in explicit client components such as forms, the locale select, navigation controls, and the live event hook.
+Auth.js uses a credentials provider and JWT sessions. The canonical account roles are:
 
-## Runtime flow
+```text
+user   personal workspace and own projects
+admin  personal workspace plus administrative operations
+```
+
+Authorization is enforced at server layouts, server actions, and API routes. UI visibility is not treated as a security boundary.
+
+## Project conversation flow
 
 ```mermaid
 flowchart LR
-  Visitor[Visitor]
-  Website[Public website]
-  Auth[Auth.js]
-  Intake[Issue intake]
-  Admin[Operations workspace]
-  Webhook[Normalized webhook API]
-  Backend[External backend and workers]
-  DB[(PostgreSQL 18)]
+  User[User account]
+  Intake[Project intake]
+  Project[Order / project]
+  Thread[Conversation]
+  Admin[Admin inbox]
+  Event[Integration events]
 
-  Visitor --> Website
-  Visitor --> Auth
-  Auth --> DB
-  Auth --> Intake
-  Intake --> DB
-  Admin --> DB
-  Backend --> Webhook --> DB
-  Admin --> Backend
+  User --> Intake
+  Intake --> Project
+  Intake --> Thread
+  User --> Thread
+  Thread --> Admin
+  Admin --> Thread
+  Admin --> Event
 ```
 
-## Data and tenancy
+A new project request creates the order and conversation in one database transaction. User and administrator messages share the same conversation record. Queries for the personal workspace always filter projects by `requestedById`.
 
-A workspace is the tenant boundary. Membership is checked before mutations. Integrations, contacts, conversations, messages, orders, and events all resolve to a workspace. Database uniqueness constraints protect external message ingestion from duplicate provider events.
+## Tenant boundary
+
+A workspace remains the data tenancy boundary. Membership is checked before mutations. Integrations, contacts, conversations, messages, orders, and events all resolve to a workspace. Database uniqueness constraints protect external ingestion from duplicate provider events.
+
+## Brand and localization boundaries
+
+Brand constants live in `lib/brand/config.ts`. Display names, canonical URLs, workspace identity, and core routes must not be duplicated in feature components.
+
+Runtime translations live only in `locales/`. Historical translation paths are retained as deprecation markers because package snapshots preserve input files, but application code must not import them.
 
 ## Backend bridge
 
-The admin bridge validates backend paths, removes browser credentials, adds trusted user identity, and forwards requests with server-only credentials. WebSocket connections use short-lived tickets so long-lived backend secrets never enter browser JavaScript.
+The admin bridge validates backend paths, removes browser credentials, adds trusted account identity, and forwards requests with server-only credentials. WebSocket connections use short-lived tickets so persistent backend secrets never enter browser JavaScript.

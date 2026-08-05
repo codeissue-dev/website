@@ -29,7 +29,7 @@ Never expose database, backend, auth, or webhook credentials through `NEXT_PUBLI
 2. Run `npm run check`.
 3. Build with `npm run build`.
 4. Apply Drizzle migrations from a controlled release job.
-5. Run the seed command only when development sample data or an initial owner is required. The default workspace is created by migration.
+5. Run the seed command only when development sample data or an initial administrator is required. The default workspace is created by migration.
 6. Deploy the application.
 7. Verify `/api/health`, sign-in, issue intake, admin reads, webhook authentication, backend proxying, and WebSocket ticket creation.
 

@@ -15,6 +15,7 @@ export function useLandingInteractions(locale: Locale) {
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches;
+    const desktopProcess = window.matchMedia('(min-width: 1024px)');
     const parallaxNodes = Array.from(
       document.querySelectorAll<HTMLElement>('[data-parallax]'),
     );
@@ -24,27 +25,31 @@ export function useLandingInteractions(locale: Locale) {
     const processSteps = Array.from(
       document.querySelectorAll<HTMLElement>('[data-process-step]'),
     );
-    const processVisual = document.querySelector<HTMLElement>(
-      '[data-process-visual]',
+    const processVisuals = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-process-visual]'),
     );
-    const processScenes = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-process-scene]'),
+    const processProgresses = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-process-progress]'),
     );
-    const processMarkers = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-process-marker]'),
+    const processProgressIndicators = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '[data-process-progress-indicator]',
+      ),
     );
-    const processProgress = document.querySelector<HTMLElement>(
-      '[data-process-progress]',
+    const processProgressValues = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-process-progress-value]'),
     );
-    const processProgressIndicator = document.querySelector<HTMLElement>(
-      '[data-process-progress-indicator]',
+    const processStageTitles = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-process-stage-title]'),
     );
-    const processProgressValue = document.querySelector<HTMLElement>(
-      '[data-process-progress-value]',
-    );
-    const processStageTitle = document.querySelector<HTMLElement>(
-      '[data-process-stage-title]',
-    );
+    const firstVisualScenes = processVisuals[0]
+      ? Array.from(
+          processVisuals[0].querySelectorAll<HTMLElement>(
+            '[data-process-scene]',
+          ),
+        )
+      : [];
+    const stageCount = Math.max(1, firstVisualScenes.length);
     let activeProcessStep = -1;
     let frame = 0;
 
@@ -53,27 +58,51 @@ export function useLandingInteractions(locale: Locale) {
     const setActiveProcessStep = (index: number) => {
       if (index === activeProcessStep || index < 0) return;
       activeProcessStep = index;
-      processVisual?.setAttribute('data-active-step', String(index));
+
+      processVisuals.forEach((visual) => {
+        visual.setAttribute('data-active-step', String(index));
+        const scenes = Array.from(
+          visual.querySelectorAll<HTMLElement>('[data-process-scene]'),
+        );
+        const markers = Array.from(
+          visual.querySelectorAll<HTMLElement>('[data-process-marker]'),
+        );
+
+        scenes.forEach((scene, sceneIndex) => {
+          const active = sceneIndex === index;
+          scene.classList.toggle('is-active', active);
+          scene.classList.toggle('opacity-100', active);
+          scene.classList.toggle('[transform:scale(1)]', active);
+          scene.classList.toggle('grayscale-0', active);
+          scene.classList.toggle('opacity-0', !active);
+          scene.classList.toggle('[transform:scale(1.045)]', !active);
+          scene.classList.toggle('grayscale-[0.2]', !active);
+          scene.setAttribute('aria-hidden', String(!active));
+        });
+
+        markers.forEach((marker, markerIndex) => {
+          marker.classList.toggle('bg-signal', markerIndex <= index);
+          marker.classList.toggle('bg-border', markerIndex > index);
+        });
+      });
 
       processSteps.forEach((step, stepIndex) => {
-        step.classList.toggle('is-current', stepIndex === index);
-      });
-      processScenes.forEach((scene, sceneIndex) => {
-        const active = sceneIndex === index;
-        scene.classList.toggle('is-active', active);
-        scene.classList.toggle('opacity-100', active);
-        scene.classList.toggle('[transform:scale(1)]', active);
-        scene.classList.toggle('opacity-0', !active);
-        scene.classList.toggle('[transform:scale(1.025)]', !active);
-        scene.setAttribute('aria-hidden', String(!active));
-      });
-      processMarkers.forEach((marker, markerIndex) => {
-        marker.classList.toggle('bg-signal', markerIndex <= index);
-        marker.classList.toggle('bg-border', markerIndex > index);
+        step.classList.toggle('is-current', stepIndex % stageCount === index);
       });
 
-      const title = processSteps[index]?.querySelector('h3')?.textContent;
-      if (title && processStageTitle) processStageTitle.textContent = title;
+      const title = copyStageTitle(index);
+      if (title) {
+        processStageTitles.forEach((node) => {
+          node.textContent = title;
+        });
+      }
+    };
+
+    const copyStageTitle = (index: number) => {
+      const candidate = processSteps.find(
+        (_, stepIndex) => stepIndex % stageCount === index,
+      );
+      return candidate?.querySelector('h3')?.textContent ?? '';
     };
 
     const renderMotion = () => {
@@ -84,26 +113,33 @@ export function useLandingInteractions(locale: Locale) {
         `scaleX(${pageProgress})`,
       );
 
-      if (processSection && processSteps.length > 0) {
+      if (processSection && stageCount > 0) {
         const rect = processSection.getBoundingClientRect();
-        const startLine = window.innerHeight * 0.72;
-        const endLine = window.innerHeight * 0.24;
-        const travel = rect.height + startLine - endLine;
-        const processValue = clamp((startLine - rect.top) / travel);
+        const processValue = desktopProcess.matches
+          ? clamp(-rect.top / Math.max(1, rect.height - window.innerHeight))
+          : clamp(
+              (window.innerHeight * 0.72 - rect.top) /
+                (rect.height + window.innerHeight * 0.48),
+            );
         const processPercent = Math.round(processValue * 100);
         const processIndex = Math.min(
-          processSteps.length - 1,
-          Math.floor(processValue * processSteps.length),
+          stageCount - 1,
+          Math.floor(processValue * stageCount),
         );
 
-        processProgressIndicator?.style.setProperty(
-          'transform',
-          `scaleX(${processValue})`,
+        processSection.style.setProperty(
+          '--process-progress',
+          String(processValue),
         );
-        processProgress?.setAttribute('aria-valuenow', String(processPercent));
-        if (processProgressValue) {
-          processProgressValue.textContent = `${processPercent}%`;
-        }
+        processProgressIndicators.forEach((indicator) => {
+          indicator.style.setProperty('transform', `scaleX(${processValue})`);
+        });
+        processProgresses.forEach((progress) => {
+          progress.setAttribute('aria-valuenow', String(processPercent));
+        });
+        processProgressValues.forEach((node) => {
+          node.textContent = `${processPercent}%`;
+        });
         setActiveProcessStep(processIndex);
       }
 
@@ -115,8 +151,8 @@ export function useLandingInteractions(locale: Locale) {
         const centerOffset =
           rect.top + rect.height / 2 - window.innerHeight / 2;
         const translation = Math.max(
-          -48,
-          Math.min(48, centerOffset * speed * -0.12),
+          -44,
+          Math.min(44, centerOffset * speed * -0.12),
         );
         node.style.setProperty('--parallax-y', `${translation}px`);
       }
@@ -129,8 +165,8 @@ export function useLandingInteractions(locale: Locale) {
 
     const updatePointer = (event: PointerEvent) => {
       if (reduceMotion || event.pointerType === 'touch') return;
-      const x = (event.clientX / window.innerWidth - 0.5) * 10;
-      const y = (event.clientY / window.innerHeight - 0.5) * 8;
+      const x = (event.clientX / window.innerWidth - 0.5) * 8;
+      const y = (event.clientY / window.innerHeight - 0.5) * 6;
       root.style.setProperty('--pointer-x', `${x.toFixed(2)}px`);
       root.style.setProperty('--pointer-y', `${y.toFixed(2)}px`);
     };
@@ -143,7 +179,7 @@ export function useLandingInteractions(locale: Locale) {
           revealObserver.unobserve(entry.target);
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -5% 0px' },
+      { threshold: 0.14, rootMargin: '0px 0px -6% 0px' },
     );
 
     const revealNodes = document.querySelectorAll<HTMLElement>('[data-reveal]');
@@ -168,6 +204,7 @@ export function useLandingInteractions(locale: Locale) {
       revealObserver.disconnect();
       root.style.removeProperty('--pointer-x');
       root.style.removeProperty('--pointer-y');
+      processSection?.style.removeProperty('--process-progress');
     };
   }, [locale]);
 

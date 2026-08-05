@@ -12,7 +12,7 @@ export function HeroBackground() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute left-1/2 top-20 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-signal/10 blur-[120px]"
+        className="pointer-events-none absolute left-1/2 top-16 h-72 w-[38rem] -translate-x-1/2 rounded-full bg-signal/8 blur-[120px] transition-transform duration-500 [transform:translate3d(calc(-50%_+_var(--pointer-x,0px)),var(--pointer-y,0px),0)] motion-reduce:transform-[translateX(-50%)]"
         aria-hidden="true"
       />
     </>

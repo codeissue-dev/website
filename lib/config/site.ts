@@ -1,17 +1,6 @@
-export const siteConfig = {
-  name: 'Codeissue',
-  url: 'https://codeissue.dev',
-  description:
-    'Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review.',
-  localeCookie: 'codeissue-locale',
-  routes: {
-    home: '/',
-    login: '/login',
-    register: '/register',
-    newIssue: '/issues/new',
-    admin: '/admin',
-  },
-} as const;
+import { brandConfig } from '@/lib/brand/config';
+
+export const siteConfig = brandConfig;
 
 export const adminNavigation = [
   { href: '/admin', key: 'overview', icon: 'overview' },
@@ -19,4 +8,10 @@ export const adminNavigation = [
   { href: '/admin/orders', key: 'orders', icon: 'orders' },
   { href: '/admin/integrations', key: 'integrations', icon: 'integrations' },
   { href: '/admin/events', key: 'events', icon: 'events' },
+] as const;
+
+export const dashboardNavigation = [
+  { href: '/dashboard', key: 'overview' },
+  { href: '/dashboard/projects', key: 'projects' },
+  { href: '/dashboard/messages', key: 'messages' },
 ] as const;

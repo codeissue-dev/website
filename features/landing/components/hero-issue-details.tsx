@@ -1,4 +1,5 @@
 import type { Dictionary } from '@/lib/i18n';
+import { siteConfig } from '@/lib/config/site';
 
 export function HeroIssueDetails({
   copy,
@@ -8,13 +9,15 @@ export function HeroIssueDetails({
   const items = [
     [copy.inputLabel, copy.inputValue, false],
     [copy.outputLabel, copy.outputValue, true],
-    [copy.ownerLabel, copy.ownerValue, false],
+    [copy.ownerLabel, siteConfig.name, false],
   ] as const;
 
   return (
     <aside className="grid content-between gap-8 bg-black/35 p-5 sm:p-7">
       <div>
-        <p className="font-mono text-sm text-muted-foreground">ISSUE DETAILS</p>
+        <p className="font-mono text-sm text-muted-foreground">
+          {copy.detailsLabel}
+        </p>
         <dl className="mt-5 grid gap-5">
           {items.map(([label, value, accent]) => (
             <div key={label}>
@@ -44,13 +47,13 @@ export function HeroIssueDetails({
       <div className="rounded-lg border border-border bg-surface p-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <i className="size-1.5 rounded-full bg-signal" />
-          Live workflow
+          {copy.liveWorkflow}
         </div>
         <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/5">
           <span className="block h-full w-[58%] rounded-full bg-linear-to-r from-signal to-signal-soft" />
         </div>
         <p className="mt-3 font-mono text-sm text-muted-foreground">
-          58% / release path
+          58% / {copy.releasePath}
         </p>
       </div>
     </aside>

@@ -39,7 +39,7 @@ export async function authenticate(
     await signIn('credentials', {
       username: String(formData.get('username') ?? ''),
       password: String(formData.get('password') ?? ''),
-      redirectTo: safeCallbackUrl(formData.get('callbackUrl'), '/admin'),
+      redirectTo: safeCallbackUrl(formData.get('callbackUrl'), '/account'),
     });
   } catch (error) {
     if (error instanceof AuthError) return { error: error.type };
@@ -87,7 +87,7 @@ export async function registerAccount(
           name: draft.displayName,
           email: null,
           passwordHash,
-          role: 'viewer',
+          role: 'user',
         })
         .returning({ id: users.id });
 
@@ -96,7 +96,7 @@ export async function registerAccount(
       await tx.insert(workspaceMembers).values({
         workspaceId: workspace.id,
         userId: user.id,
-        role: 'viewer',
+        role: 'user',
       });
     });
   } catch (error) {
@@ -108,7 +108,7 @@ export async function registerAccount(
   await signIn('credentials', {
     username: draft.username,
     password: draft.password,
-    redirectTo: safeCallbackUrl(formData.get('callbackUrl'), '/issues/new'),
+    redirectTo: safeCallbackUrl(formData.get('callbackUrl'), '/dashboard'),
   });
 
   return {};

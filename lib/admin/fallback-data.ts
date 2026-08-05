@@ -1,3 +1,5 @@
+import { brandConfig } from '@/lib/brand/config';
+
 import type {
   ConversationSummary,
   EventSummary,
@@ -16,7 +18,7 @@ export const fallbackConversations: ConversationSummary[] = [
     preview: 'Can the first version be ready for internal review this month?',
     unreadCount: 2,
     status: 'open',
-    assignedTo: 'Codeissue Admin',
+    assignedTo: `${brandConfig.name} admin`,
     lastMessageAt: new Date(now - 7 * 60_000).toISOString(),
   },
   {
@@ -38,7 +40,7 @@ export const fallbackConversations: ConversationSummary[] = [
     preview: 'Sharing the updated scope and access requirements.',
     unreadCount: 0,
     status: 'open',
-    assignedTo: 'Codeissue Admin',
+    assignedTo: `${brandConfig.name} admin`,
     lastMessageAt: new Date(now - 3 * 60 * 60_000).toISOString(),
   },
 ];
@@ -48,7 +50,7 @@ export const fallbackOrders: OrderSummary[] = [
     id: 'demo-order-1',
     title: 'Customer operations portal',
     status: 'discovery',
-    owner: 'Codeissue Admin',
+    owner: `${brandConfig.name} admin`,
     currency: 'USD',
     valueCents: 1_800_000,
     updatedAt: new Date(now - 18 * 60_000).toISOString(),
@@ -66,7 +68,7 @@ export const fallbackOrders: OrderSummary[] = [
     id: 'demo-order-3',
     title: 'Operations automation layer',
     status: 'active',
-    owner: 'Codeissue Admin',
+    owner: `${brandConfig.name} admin`,
     currency: 'EUR',
     valueCents: 3_200_000,
     updatedAt: new Date(now - 5 * 60 * 60_000).toISOString(),

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { brandConfig } from '@/lib/brand/config';
 
 import { LandingPage } from '@/features/landing';
 import type { Dictionary } from '@/lib/i18n';
@@ -16,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: t('meta.title'),
       description: t('meta.description'),
       url: '/',
-      siteName: 'Codeissue',
+      siteName: brandConfig.name,
       locale: lng === 'ru' ? 'ru_RU' : 'en_US',
       alternateLocale: lng === 'ru' ? ['en_US'] : ['ru_RU'],
       type: 'website',

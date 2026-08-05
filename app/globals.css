@@ -100,3 +100,15 @@
     -webkit-tap-highlight-color: transparent;
   }
 }
+
+@keyframes hero-line {
+  0%,
+  100% {
+    transform: translateX(-35%);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateX(235%);
+    opacity: 0.75;
+  }
+}

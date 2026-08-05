@@ -1,8 +1,8 @@
-# Codeissue Website
+# codeissue website
 
-The public website and operations workspace for Codeissue.
+The public website, personal project workspace, and administrative operations console for codeissue.
 
-## Local start
+## Start locally
 
 ```bash
 cp .env.example .env
@@ -14,14 +14,16 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Database checks
+## Useful commands
 
 ```bash
+npm run check
+npm run build
 npm run db:doctor
 npm run db:studio
 ```
 
-If Docker reports a password authentication error after `.env` changed:
+If an existing Docker volume still uses an older PostgreSQL password:
 
 ```bash
 npm run db:password:sync
@@ -31,11 +33,3 @@ npm run db:password:sync
 
 - [User guides](docs/user/README.md)
 - [Technical documentation](docs/technical/README.md)
-
-## Main commands
-
-```bash
-npm run check
-npm run build
-npm run docker:up
-```

@@ -1,5 +1,6 @@
 import { BrandLogo } from '@/components/brand/brand-logo';
 import type { Dictionary } from '@/lib/i18n';
+import { siteConfig } from '@/lib/config/site';
 import { contactEmail, domains } from '@/lib/site-data';
 import { pageFrame } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
@@ -18,7 +19,7 @@ export function SiteFooter({ copy }: { copy: Dictionary }) {
         <div className="flex items-center gap-3">
           <BrandLogo className="size-8" />
           <div className="flex flex-col">
-            <strong className="text-sm font-semibold">Codeissue</strong>
+            <strong className="text-sm font-semibold">{siteConfig.name}</strong>
             <span className="mt-0.5 text-sm text-muted-foreground">
               {copy.footer.rights}
             </span>

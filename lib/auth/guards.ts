@@ -1,11 +1,9 @@
 import { redirect } from 'next/navigation';
 
 import { auth } from '@/auth';
-import type { UserRole } from '@/db/schema';
+import { getAccountHome, isAdminRole } from '@/lib/auth/roles';
 
-const adminRoles: UserRole[] = ['owner', 'admin', 'operator'];
-
-export async function requireUser(callbackUrl = '/admin') {
+export async function requireUser(callbackUrl = '/dashboard') {
   const session = await auth();
 
   if (!session?.user) {
@@ -22,8 +20,8 @@ export async function requireAdmin() {
     redirect('/login?callbackUrl=/admin');
   }
 
-  if (!adminRoles.includes(session.user.role)) {
-    redirect('/?access=denied');
+  if (!isAdminRole(session.user.role)) {
+    redirect(getAccountHome());
   }
 
   return session;
@@ -31,6 +29,6 @@ export async function requireAdmin() {
 
 export async function getAdminSessionForApi() {
   const session = await auth();
-  if (!session?.user || !adminRoles.includes(session.user.role)) return null;
+  if (!session?.user || !isAdminRole(session.user.role)) return null;
   return session;
 }

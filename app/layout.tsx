@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { I18nProvider } from 'next-i18next/client';
 import type { ReactNode } from 'react';
 
+import { brandConfig } from '@/lib/brand/config';
 import { getResources, getT } from '@/lib/i18n/server';
 
 import './globals.css';
@@ -20,22 +21,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://codeissue.dev'),
+  metadataBase: new URL(brandConfig.url),
   title: {
-    default: 'Codeissue - From idea to working product',
-    template: '%s - Codeissue',
+    default: `${brandConfig.name} - From idea to working product`,
+    template: `%s - ${brandConfig.name}`,
   },
-  description:
-    'Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review.',
+  description: brandConfig.description,
   keywords: [
-    'codeissue',
+    brandConfig.name,
     'product design',
     'product engineering',
     'digital products',
     'AI-assisted development',
   ],
-  authors: [{ name: 'Codeissue', url: 'https://codeissue.dev' }],
-  creator: 'Codeissue',
+  authors: [{ name: brandConfig.name, url: brandConfig.url }],
+  creator: brandConfig.name,
 };
 
 export const viewport: Viewport = {

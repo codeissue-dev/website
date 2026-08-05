@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Codeissue - From idea to working product",
-    "description": "Codeissue designs and builds digital products using AI-assisted workflows, custom systems, and human review."
+    "title": "codeissue - From idea to working product",
+    "description": "codeissue designs and builds digital products with focused systems, careful engineering, and human review."
   },
   "language": {
     "label": "Language",
@@ -17,7 +17,7 @@
     "process": "Process",
     "network": "Links",
     "contact": "Start an issue",
-    "workspace": "Workspace",
+    "workspace": "Account",
     "menu": "Open menu",
     "close": "Close menu"
   },
@@ -39,9 +39,13 @@
       "outputValue": "A working release",
       "stages": ["Define", "Design", "Build", "Review"],
       "ownerLabel": "Owner",
-      "ownerValue": "Codeissue",
       "reviewLabel": "Human review",
-      "reviewValue": "Required"
+      "reviewValue": "Required",
+      "detailsLabel": "Issue details",
+      "liveWorkflow": "Live workflow",
+      "releasePath": "release path",
+      "productStatus": "product / active",
+      "teamLabel": "owner / product team"
     }
   },
   "approach": {
@@ -130,7 +134,7 @@
     ]
   },
   "network": {
-    "eyebrow": "Find Codeissue",
+    "eyebrow": "Find codeissue",
     "title": "The work is public where it helps.",
     "description": "Source code, build notes, demos, community feedback, and direct updates across the channels you already use.",
     "open": "Open",
@@ -157,11 +161,11 @@
   },
   "footer": {
     "note": "AI-assisted workflows. Custom systems. Human review.",
-    "rights": "Codeissue - digital product studio."
+    "rights": "codeissue - digital product studio."
   },
   "auth": {
-    "eyebrow": "Codeissue workspace",
-    "title": "Sign in to your workspace.",
+    "eyebrow": "codeissue account",
+    "title": "Sign in to your account.",
     "description": "Use your username and password. Email is not required.",
     "username": "Username",
     "password": "Password",
@@ -171,14 +175,13 @@
     "back": "Back to the website",
     "security": "Protected by Auth.js and server-side access control.",
     "createAccount": "Create account",
-    "sideEyebrow": "Private operations layer",
-    "sideTitle": "One workspace for every incoming issue.",
-    "sideDescription": "Requests, orders, integrations, and delivery events stay in one operational view.",
-    "sideItems": ["Access", "Workspace", "Events"]
+    "sideEyebrow": "Projects and conversations",
+    "sideTitle": "Your work stays visible after the first request.",
+    "sideDescription": "Track projects, share context, and continue the discussion with the team in one place.",
+    "sideItems": ["Projects", "Messages", "Progress"]
   },
   "admin": {
-    "brand": "Codeissue OS",
-    "workspace": "Operations workspace",
+    "workspace": "admin",
     "navigation": {
       "overview": "Overview",
       "inbox": "Inbox",
@@ -223,7 +226,7 @@
       "all": "All channels",
       "unread": "Unread",
       "empty": "No conversations match the current filter.",
-      "replyPlaceholder": "Reply from Codeissue…",
+      "replyPlaceholder": "Reply from codeissue...",
       "send": "Send reply",
       "assigned": "Assigned to",
       "unassigned": "Unassigned",
@@ -301,13 +304,12 @@
       "unknown": "Unknown",
       "demoData": "Demo data is shown until PostgreSQL is available."
     },
-    "topbar": "ecosystem / operational foundation",
+    "topbar": "operations / integrations / delivery",
     "roles": {
-      "owner": "Owner",
-      "admin": "Administrator",
-      "operator": "Operator",
-      "viewer": "Viewer"
-    }
+      "user": "User",
+      "admin": "Administrator"
+    },
+    "userAccount": "User account"
   },
   "register": {
     "eyebrow": "Create your workspace access",
@@ -334,7 +336,7 @@
     "eyebrow": "New product issue",
     "title": "Describe the product you want to move forward.",
     "description": "No email form and no generic brief. Give us the problem, the desired result, and the channel where you want to continue the conversation.",
-    "back": "Back to website",
+    "back": "Back to account",
     "steps": [
       "Create an account",
       "Describe the issue",
@@ -366,7 +368,7 @@
     "submit": "Create issue",
     "submitting": "Creating issue...",
     "successLabel": "Issue created",
-    "successTitle": "Your request is now in the Codeissue workspace.",
+    "successTitle": "Your request is now in the codeissue workspace.",
     "successDescription": "We will review the brief and continue in the contact channel you selected.",
     "errors": {
       "invalid_title": "Add a clear issue title.",
@@ -378,5 +380,55 @@
       "invalid_budget": "Keep the budget range under 80 characters.",
       "unknown": "The issue could not be created. Try again."
     }
+  },
+  "dashboard": {
+    "eyebrow": "Your workspace",
+    "title": "Projects, decisions, and discussion in one place.",
+    "description": "Follow active work, open a new request, and keep the project conversation connected to delivery.",
+    "member": "Member",
+    "newProject": "New project",
+    "signOut": "Sign out",
+    "navigation": {
+      "overview": "Overview",
+      "projects": "Projects",
+      "messages": "Messages"
+    },
+    "metrics": {
+      "projects": "Projects",
+      "active": "Active",
+      "messages": "Threads"
+    },
+    "projectsEyebrow": "PROJECTS",
+    "recentProjects": "Recent projects",
+    "viewAll": "View all",
+    "projectsTitle": "Your projects",
+    "projectsDescription": "Every request you create becomes a project record with status, context, and a shared thread.",
+    "messagesEyebrow": "MESSAGES",
+    "messagesTitle": "Project conversations",
+    "messagesDescription": "Continue discussions without moving project context into a separate messenger.",
+    "emptyProjects": "No projects yet.",
+    "emptyProjectsDescription": "Create the first request and it will appear here with its status and discussion.",
+    "noSummary": "No project summary yet.",
+    "discussion": "Project discussion",
+    "discussionDescription": "Messages stay attached to this project and are visible to the delivery team.",
+    "emptyMessages": "No messages yet. Add the first note or question.",
+    "messagePlaceholder": "Write a project message...",
+    "messageHint": "The delivery team will see this in the project thread.",
+    "messageSent": "Message sent.",
+    "messageError": "The message could not be sent. Try again.",
+    "sendMessage": "Send message",
+    "sending": "Sending...",
+    "backToProjects": "Back to projects",
+    "system": "codeissue team",
+    "statuses": {
+      "lead": "Lead",
+      "discovery": "Discovery",
+      "proposal": "Proposal",
+      "active": "Active",
+      "review": "Review",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "adminArea": "Admin console"
   }
 }

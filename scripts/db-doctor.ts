@@ -2,6 +2,8 @@ import '@/lib/env/load-local-env';
 
 import { Pool } from 'pg';
 
+import { brandConfig } from '@/lib/brand/config';
+
 const databaseUrl = process.env.DATABASE_URL?.trim();
 
 if (!databaseUrl) {
@@ -87,7 +89,8 @@ try {
     process.exitCode = 1;
   } else {
     const workspace = await pool.query<{ count: string }>(
-      "select count(*)::text as count from workspaces where slug = 'codeissue'",
+      'select count(*)::text as count from workspaces where slug = $1',
+      [brandConfig.workspace.slug],
     );
     if (workspace.rows[0]?.count === '0') {
       console.warn('Default workspace is missing. Run: npm run db:migrate');

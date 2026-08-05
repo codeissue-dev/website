@@ -15,6 +15,7 @@ import {
   workspaces,
 } from '@/db/schema';
 import { hashPassword } from '@/lib/auth/password';
+import { brandConfig } from '@/lib/brand/config';
 import { DEFAULT_WORKSPACE_SLUG } from '@/lib/workspaces/service';
 
 const adminUsername = (process.env.ADMIN_USERNAME ?? 'admin')
@@ -46,10 +47,10 @@ async function seed() {
     ? await db
         .update(users)
         .set({
-          name: existingUser.name ?? 'Codeissue Admin',
+          name: existingUser.name ?? `${brandConfig.name} admin`,
           username: adminUsername,
           passwordHash,
-          role: 'owner',
+          role: 'admin',
           updatedAt: new Date(),
         })
         .where(eq(users.id, existingUser.id))
@@ -57,26 +58,26 @@ async function seed() {
     : await db
         .insert(users)
         .values({
-          name: 'Codeissue Admin',
+          name: `${brandConfig.name} admin`,
           username: adminUsername,
           email: null,
           passwordHash,
-          role: 'owner',
+          role: 'admin',
         })
         .returning();
 
   const [workspace] = await db
     .insert(workspaces)
-    .values({ name: 'Codeissue', slug: DEFAULT_WORKSPACE_SLUG })
+    .values({ name: brandConfig.workspace.name, slug: DEFAULT_WORKSPACE_SLUG })
     .onConflictDoUpdate({
       target: workspaces.slug,
-      set: { name: 'Codeissue' },
+      set: { name: brandConfig.workspace.name },
     })
     .returning();
 
   await db
     .insert(workspaceMembers)
-    .values({ workspaceId: workspace.id, userId: admin.id, role: 'owner' })
+    .values({ workspaceId: workspace.id, userId: admin.id, role: 'admin' })
     .onConflictDoNothing();
 
   await db
@@ -210,7 +211,7 @@ async function seed() {
     })
     .onConflictDoNothing();
 
-  console.log(`Seeded Codeissue workspace. Admin: ${adminUsername}`);
+  console.log(`Seeded ${brandConfig.name} workspace. Admin: ${adminUsername}`);
 }
 
 seed()

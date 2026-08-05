@@ -1,8 +1,7 @@
 import Image from 'next/image';
 
-import { CodeIssueMark, WorkflowIcon } from '@/components/icons';
+import { WorkflowIcon } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import type { Dictionary } from '@/lib/i18n';
 import { reveal } from '@/lib/ui/styles';
@@ -10,70 +9,66 @@ import { cn } from '@/lib/utils';
 
 export function ApproachVisual({ copy }: { copy: Dictionary['approach'] }) {
   return (
-    <Card
+    <div
       className={cn(
         reveal,
-        'relative min-h-[30rem] overflow-hidden border-white/12 bg-black',
+        'relative min-h-[34rem] overflow-hidden rounded-2xl border border-white/12 bg-black',
       )}
       data-reveal
     >
       <Image
-        src="/images/banner.png"
+        src="/images/editorial/material-review.webp"
         alt=""
         fill
         sizes="(max-width: 1024px) 100vw, 58vw"
-        className="object-cover opacity-35 grayscale"
+        className="object-cover opacity-75 grayscale-[0.15] transition-transform duration-[1400ms] ease-out [transform:scale(1.04)] [.is-visible_&]:scale-100"
+        data-parallax="0.035"
       />
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.15),#000_72%)]" />
-      <div
-        className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:48px_48px]"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(0,0,0,0.08),rgba(0,0,0,0.38)_48%,#000_100%)]" />
+      <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/15" />
 
-      <div className="relative flex min-h-[30rem] flex-col justify-between p-5 sm:p-7">
+      <div className="relative flex min-h-[34rem] flex-col justify-between p-5 sm:p-7">
         <div className="flex items-start justify-between gap-4">
-          <Badge className="gap-2 border-white/12 bg-black/65 text-foreground backdrop-blur-md">
+          <Badge className="gap-2 border-white/12 bg-black/72 text-foreground backdrop-blur-md">
             <WorkflowIcon className="size-4 text-signal-soft" />
             {copy.label}
           </Badge>
-          <span className="grid size-11 place-items-center rounded-lg border border-white/12 bg-black/65 text-signal-soft backdrop-blur-md">
-            <CodeIssueMark className="size-6" />
-          </span>
+          <span className="font-mono text-sm text-white/70">01 / 03</span>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-[1fr_11rem] sm:items-end">
-          <Card className="border-white/12 bg-black/82 p-5 backdrop-blur-xl">
-            <p className="font-mono text-sm text-muted-foreground">
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-end">
+          <div className="rounded-xl border border-white/12 bg-black/82 p-5 backdrop-blur-xl sm:p-6">
+            <p className="font-mono text-sm text-signal-soft">
               {copy.principles.map((principle) => principle.number).join(' / ')}
             </p>
-            <h3 className="mt-3 max-w-[18ch] text-xl font-semibold tracking-[-0.035em] sm:text-2xl">
+            <h3 className="mt-3 max-w-[20ch] text-2xl font-semibold tracking-[-0.045em]">
               {copy.title}
             </h3>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            <p className="mt-3 max-w-xl text-sm leading-6 text-zinc-300">
               {copy.description}
             </p>
             <Progress
-              value={68}
+              value={72}
               className="mt-6"
               indicatorClassName="bg-linear-to-r from-signal to-signal-soft"
             />
-          </Card>
+          </div>
 
-          <Card className="relative aspect-square overflow-hidden border-white/12 bg-black/82 backdrop-blur-xl">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/12 bg-black/82">
             <Image
-              src="/images/avatar.png"
+              src="/images/editorial/workflow-board.webp"
               alt=""
               fill
-              sizes="176px"
-              className="object-cover opacity-70 grayscale"
+              sizes="208px"
+              className="object-cover grayscale-[0.25]"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/75 to-transparent" />
-            <span className="absolute bottom-3 left-3 font-mono text-sm text-foreground">
-              CI / 01
+            <div className="absolute inset-0 bg-linear-to-t from-black/85 via-transparent to-transparent" />
+            <span className="absolute bottom-3 left-3 font-mono text-sm text-white">
+              issue / map
             </span>
-          </Card>
+          </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

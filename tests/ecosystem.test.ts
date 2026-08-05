@@ -47,6 +47,12 @@ test('ships Auth.js, protected admin pages, APIs, and live event monitor', async
     'app/register/page.tsx',
     'app/issues/new/page.tsx',
     'app/issues/new/actions.ts',
+    'app/account/page.tsx',
+    'app/dashboard/layout.tsx',
+    'app/dashboard/page.tsx',
+    'app/dashboard/projects/page.tsx',
+    'app/dashboard/messages/page.tsx',
+    'app/dashboard/projects/[id]/page.tsx',
     'app/admin/layout.tsx',
     'app/admin/page.tsx',
     'app/admin/inbox/page.tsx',
@@ -104,6 +110,41 @@ test('defines the operational data model and tenant boundary', async () => {
   assert.match(workspaceService, /ensureDefaultWorkspace/);
   assert.match(schema, /contacts_integration_external_unique/);
   assert.match(schema, /messages_conversation_external_unique/);
+});
+
+test('separates personal accounts from admin operations with database roles', async () => {
+  const [
+    schema,
+    migration,
+    roles,
+    guards,
+    issueAction,
+    portalQueries,
+    dashboard,
+  ] = await Promise.all([
+    readText('db/schema.ts'),
+    readText('drizzle/0003_account_roles_and_portal.sql'),
+    readText('lib/auth/roles.ts'),
+    readText('lib/auth/guards.ts'),
+    readText('features/issues/actions.ts'),
+    readText('lib/portal/queries.ts'),
+    readText('features/dashboard/components/dashboard-shell.tsx'),
+  ]);
+
+  assert.match(schema, /pgEnum\('user_role', \['user', 'admin'\]\)/);
+  assert.match(
+    schema,
+    /role: userRoleEnum\('role'\)\.notNull\(\)\.default\('user'\)/,
+  );
+  assert.match(migration, /account_role[\s\S]*user[\s\S]*admin/);
+  assert.match(roles, /return '\/dashboard'/);
+  assert.match(guards, /isAdminRole/);
+  assert.match(guards, /redirect\(getAccountHome/);
+  assert.match(portalQueries, /requestedById/);
+  assert.match(issueAction, /insert\(conversations\)/);
+  assert.match(issueAction, /insert\(messages\)/);
+  assert.match(issueAction, /conversationId: conversation\.id/);
+  assert.match(dashboard, /Admin console|adminArea/);
 });
 
 test('runs with Docker Compose and PostgreSQL 18 storage conventions', async () => {

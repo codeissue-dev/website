@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { db } from '@/db/client';
 import { conversations, integrationEvents, messages } from '@/db/schema';
 import { requireAdmin } from '@/lib/auth/guards';
+import { siteConfig } from '@/lib/config/site';
 import { parseReplyDraft } from '@/lib/inbox/input';
 import { requireWorkspaceAccess } from '@/lib/workspaces/service';
 
@@ -36,7 +37,8 @@ export async function queueReply(formData: FormData) {
       .values({
         conversationId: conversation.id,
         direction: 'outbound',
-        authorName: session.user.name ?? session.user.username ?? 'Codeissue',
+        authorName:
+          session.user.name ?? session.user.username ?? siteConfig.name,
         body: draft.body,
         sentAt: now,
       })

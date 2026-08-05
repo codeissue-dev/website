@@ -1,9 +1,10 @@
 import { and, eq } from 'drizzle-orm';
 
 import { db } from '@/db/client';
+import { brandConfig } from '@/lib/brand/config';
 import { workspaceMembers, workspaces } from '@/db/schema';
 
-export const DEFAULT_WORKSPACE_SLUG = 'codeissue';
+export const DEFAULT_WORKSPACE_SLUG = brandConfig.workspace.slug;
 
 export async function findWorkspaceBySlug(slug = DEFAULT_WORKSPACE_SLUG) {
   const [workspace] = await db
@@ -36,7 +37,7 @@ export async function ensureWorkspaceMembership(
 ) {
   await db
     .insert(workspaceMembers)
-    .values({ workspaceId, userId, role: 'viewer' })
+    .values({ workspaceId, userId, role: 'user' })
     .onConflictDoNothing();
 }
 
@@ -52,10 +53,10 @@ export async function requireWorkspaceAccess(
 export async function ensureDefaultWorkspace() {
   const [workspace] = await db
     .insert(workspaces)
-    .values({ name: 'Codeissue', slug: DEFAULT_WORKSPACE_SLUG })
+    .values({ name: brandConfig.workspace.name, slug: DEFAULT_WORKSPACE_SLUG })
     .onConflictDoUpdate({
       target: workspaces.slug,
-      set: { name: 'Codeissue' },
+      set: { name: brandConfig.workspace.name },
     })
     .returning({
       id: workspaces.id,

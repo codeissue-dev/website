@@ -1,6 +1,8 @@
 import Image from 'next/image';
 
-import { CheckIcon, CodeIssueMark } from '@/components/icons';
+import { CheckIcon } from '@/components/icons';
+import { BrandLogo } from '@/components/brand/brand-logo';
+import { siteConfig } from '@/lib/config/site';
 import type { Dictionary } from '@/lib/i18n';
 
 export function HeroIssueOverview({
@@ -11,33 +13,33 @@ export function HeroIssueOverview({
   return (
     <div className="relative min-h-100 overflow-hidden border-b border-border p-5 sm:p-8 lg:min-h-120 lg:border-r lg:border-b-0">
       <Image
-        src="/images/banner.png"
+        src="/images/editorial/workflow-board.webp"
         alt=""
         fill
         priority
         sizes="(max-width: 1024px) 100vw, 62vw"
-        className="animate-slow-drift object-cover opacity-[0.12] grayscale"
+        className="animate-slow-drift object-cover opacity-[0.16] grayscale"
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0.3),#090909_84%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0.2),#090909_86%)]" />
       <div className="relative flex h-full flex-col">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="rounded-full border border-signal/35 bg-signal/10 px-2.5 py-1 font-mono text-sm text-signal-soft">
             {copy.id}
           </span>
           <span className="font-mono text-sm text-muted-foreground">
-            product / active
+            {copy.productStatus}
           </span>
         </div>
 
         <div className="my-auto py-10">
           <div className="flex items-center gap-4">
             <span className="grid size-11 place-items-center rounded-lg border border-white/10 bg-white/4 text-signal-soft">
-              <CodeIssueMark className="size-6" />
+              <BrandLogo className="size-7" />
             </span>
             <div>
-              <p className="text-sm text-muted-foreground">Codeissue</p>
+              <p className="text-sm text-muted-foreground">{siteConfig.name}</p>
               <p className="font-mono text-sm text-muted-foreground">
-                owner / product team
+                {copy.teamLabel}
               </p>
             </div>
           </div>

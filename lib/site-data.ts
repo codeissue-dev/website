@@ -1,3 +1,5 @@
+import { brandConfig } from '@/lib/brand/config';
+
 export type NavigationId = 'approach' | 'process' | 'network';
 
 export type NavigationItem = {
@@ -108,8 +110,8 @@ export const socials = [
 ] as const satisfies readonly Social[];
 
 export const domains = [
-  { label: 'codeissue.dev', href: 'https://codeissue.dev' },
+  { label: 'codeissue.dev', href: brandConfig.url },
   { label: 'codeissue.vercel.app', href: 'https://codeissue.vercel.app' },
 ] as const;
 
-export const contactEmail = 'codeissue@outlook.com';
+export const contactEmail = brandConfig.email;

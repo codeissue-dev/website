@@ -1,5 +1,6 @@
 import { signOut } from '@/auth';
 import { Button } from '@/components/ui/button';
+import { siteConfig } from '@/lib/config/site';
 import type { Dictionary } from '@/lib/i18n';
 
 import type { AdminSessionUser } from './types';
@@ -11,7 +12,7 @@ export function AdminAccount({
   copy: Dictionary['admin'];
   user: AdminSessionUser;
 }) {
-  const displayName = user.name ?? user.username ?? 'Codeissue';
+  const displayName = user.name ?? user.username ?? siteConfig.name;
 
   return (
     <div className="mt-auto hidden border-t border-border p-3 lg:grid lg:gap-3">

@@ -14,6 +14,7 @@ const required = [
   'docs/technical/database.md',
   'docs/technical/testing.md',
   'docs/technical/localization.md',
+  'docs/technical/assets.md',
   'docs/technical/deployment.md',
   'docs/technical/monorepo.md',
 ] as const;

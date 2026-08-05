@@ -2,6 +2,7 @@ import type { Dictionary, Locale } from '@/lib/i18n';
 
 import { ApproachSection } from './components/approach-section';
 import { CtaSection } from './components/cta-section';
+import { EditorialStrip } from './components/editorial-strip';
 import { HeroSection } from './components/hero-section';
 import { NetworkSection } from './components/network-section';
 import { ProcessSection } from './components/process-section';
@@ -24,6 +25,7 @@ export function LandingPage({
 
       <main>
         <HeroSection copy={copy} />
+        <EditorialStrip copy={copy.approach} />
         <ApproachSection copy={copy} />
         <ProcessSection copy={copy} />
         <ServicesSection copy={copy} />

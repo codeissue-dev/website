@@ -113,8 +113,8 @@ test('restores illustration, scroll reveal, pointer parallax, and process intera
 
   assert.match(heroArt, /HeroIssueOverview/);
   assert.match(heroOverview, /next\/image/);
-  assert.match(heroOverview, /banner\.png/);
-  assert.match(heroOverview, /CodeIssueMark/);
+  assert.match(heroOverview, /editorial\/workflow-board\.webp/);
+  assert.match(heroOverview, /BrandLogo/);
   assert.match(heroArt, /data-parallax/);
   assert.match(processVisual, /images\/process\//);
   assert.match(processVisual, /data-process-progress-indicator/);
@@ -125,6 +125,45 @@ test('restores illustration, scroll reveal, pointer parallax, and process intera
   assert.match(interactions, /--parallax-y/);
   assert.match(interactions, /data-process-progress-indicator/);
   assert.match(interactions, /processPercent/);
+});
+
+test('pins the workflow as a full-screen scroll narrative', async () => {
+  const [section, visual, stages, interactions, strip] = await Promise.all([
+    readText('features/landing/components/process-section.tsx'),
+    readText('features/landing/components/process-visual.tsx'),
+    readText('features/landing/components/process-stage-list.tsx'),
+    readText('features/landing/hooks/use-landing-interactions.ts'),
+    readText('features/landing/components/editorial-strip.tsx'),
+  ]);
+
+  assert.match(section, /lg:h-\[430vh\]/);
+  assert.match(section, /lg:sticky lg:top-0/);
+  assert.match(section, /lg:min-h-screen/);
+  assert.match(visual, /editorial\/workflow-wall\.webp/);
+  assert.match(visual, /editorial\/material-review\.webp/);
+  assert.match(stages, /data-process-step/);
+  assert.match(interactions, /rect\.height - window\.innerHeight/);
+  assert.match(interactions, /setActiveProcessStep/);
+  assert.match(strip, /editorial\/workflow-board\.webp/);
+});
+
+test('uses locally optimized editorial photography instead of avatar placeholders', async () => {
+  const files = [
+    'public/images/editorial/workflow-wall.webp',
+    'public/images/editorial/workflow-board.webp',
+    'public/images/editorial/material-review.webp',
+    'docs/technical/assets.md',
+  ];
+  await Promise.all(files.map(assertFile));
+
+  const [authPanel, approach, services] = await Promise.all([
+    readText('features/auth/auth-side-panel.tsx'),
+    readText('features/landing/components/approach-visual.tsx'),
+    readText('features/landing/components/service-visual.tsx'),
+  ]);
+  const source = [authPanel, approach, services].join('\n');
+  assert.match(source, /images\/editorial/);
+  assert.doesNotMatch(source, /avatar\.png/);
 });
 
 test('ships an accessible mobile burger menu', async () => {

@@ -3,6 +3,7 @@ import { ChannelAvatar } from '@/components/admin/channel-avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import type { ConversationSummary } from '@/lib/admin';
+import { siteConfig } from '@/lib/config/site';
 import { formatRelativeTime } from '@/lib/format';
 
 export function ConversationThread({
@@ -65,7 +66,7 @@ export function ConversationThread({
         </article>
         <article className="max-w-[88%] self-end rounded-lg border border-signal/25 bg-signal/10 p-4 sm:max-w-[72%]">
           <span className="text-sm font-medium text-signal-soft">
-            Codeissue system
+            {siteConfig.name} system
           </span>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {copy.systemMessage}

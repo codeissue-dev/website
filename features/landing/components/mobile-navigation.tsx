@@ -1,3 +1,4 @@
+import { siteConfig } from '@/lib/config/site';
 import type { Dictionary, Locale } from '@/lib/i18n';
 import { pageFrame } from '@/lib/ui/styles';
 import { cn } from '@/lib/utils';
@@ -44,8 +45,8 @@ export function MobileNavigation({
           />
         </div>
         <div className="mt-auto border-t border-border pt-5 text-sm leading-6 text-muted-foreground">
-          <p>codeissue.dev</p>
-          <p>codeissue@outlook.com</p>
+          <p>{new URL(siteConfig.url).hostname}</p>
+          <p>{siteConfig.email}</p>
         </div>
       </div>
     </div>

@@ -106,31 +106,6 @@ export function SparkIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function CodeIssueMark({ className = '' }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-    >
-      <path
-        d="M17.5 13 7 24l10.5 11M30.5 13 41 24 30.5 35"
-        stroke="currentColor"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="m28 8-8 32"
-        stroke="currentColor"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 export function MenuIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>

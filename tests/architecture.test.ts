@@ -27,6 +27,18 @@ test('organizes interface code by feature and shared responsibility', async () =
     'features/issues/components/issue-product-fields.tsx',
     'features/issues/components/issue-contact-fields.tsx',
     'features/issues/new-issue-form.tsx',
+    'features/dashboard/index.ts',
+    'features/dashboard/actions.ts',
+    'features/dashboard/components/dashboard-shell.tsx',
+    'features/dashboard/components/dashboard-overview.tsx',
+    'features/dashboard/components/dashboard-page-header.tsx',
+    'features/dashboard/components/project-list.tsx',
+    'features/dashboard/components/project-thread.tsx',
+    'features/dashboard/components/project-message-form.tsx',
+    'lib/portal/index.ts',
+    'lib/portal/queries.ts',
+    'lib/portal/types.ts',
+    'lib/brand/config.ts',
     'features/admin/shell/index.ts',
     'features/admin/shell/admin-shell.tsx',
     'features/admin/shell/admin-account.tsx',
@@ -80,6 +92,10 @@ test('keeps route files thin and delegates actions and screens to features', asy
     'app/admin/integrations/page.tsx',
     'app/admin/events/page.tsx',
     'app/issues/new/page.tsx',
+    'app/dashboard/page.tsx',
+    'app/dashboard/projects/page.tsx',
+    'app/dashboard/messages/page.tsx',
+    'app/dashboard/projects/[id]/page.tsx',
   ];
 
   for (const file of routeFiles) {
@@ -111,10 +127,10 @@ test('prepares the website package for a future monorepo move', async () => {
     packageManager: string;
     engines: Record<string, string>;
   }>('package.json');
-  const [guide, tsconfig, siteConfig] = await Promise.all([
+  const [guide, tsconfig, brandConfig] = await Promise.all([
     readText('docs/technical/monorepo.md'),
     readText('tsconfig.json'),
-    readText('lib/config/site.ts'),
+    readText('lib/brand/config.ts'),
   ]);
 
   assert.equal(packageJson.name, '@codeissue/website');
@@ -124,7 +140,7 @@ test('prepares the website package for a future monorepo move', async () => {
   assert.match(guide, /apps\/website/);
   assert.match(guide, /packages\/ui/);
   assert.match(guide, /boundaries:check/);
-  assert.match(siteConfig, /localeCookie/);
+  assert.match(brandConfig, /localeCookie/);
 });
 
 test('separates concise user docs from detailed technical docs in English', async () => {
@@ -142,6 +158,7 @@ test('separates concise user docs from detailed technical docs in English', asyn
     'docs/technical/localization.md',
     'docs/technical/deployment.md',
     'docs/technical/monorepo.md',
+    'docs/technical/assets.md',
   ];
 
   const sources = await Promise.all(files.map(readText));
@@ -164,18 +181,26 @@ test('separates concise user docs from detailed technical docs in English', asyn
 });
 
 test('uses feature public entrypoints and enforces package boundaries', async () => {
-  const [loginPage, adminPage, issuePage, boundaryScript, packageJson] =
-    await Promise.all([
-      readText('app/login/page.tsx'),
-      readText('app/admin/page.tsx'),
-      readText('app/issues/new/page.tsx'),
-      readText('scripts/check-boundaries.ts'),
-      readJson<{ scripts: Record<string, string> }>('package.json'),
-    ]);
+  const [
+    loginPage,
+    adminPage,
+    issuePage,
+    dashboardPage,
+    boundaryScript,
+    packageJson,
+  ] = await Promise.all([
+    readText('app/login/page.tsx'),
+    readText('app/admin/page.tsx'),
+    readText('app/issues/new/page.tsx'),
+    readText('app/dashboard/page.tsx'),
+    readText('scripts/check-boundaries.ts'),
+    readJson<{ scripts: Record<string, string> }>('package.json'),
+  ]);
 
   assert.match(loginPage, /@\/features\/auth['"]/);
   assert.match(adminPage, /@\/features\/admin\/overview['"]/);
   assert.match(issuePage, /@\/features\/issues['"]/);
+  assert.match(dashboardPage, /@\/features\/dashboard['"]/);
   assert.match(boundaryScript, /must not import from app/);
   assert.match(packageJson.scripts.check, /boundaries:check/);
 });

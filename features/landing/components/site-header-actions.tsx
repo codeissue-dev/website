@@ -27,7 +27,7 @@ export function SiteHeaderActions({
         <LanguageSwitch locale={locale} label={copy.language.switchLabel} />
       )}
       <Link
-        href="/admin"
+        href="/account"
         className={buttonVariants({
           variant: mobile ? 'secondary' : 'ghost',
           size: mobile ? 'lg' : 'sm',

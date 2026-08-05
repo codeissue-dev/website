@@ -26,7 +26,7 @@ export function HeroArt({ copy }: { copy: Dictionary['hero']['ticket'] }) {
           <HeroIssueDetails copy={copy} />
         </div>
         <span
-          className="absolute left-0 right-0 top-12 h-px animate-signal-scan bg-linear-to-r from-transparent via-signal/50 to-transparent motion-reduce:hidden"
+          className="absolute left-0 top-12 h-px w-1/3 animate-[hero-line_8s_ease-in-out_infinite] bg-linear-to-r from-transparent via-signal/55 to-transparent motion-reduce:hidden"
           aria-hidden="true"
         />
       </div>

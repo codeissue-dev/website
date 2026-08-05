@@ -38,7 +38,10 @@ export function NewIssueScreen({
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <LocaleSelect locale={locale} label={copy.language.switchLabel} />
             <span className="hidden font-mono sm:inline">@{username}</span>
-            <Link href="/" className="transition-colors hover:text-foreground">
+            <Link
+              href="/dashboard"
+              className="transition-colors hover:text-foreground"
+            >
               {copy.newIssue.back}
             </Link>
           </div>
