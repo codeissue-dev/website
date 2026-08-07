@@ -1,80 +1,74 @@
-import { and, asc, desc, eq } from 'drizzle-orm';
-
-import { db } from '@/db/client';
-import { messages, orders } from '@/db/schema';
+import { BackendApiError, backendRequest } from '@/lib/backend/client';
 
 import type { PortalProject, PortalProjectDetail } from './types';
 
-function mapProject(row: {
-  id: string;
-  title: string;
-  status: PortalProject['status'];
-  summary: string | null;
-  updatedAt: Date;
-  conversationId: string | null;
-}): PortalProject {
-  return {
-    ...row,
-    updatedAt: row.updatedAt.toISOString(),
-  };
+type BackendOrder = PortalProject & {
+  source: string;
+  messages?: never;
+};
+
+type BackendConversation = {
+  messages?: Array<{
+    id: string;
+    authorName: string | null;
+    body: string;
+    direction: 'inbound' | 'outbound' | 'internal';
+    sentAt: string;
+  }>;
+};
+
+function userIdentity(userId: string) {
+  return { id: userId, role: 'user' as const };
 }
 
 export async function getUserProjects(userId: string, limit = 24) {
-  const rows = await db
-    .select({
-      id: orders.id,
-      title: orders.title,
-      status: orders.status,
-      summary: orders.summary,
-      updatedAt: orders.updatedAt,
-      conversationId: orders.conversationId,
-    })
-    .from(orders)
-    .where(eq(orders.requestedById, userId))
-    .orderBy(desc(orders.updatedAt))
-    .limit(limit);
-
-  return rows.map(mapProject);
+  const result = await backendRequest<{ orders: BackendOrder[] }>(
+    `/v1/orders?limit=${encodeURIComponent(limit)}`,
+    userIdentity(userId),
+  );
+  return result.orders.map(
+    ({ id, title, status, summary, updatedAt, conversationId }) => ({
+      id,
+      title,
+      status,
+      summary,
+      updatedAt,
+      conversationId,
+    }),
+  );
 }
 
 export async function getUserProject(
   userId: string,
   projectId: string,
 ): Promise<PortalProjectDetail | null> {
-  const [row] = await db
-    .select({
-      id: orders.id,
-      title: orders.title,
-      status: orders.status,
-      summary: orders.summary,
-      updatedAt: orders.updatedAt,
-      conversationId: orders.conversationId,
-    })
-    .from(orders)
-    .where(and(eq(orders.id, projectId), eq(orders.requestedById, userId)))
-    .limit(1);
-
-  if (!row) return null;
-
-  const thread = row.conversationId
-    ? await db
-        .select({
-          id: messages.id,
-          authorName: messages.authorName,
-          body: messages.body,
-          direction: messages.direction,
-          sentAt: messages.sentAt,
-        })
-        .from(messages)
-        .where(eq(messages.conversationId, row.conversationId))
-        .orderBy(asc(messages.sentAt))
-    : [];
-
-  return {
-    ...mapProject(row),
-    messages: thread.map((message) => ({
-      ...message,
-      sentAt: message.sentAt.toISOString(),
-    })),
-  };
+  try {
+    const user = userIdentity(userId);
+    const { order } = await backendRequest<{ order: BackendOrder }>(
+      `/v1/orders/${encodeURIComponent(projectId)}`,
+      user,
+    );
+    const conversation = order.conversationId
+      ? (
+          await backendRequest<{ conversation: BackendConversation }>(
+            `/v1/conversations/${encodeURIComponent(order.conversationId)}`,
+            user,
+          )
+        ).conversation
+      : null;
+    return {
+      id: order.id,
+      title: order.title,
+      status: order.status,
+      summary: order.summary,
+      updatedAt: order.updatedAt,
+      conversationId: order.conversationId,
+      messages: conversation?.messages ?? [],
+    };
+  } catch (error) {
+    if (error instanceof BackendApiError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }

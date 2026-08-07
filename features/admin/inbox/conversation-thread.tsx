@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import { queueReply } from './actions';
 import { ChannelAvatar } from '@/components/admin/channel-avatar';
 import { Button } from '@/components/ui/button';
@@ -22,6 +26,8 @@ export function ConversationThread({
     empty: string;
   };
 }) {
+  const [requestId] = useState(() => crypto.randomUUID());
+
   if (!conversation) {
     return (
       <div className="grid flex-1 place-items-center p-8 text-sm text-muted-foreground">
@@ -79,6 +85,7 @@ export function ConversationThread({
         action={queueReply}
       >
         <input type="hidden" name="conversationId" value={conversation.id} />
+        <input type="hidden" name="requestId" value={requestId} />
         <Textarea
           name="body"
           maxLength={10_000}

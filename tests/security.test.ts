@@ -33,11 +33,11 @@ test('protects admin APIs and never forwards browser authorization blindly', asy
 test('builds backend targets and trusted identity headers centrally', () => {
   const previousApiUrl = process.env.BACKEND_API_URL;
   const previousSocketUrl = process.env.BACKEND_WS_URL;
-  const previousToken = process.env.BACKEND_API_TOKEN;
+  const previousToken = process.env.WEBSITE_API_TOKEN;
 
   process.env.BACKEND_API_URL = 'https://backend.example/api/';
   process.env.BACKEND_WS_URL = 'wss://backend.example/events';
-  process.env.BACKEND_API_TOKEN = 'server-only-token';
+  process.env.WEBSITE_API_TOKEN = 'server-only-token';
 
   try {
     const target = buildBackendTarget(
@@ -61,6 +61,14 @@ test('builds backend targets and trusted identity headers centrally', () => {
       () => buildBackendTarget(['..'], 'https://codeissue.dev/'),
       /Invalid backend path/,
     );
+    assert.throws(
+      () =>
+        buildSocketUrl(
+          'short-lived-ticket',
+          'wss://user:password@backend.example/events',
+        ),
+      /must not contain credentials/,
+    );
   } finally {
     const restore = (name: string, value: string | undefined) => {
       if (value === undefined) delete process.env[name];
@@ -68,7 +76,7 @@ test('builds backend targets and trusted identity headers centrally', () => {
     };
     restore('BACKEND_API_URL', previousApiUrl);
     restore('BACKEND_WS_URL', previousSocketUrl);
-    restore('BACKEND_API_TOKEN', previousToken);
+    restore('WEBSITE_API_TOKEN', previousToken);
   }
 });
 

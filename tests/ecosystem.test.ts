@@ -34,9 +34,14 @@ test('installs the ecosystem stack and runs typed tests through tsx', async () =
     packageJson.scripts.test,
     'node --import tsx --test tests/index.ts',
   );
-  assert.equal(packageJson.scripts['db:migrate'], 'drizzle-kit migrate');
+  assert.equal(
+    packageJson.scripts['db:migrate'],
+    'npm --prefix ../backend run db:migrate',
+  );
   assert.equal(packageJson.scripts['db:doctor'], 'tsx scripts/db-doctor.ts');
   assert.match(packageJson.scripts['db:studio'], /db:doctor/);
+  assert.equal(packageJson.scripts['db:push'], undefined);
+  assert.equal(packageJson.scripts['db:generate'], undefined);
 });
 
 test('ships Auth.js, protected admin pages, APIs, and live event monitor', async () => {
@@ -112,6 +117,29 @@ test('defines the operational data model and tenant boundary', async () => {
   assert.match(schema, /messages_conversation_external_unique/);
 });
 
+test('keeps website seeding outside the operational pool', async () => {
+  const seed = await readText('scripts/seed.ts');
+
+  assert.match(seed, /workspaceMembers/);
+  assert.doesNotMatch(
+    seed,
+    /\b(integrations|contacts|conversations|messages|orders|integrationEvents)\b/,
+  );
+});
+
+test('keeps admin command idempotency keys stable across retries', async () => {
+  const [orderForm, replyForm] = await Promise.all([
+    readText('features/admin/orders/new-order-menu.tsx'),
+    readText('features/admin/inbox/conversation-thread.tsx'),
+  ]);
+
+  for (const form of [orderForm, replyForm]) {
+    assert.match(form, /useRef\(crypto\.randomUUID\(\)\)/);
+    assert.match(form, /value=\{requestId\.current\}/);
+    assert.doesNotMatch(form, /value=\{crypto\.randomUUID\(\)\}/);
+  }
+});
+
 test('separates personal accounts from admin operations with database roles', async () => {
   const [
     schema,
@@ -140,10 +168,14 @@ test('separates personal accounts from admin operations with database roles', as
   assert.match(roles, /return '\/dashboard'/);
   assert.match(guards, /isAdminRole/);
   assert.match(guards, /redirect\(getAccountHome/);
-  assert.match(portalQueries, /requestedById/);
-  assert.match(issueAction, /insert\(conversations\)/);
-  assert.match(issueAction, /insert\(messages\)/);
-  assert.match(issueAction, /conversationId: conversation\.id/);
+  assert.match(portalQueries, /backendRequest/);
+  assert.doesNotMatch(portalQueries, /db\.(query|insert|update|delete)/);
+  assert.match(issueAction, /backendRequest/);
+  assert.match(issueAction, /\/v1\/intake\/orders/);
+  assert.doesNotMatch(
+    issueAction,
+    /insert\(conversations\)|insert\(messages\)/,
+  );
   assert.match(dashboard, /Admin console|adminArea/);
 });
 
@@ -178,6 +210,14 @@ test('normalizes channel messages through a tested contract', () => {
   assert.equal(normalized.message.direction, 'inbound');
   assert.equal(normalized.contact.displayName, 'Alex');
   assert.equal(normalized.thread.externalId, 'chat:1');
+
+  assert.equal(
+    parseNormalizedMessageEvent({
+      eventId: 'telegram:update:2',
+      eventType: 'message.sent',
+    }),
+    null,
+  );
 });
 
 test('keeps route handlers thin and moves ingestion into a service', async () => {
@@ -188,10 +228,9 @@ test('keeps route handlers thin and moves ingestion into a service', async () =>
 
   assert.match(route, /ingestIntegrationEvent/);
   assert.doesNotMatch(route, /insert\(contacts\)/);
-  assert.match(service, /insert\(contacts\)/);
-  assert.match(service, /insert\(conversations\)/);
-  assert.match(service, /insert\(messages\)/);
-  assert.match(service, /db\.transaction/);
+  assert.match(service, /telegramBackendRequest/);
+  assert.match(service, /\/v1\/intake\/messages/);
+  assert.doesNotMatch(service, /db\.(transaction|insert|update|delete)/);
 });
 
 test('validates account, issue, order, and reply commands before persistence', () => {

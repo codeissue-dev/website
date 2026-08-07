@@ -116,7 +116,9 @@ test('keeps route files thin and delegates actions and screens to features', asy
     ]);
   assert.match(orderExport, /features\/admin\/orders\/actions/);
   assert.match(orderAction, /parseOrderDraft/);
-  assert.match(orderAction, /requireWorkspaceAccess/);
+  assert.match(orderAction, /requireAdmin/);
+  assert.match(orderAction, /backendRequest/);
+  assert.doesNotMatch(orderAction, /db\.(insert|update|delete)/);
   assert.match(issueExport, /features\/issues\/actions/);
   assert.match(issueAction, /parseIssueDraft/);
 });

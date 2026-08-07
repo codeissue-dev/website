@@ -2,14 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { db } from '@/db/client';
-import { orders } from '@/db/schema';
+import { backendRequest } from '@/lib/backend/client';
+import {
+  formRequestId,
+  websiteIdempotencyKey,
+} from '@/lib/backend/idempotency';
 import { requireAdmin } from '@/lib/auth/guards';
 import { parseOrderDraft } from '@/lib/orders/input';
-import {
-  requireDefaultWorkspace,
-  requireWorkspaceAccess,
-} from '@/lib/workspaces/service';
 
 export async function createOrder(formData: FormData) {
   const session = await requireAdmin();
@@ -18,17 +17,30 @@ export async function createOrder(formData: FormData) {
     currency: formData.get('currency'),
     value: formData.get('value'),
   });
-  const workspace = await requireDefaultWorkspace();
+  const idempotencyKey = websiteIdempotencyKey(formRequestId(formData));
 
-  await requireWorkspaceAccess(workspace.id, session.user.id);
-  await db.insert(orders).values({
-    workspaceId: workspace.id,
-    ownerId: session.user.id,
-    title: draft.title,
-    status: 'lead',
-    currency: draft.currency,
-    valueCents: draft.valueCents,
-  });
+  await backendRequest(
+    '/v1/intake/orders',
+    {
+      id: session.user.id,
+      role: 'admin',
+      name: session.user.name ?? session.user.username,
+    },
+    {
+      method: 'POST',
+      headers: { 'idempotency-key': idempotencyKey },
+      body: JSON.stringify({
+        title: draft.title,
+        currency: draft.currency,
+        valueCents: draft.valueCents,
+        requester: {
+          externalId: `admin:${session.user.id}`,
+          displayName:
+            session.user.name ?? session.user.username ?? 'CodeIssue admin',
+        },
+      }),
+    },
+  );
 
   revalidatePath('/admin');
   revalidatePath('/admin/orders');

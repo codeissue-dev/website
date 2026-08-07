@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 
 import { FormError } from '@/components/forms/form-field';
 import { SubmitButton } from '@/components/forms/submit-button';
@@ -11,6 +11,7 @@ import { IssueProductFields } from './components/issue-product-fields';
 import type { NewIssueCopy } from './types';
 
 export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
+  const [requestId] = useState(() => crypto.randomUUID());
   const [state, action] = useActionState(createPublicIssue, {
     error: undefined,
   } as NewIssueState);
@@ -20,6 +21,7 @@ export function NewIssueForm({ copy }: { copy: NewIssueCopy }) {
 
   return (
     <form action={action} className="grid gap-7">
+      <input type="hidden" name="requestId" value={requestId} />
       <IssueProductFields fields={copy.fields} />
       <IssueContactFields fields={copy.fields} />
       <FormError>{error}</FormError>

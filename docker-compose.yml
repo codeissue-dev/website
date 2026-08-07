@@ -43,7 +43,8 @@ services:
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
       BACKEND_API_URL: ${BACKEND_API_URL:-http://backend:8080}
-      BACKEND_API_TOKEN: ${BACKEND_API_TOKEN:-local-backend-service-token-change-before-production}
+      WEBSITE_API_TOKEN: ${WEBSITE_API_TOKEN:-local-backend-service-token-change-before-production}
+      TELEGRAM_API_TOKEN: ${TELEGRAM_API_TOKEN:-local-telegram-service-token-change-before-production}
       BACKEND_WS_URL: ${BACKEND_WS_URL:-ws://localhost:8080/ws}
       BACKEND_WS_TICKET_PATH: ${BACKEND_WS_TICKET_PATH:-/ws/ticket}
       INTEGRATION_WEBHOOK_SECRET: ${INTEGRATION_WEBHOOK_SECRET:-local-webhook-secret}
@@ -54,7 +55,7 @@ services:
     volumes:
       - .:/app
       - app_node_modules:/app/node_modules
-    command: sh -c "npm run db:migrate && npm run dev"
+    command: npm run dev
   backend:
     build:
       context: ../backend
@@ -67,10 +68,13 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-codeissue}:${POSTGRES_PASSWORD:-codeissue-local-password}@postgres:5432/${POSTGRES_DB:-codeissue}
-      BACKEND_API_TOKEN: ${BACKEND_API_TOKEN:-local-backend-service-token-change-before-production}
+      WEBSITE_API_TOKEN: ${WEBSITE_API_TOKEN:-local-backend-service-token-change-before-production}
+      TELEGRAM_API_TOKEN: ${TELEGRAM_API_TOKEN:-local-telegram-service-token-change-before-production}
+      REALTIME_SIGNING_SECRET: ${REALTIME_SIGNING_SECRET:-local-realtime-signing-secret-change-before-production}
       DEFAULT_WORKSPACE_SLUG: codeissue
       BACKEND_WS_PATH: /ws
       BACKEND_ALLOWED_ORIGINS: ${BACKEND_ALLOWED_ORIGINS:-http://localhost:3000}
+      OUTBOX_LEASE_SECONDS: ${OUTBOX_LEASE_SECONDS:-60}
       PORT: 8080
     ports:
       - '${BACKEND_PORT:-8080}:8080'
@@ -88,14 +92,17 @@ services:
       start_period: 10s
   migrate:
     build:
-      context: .
-      target: development
+      context: ../backend
+      target: production
     profiles: ['tools']
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-codeissue}:${POSTGRES_PASSWORD:-codeissue-local-password}@postgres:5432/${POSTGRES_DB:-codeissue}
+      WEBSITE_API_TOKEN: ${WEBSITE_API_TOKEN:-local-backend-service-token-change-before-production}
+      TELEGRAM_API_TOKEN: ${TELEGRAM_API_TOKEN:-local-telegram-service-token-change-before-production}
+      REALTIME_SIGNING_SECRET: ${REALTIME_SIGNING_SECRET:-local-realtime-signing-secret-change-before-production}
     command: npm run db:migrate
 
   seed:

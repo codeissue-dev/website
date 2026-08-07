@@ -65,7 +65,7 @@ flowchart LR
   Admin --> Event
 ```
 
-A new project request creates the order and conversation in one database transaction. User and administrator messages share the same conversation record. Queries for the personal workspace always filter projects by `requestedById`.
+The website sends project and message commands to the backend pool. The backend creates the order, conversation, initial message, and integration event in one PostgreSQL transaction. User and administrator messages share the same conversation record. Personal-workspace reads are served by the backend and always filter projects by `requestedById`.
 
 ## Tenant boundary
 
@@ -79,10 +79,12 @@ Runtime translations live only in `locales/`. Historical translation paths are r
 
 ## Backend bridge
 
-The admin bridge validates backend paths, removes browser credentials, adds trusted account identity, and forwards requests with server-only credentials. WebSocket connections use short-lived tickets so persistent backend secrets never enter browser JavaScript.
+The server-side backend client and optional admin proxy remove browser credentials, add trusted Auth.js identity, and authenticate with the server-only website token. WebSocket connections use short-lived tickets so persistent backend secrets never enter browser JavaScript.
 
-The sibling `@codeissue/backend` NestJS service is the trusted operational boundary behind that bridge. It validates the service token and forwarded administrator identity, re-checks the account and workspace administrator membership in PostgreSQL, and scopes every order, conversation, integration, and event operation to the configured workspace.
+The sibling `@codeissue/backend` owns the operational order/message pool. Its framework-independent core runs behind either the NestJS Node adapter or the Cloudflare Worker adapter. Both validate the source-specific service token, re-check website identities and workspace membership in PostgreSQL, and scope every operation to the configured workspace.
 
-The website owns Auth.js sessions and Drizzle migrations. The backend shares the resulting PostgreSQL schema rather than introducing a second identity store or a competing migration history. Mutations that enqueue external work persist their `integration_events` record in the same transaction.
+The website owns Auth.js accounts and UI. The backend owns operational migrations and is the only runtime allowed to mutate orders, conversations, messages, integrations, and integration events. The website keeps a mirrored Drizzle schema for Auth.js and tooling but delegates migration application to the backend.
 
-Realtime delivery is derived from persisted events. The backend issues one-time, short-lived WebSocket tickets bound to an administrator and workspace, validates the browser origin during upgrade, and sends only events from that workspace. A database poller also captures events written by the website or external workers, so the live stream is not limited to changes initiated through the backend API.
+Telegram is a separate trusted source. It can ingest orders and messages with its own token, claim admin replies through an atomically leased outbox, and acknowledge delivery with the current lease token. This keeps multiple bot replicas from sending the same reply concurrently.
+
+Realtime delivery is derived only from committed events. Node uses a one-time in-memory ticket and native WebSocket server. Cloudflare uses an HMAC-signed ticket and a workspace Durable Object for nonce consumption and fan-out. PostgreSQL remains the source of truth in both runtimes; the Durable Object does not own domain state.

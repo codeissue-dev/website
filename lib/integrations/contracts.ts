@@ -1,6 +1,6 @@
 export type NormalizedMessageEvent = {
   eventId: string;
-  eventType: 'message.received' | 'message.sent';
+  eventType: 'message.received';
   occurredAt: Date;
   contact: {
     externalId: string;
@@ -15,7 +15,7 @@ export type NormalizedMessageEvent = {
   message: {
     externalId: string;
     text: string;
-    direction: 'inbound' | 'outbound';
+    direction: 'inbound';
     authorName?: string;
   };
   raw: Record<string, unknown>;
@@ -52,7 +52,7 @@ export function parseNormalizedMessageEvent(
   payload: Record<string, unknown>,
 ): NormalizedMessageEvent | null {
   const eventType = payload.eventType ?? payload.type;
-  if (eventType !== 'message.received' && eventType !== 'message.sent') {
+  if (eventType !== 'message.received') {
     return null;
   }
 
@@ -75,11 +75,9 @@ export function parseNormalizedMessageEvent(
   }
 
   const eventId = requiredString(payload.eventId ?? payload.id, 'eventId', 200);
-  const direction =
-    message.direction ??
-    (eventType === 'message.sent' ? 'outbound' : 'inbound');
-  if (direction !== 'inbound' && direction !== 'outbound') {
-    throw new Error('message.direction must be inbound or outbound.');
+  const direction = message.direction ?? 'inbound';
+  if (direction !== 'inbound') {
+    throw new Error('Telegram webhook messages must be inbound.');
   }
 
   return {

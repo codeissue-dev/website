@@ -7,7 +7,7 @@ import { getAdminSessionForApi } from '@/lib/auth/guards';
 
 export const dynamic = 'force-dynamic';
 
-const maxRequestBytes = 5_000_000;
+const maxRequestBytes = 1_000_000;
 
 type RouteContext = { params: Promise<{ path: string[] }> };
 

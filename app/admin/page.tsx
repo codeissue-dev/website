@@ -16,7 +16,9 @@ export default async function AdminOverviewPage() {
       overview={overview}
       copy={copy}
       locale={toLocale(lng)}
-      websocketConfigured={Boolean(process.env.BACKEND_WS_URL)}
+      websocketConfigured={Boolean(
+        process.env.BACKEND_WS_URL || process.env.BACKEND_API_URL,
+      )}
     />
   );
 }

@@ -35,6 +35,12 @@ export async function POST(request: Request, context: RouteContext) {
   let payload: Record<string, unknown>;
   try {
     provider = parseProvider((await context.params).provider);
+    if (provider !== 'telegram') {
+      return Response.json(
+        { error: 'Unsupported integration provider.' },
+        { status: 404 },
+      );
+    }
     payload = await readJsonObjectBody(request);
   } catch (error) {
     if (error instanceof WebhookRequestError) {

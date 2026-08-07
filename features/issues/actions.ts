@@ -2,14 +2,13 @@
 
 import { redirect } from 'next/navigation';
 
-import { db } from '@/db/client';
-import { conversations, messages, orders } from '@/db/schema';
+import { backendRequest } from '@/lib/backend/client';
+import {
+  formRequestId,
+  websiteIdempotencyKey,
+} from '@/lib/backend/idempotency';
 import { requireUser } from '@/lib/auth/guards';
 import { parseIssueDraft } from '@/lib/issues/input';
-import {
-  ensureDefaultWorkspace,
-  ensureWorkspaceMembership,
-} from '@/lib/workspaces/service';
 
 export type NewIssueState = { error?: string };
 
@@ -35,36 +34,40 @@ export async function createPublicIssue(
   }
 
   let issueId: string;
-
   try {
-    const workspace = await ensureDefaultWorkspace();
-    await ensureWorkspaceMembership(workspace.id, session.user.id);
-
-    issueId = await db.transaction(async (tx) => {
-      const [conversation] = await tx
-        .insert(conversations)
-        .values({
-          workspaceId: workspace.id,
-          subject: draft.title,
-          status: 'open',
-          unreadCount: 1,
-          lastMessageAt: new Date(),
-        })
-        .returning({ id: conversations.id });
-
-      if (!conversation) throw new Error('Conversation was not created.');
-
-      const [issue] = await tx
-        .insert(orders)
-        .values({
-          workspaceId: workspace.id,
-          conversationId: conversation.id,
-          requestedById: session.user.id,
+    const requestId = formRequestId(formData);
+    const idempotencyKey = websiteIdempotencyKey(requestId);
+    const result = await backendRequest<{ order: { id: string } }>(
+      '/v1/intake/orders',
+      {
+        id: session.user.id,
+        role: 'user',
+        name: session.user.name ?? session.user.username,
+      },
+      {
+        method: 'POST',
+        headers: { 'idempotency-key': idempotencyKey },
+        body: JSON.stringify({
           title: draft.title,
-          status: 'lead',
-          currency: 'USD',
-          valueCents: null,
           summary: draft.brief,
+          currency: 'USD',
+          requester: {
+            externalId: session.user.id,
+            userId: session.user.id,
+            displayName:
+              session.user.name ?? session.user.username ?? 'project member',
+          },
+          thread: { subject: draft.title },
+          initialMessage: {
+            externalId: `website:${idempotencyKey}`,
+            authorName:
+              session.user.name ?? session.user.username ?? 'project member',
+            body: draft.brief,
+            payload: {
+              kind: 'project.intake',
+              desiredOutcome: draft.desiredOutcome,
+            },
+          },
           intake: {
             projectType: draft.projectType,
             desiredOutcome: draft.desiredOutcome,
@@ -72,26 +75,10 @@ export async function createPublicIssue(
             contactHandle: draft.contactHandle,
             budgetRange: draft.budgetRange,
           },
-        })
-        .returning({ id: orders.id });
-
-      if (!issue) throw new Error('Project request was not created.');
-
-      await tx.insert(messages).values({
-        conversationId: conversation.id,
-        direction: 'inbound',
-        authorName:
-          session.user.name ?? session.user.username ?? 'project member',
-        body: draft.brief,
-        payload: {
-          kind: 'project.intake',
-          projectId: issue.id,
-          desiredOutcome: draft.desiredOutcome,
-        },
-      });
-
-      return issue.id;
-    });
+        }),
+      },
+    );
+    issueId = result.order.id;
   } catch (error) {
     console.error('Project request could not be created.', error);
     return { error: 'service_unavailable' };

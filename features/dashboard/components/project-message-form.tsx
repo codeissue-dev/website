@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,11 +15,13 @@ export function ProjectMessageForm({
   projectId: string;
   copy: Dictionary['dashboard'];
 }) {
+  const [requestId] = useState(() => crypto.randomUUID());
   const action = sendProjectMessage.bind(null, projectId);
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
     <form action={formAction} className="border-t border-border p-4 sm:p-5">
+      <input type="hidden" name="requestId" value={requestId} />
       <Textarea
         name="message"
         required

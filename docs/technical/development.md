@@ -37,13 +37,16 @@ npm run dev
 
 ## Database changes
 
-1. Edit `db/schema.ts`.
-2. Run `npm run db:generate`.
-3. Review the generated SQL.
-4. Run `npm run db:migrate`.
-5. Update seed data and tests when the schema contract changes.
-6. Run `npm run db:doctor`.
-7. Commit the schema and migration together.
+The backend owns the PostgreSQL migration history. For operational tables, edit the backend migration set first and keep the website Drizzle schema and mirrored SQL in sync for Auth.js tooling and type-safe reads.
+
+1. Add the next reviewed SQL migration under `../backend/migrations`.
+2. Mirror that migration under `drizzle` when it changes tables represented by `db/schema.ts`.
+3. Update `db/schema.ts`, seed data, and contract tests together.
+4. Apply the migration with `npm run db:migrate`; this delegates to the backend migration runner.
+5. Run `npm run db:doctor` and the checks in both workspaces.
+6. Commit the backend migration, schema mirror, and tests together.
+
+Do not use schema-push or ad-hoc migration generation against shared environments.
 
 See [Database operations](database.md) for Drizzle Studio and Docker password troubleshooting.
 

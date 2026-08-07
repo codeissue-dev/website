@@ -17,7 +17,6 @@ export async function POST() {
   let ticketUrl: URL;
   try {
     ticketUrl = buildSocketTicketTarget();
-    buildSocketUrl('configuration-check');
   } catch (error) {
     return Response.json(
       {
@@ -50,6 +49,7 @@ export async function POST() {
     const payload = (await response.json()) as {
       ticket?: unknown;
       expiresAt?: unknown;
+      url?: unknown;
     };
     if (typeof payload.ticket !== 'string' || payload.ticket.length < 8) {
       return Response.json(
@@ -58,7 +58,10 @@ export async function POST() {
       );
     }
 
-    const socketUrl = buildSocketUrl(payload.ticket);
+    const socketUrl = buildSocketUrl(
+      payload.ticket,
+      typeof payload.url === 'string' ? payload.url : null,
+    );
 
     return Response.json({
       url: socketUrl.toString(),

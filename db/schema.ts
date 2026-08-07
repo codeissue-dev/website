@@ -1,5 +1,8 @@
+import { sql } from 'drizzle-orm';
+
 import {
   boolean,
+  check,
   index,
   integer,
   jsonb,
@@ -227,6 +230,7 @@ export const conversations = pgTable(
     contactId: uuid('contact_id').references(() => contacts.id, {
       onDelete: 'set null',
     }),
+    source: text('source').notNull().default('website'),
     externalThreadId: text('external_thread_id'),
     subject: text('subject').notNull(),
     status: conversationStatusEnum('status').notNull().default('open'),
@@ -246,10 +250,20 @@ export const conversations = pgTable(
       table.status,
     ),
     index('conversations_last_message_idx').on(table.lastMessageAt),
+    index('conversations_workspace_source_last_message_idx').on(
+      table.workspaceId,
+      table.source,
+      table.lastMessageAt,
+    ),
     uniqueIndex('conversations_integration_thread_unique').on(
       table.integrationId,
       table.externalThreadId,
     ),
+    check(
+      'conversations_source_check',
+      sql`${table.source} in ('website', 'telegram')`,
+    ),
+    check('conversations_unread_count_check', sql`${table.unreadCount} >= 0`),
   ],
 );
 
@@ -260,8 +274,16 @@ export const messages = pgTable(
     conversationId: uuid('conversation_id')
       .notNull()
       .references(() => conversations.id, { onDelete: 'cascade' }),
+    source: text('source').notNull().default('website'),
     externalMessageId: text('external_message_id'),
     direction: messageDirectionEnum('direction').notNull(),
+    deliveryStatus: text('delivery_status').notNull().default('delivered'),
+    deliveryAttempts: integer('delivery_attempts').notNull().default(0),
+    deliveryLeaseToken: uuid('delivery_lease_token'),
+    deliveryLeaseUntil: timestamp('delivery_lease_until', {
+      mode: 'date',
+      withTimezone: true,
+    }),
     authorName: text('author_name'),
     body: text('body').notNull(),
     payload: jsonb('payload')
@@ -279,6 +301,29 @@ export const messages = pgTable(
     uniqueIndex('messages_conversation_external_unique').on(
       table.conversationId,
       table.externalMessageId,
+    ),
+    index('messages_delivery_status_idx').on(
+      table.deliveryStatus,
+      table.sentAt,
+    ),
+    index('messages_outbox_claim_idx')
+      .on(table.deliveryStatus, table.deliveryLeaseUntil, table.sentAt)
+      .where(sql`${table.deliveryStatus} in ('queued', 'sending')`),
+    check(
+      'messages_source_check',
+      sql`${table.source} in ('website', 'telegram')`,
+    ),
+    check(
+      'messages_delivery_status_check',
+      sql`${table.deliveryStatus} in ('received', 'queued', 'sending', 'delivered', 'failed')`,
+    ),
+    check(
+      'messages_delivery_attempts_check',
+      sql`${table.deliveryAttempts} >= 0`,
+    ),
+    check(
+      'messages_delivery_lease_check',
+      sql`(${table.deliveryStatus} = 'sending' and ${table.deliveryLeaseToken} is not null and ${table.deliveryLeaseUntil} is not null) or (${table.deliveryStatus} <> 'sending' and ${table.deliveryLeaseUntil} is null)`,
     ),
   ],
 );
@@ -299,6 +344,14 @@ export const orders = pgTable(
     requestedById: text('requested_by_id').references(() => users.id, {
       onDelete: 'set null',
     }),
+    source: text('source').notNull().default('website'),
+    externalOrderId: text('external_order_id'),
+    requesterExternalId: text('requester_external_id'),
+    requesterName: text('requester_name'),
+    requesterMetadata: jsonb('requester_metadata')
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
     title: text('title').notNull(),
     status: orderStatusEnum('status').notNull().default('lead'),
     currency: text('currency').notNull().default('USD'),
@@ -314,6 +367,29 @@ export const orders = pgTable(
   },
   (table) => [
     index('orders_workspace_status_idx').on(table.workspaceId, table.status),
+    uniqueIndex('orders_workspace_source_external_unique')
+      .on(table.workspaceId, table.source, table.externalOrderId)
+      .where(sql`${table.externalOrderId} is not null`),
+    index('orders_workspace_source_updated_idx').on(
+      table.workspaceId,
+      table.source,
+      table.updatedAt,
+    ),
+    index('orders_workspace_requester_updated_idx')
+      .on(table.workspaceId, table.requestedById, table.updatedAt)
+      .where(sql`${table.requestedById} is not null`),
+    check(
+      'orders_source_check',
+      sql`${table.source} in ('website', 'telegram')`,
+    ),
+    check(
+      'orders_currency_check',
+      sql`${table.currency} in ('USD', 'EUR', 'RUB')`,
+    ),
+    check(
+      'orders_value_cents_check',
+      sql`${table.valueCents} is null or ${table.valueCents} >= 0`,
+    ),
   ],
 );
 
@@ -340,9 +416,17 @@ export const integrationEvents = pgTable(
   },
   (table) => [
     index('integration_events_received_idx').on(table.receivedAt),
-    uniqueIndex('integration_events_source_external_unique').on(
-      table.source,
-      table.externalEventId,
+    uniqueIndex('integration_events_workspace_source_external_unique')
+      .on(table.workspaceId, table.source, table.externalEventId)
+      .where(sql`${table.externalEventId} is not null`),
+    index('integration_events_outbox_idx')
+      .on(table.workspaceId, table.receivedAt, table.id)
+      .where(
+        sql`${table.source} = 'telegram' and ${table.eventType} = 'message.outbound.queued' and ${table.status} = 'received'`,
+      ),
+    check(
+      'integration_events_source_check',
+      sql`${table.source} in ('website', 'telegram')`,
     ),
   ],
 );

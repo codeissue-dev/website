@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import { createOrder } from './actions';
 import { FormField } from '@/components/forms/form-field';
 import { FormSelect } from '@/components/forms/form-select';
@@ -15,6 +19,8 @@ export function NewOrderMenu({
 }: {
   copy: Dictionary['admin']['orders'];
 }) {
+  const [requestId] = useState(() => crypto.randomUUID());
+
   return (
     <details className="group relative">
       <summary
@@ -29,6 +35,7 @@ export function NewOrderMenu({
         action={createOrder}
         className="absolute right-0 top-[calc(100%_+_0.75rem)] z-20 grid w-[min(25rem,calc(100vw_-_2rem))] gap-4 rounded-xl border border-border bg-card p-5 shadow-2xl shadow-black/60"
       >
+        <input type="hidden" name="requestId" value={requestId} />
         <FormField label={copy.titleLabel}>
           <Input
             name="title"

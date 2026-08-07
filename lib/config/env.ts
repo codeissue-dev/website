@@ -9,20 +9,31 @@ export function requiredEnv(name: string) {
   return value;
 }
 
-export function httpUrlEnv(name: string) {
+function credentialFreeUrl(name: string, protocols: readonly string[]) {
   const value = requiredEnv(name);
-  const url = new URL(value);
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-    throw new Error(`${name} must use http:// or https://.`);
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error(`${name} must be a valid absolute URL.`);
+  }
+  if (!protocols.includes(url.protocol)) {
+    throw new Error(`${name} must use ${protocols.join(' or ')}.`);
+  }
+  if (url.username || url.password || url.hash) {
+    throw new Error(`${name} must not contain credentials or a fragment.`);
+  }
+  return url;
+}
+
+export function httpUrlEnv(name: string) {
+  const url = credentialFreeUrl(name, ['http:', 'https:']);
+  if (url.search) {
+    throw new Error(`${name} must not contain a query string.`);
   }
   return url;
 }
 
 export function webSocketUrlEnv(name: string) {
-  const value = requiredEnv(name);
-  const url = new URL(value);
-  if (url.protocol !== 'ws:' && url.protocol !== 'wss:') {
-    throw new Error(`${name} must use ws:// or wss://.`);
-  }
-  return url;
+  return credentialFreeUrl(name, ['ws:', 'wss:']);
 }

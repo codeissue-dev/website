@@ -1,17 +1,28 @@
-import { eq, sql } from 'drizzle-orm';
+import { createHash } from 'node:crypto';
 
-import { db } from '@/db/client';
-import {
-  contacts,
-  conversations,
-  integrationEvents,
-  integrations,
-  messages,
-} from '@/db/schema';
-import { requireDefaultWorkspace } from '@/lib/workspaces/service';
+import { telegramBackendRequest } from '@/lib/backend/client';
 
 import type { NormalizedMessageEvent } from './contracts';
-import { providerLabel } from './request';
+
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value !== 'object') {
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(',')}]`;
+  }
+  const object = value as Record<string, unknown>;
+  return `{${Object.keys(object)
+    .sort()
+    .map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
+    .join(',')}}`;
+}
+
+function fallbackEventKey(provider: string, payload: Record<string, unknown>) {
+  return `${provider}:${createHash('sha256')
+    .update(canonicalJson(payload))
+    .digest('hex')}`;
+}
 
 type IngestInput = {
   provider: string;
@@ -21,145 +32,61 @@ type IngestInput = {
   eventType?: string | null;
 };
 
-function normalizedIdentifier(value: unknown, fallback: string) {
-  return (
-    String(value ?? fallback)
-      .trim()
-      .slice(0, 200) || fallback
-  );
-}
-
 export async function ingestIntegrationEvent(input: IngestInput) {
-  const workspace = await requireDefaultWorkspace();
+  if (input.provider !== 'telegram') {
+    throw new Error('Only the telegram provider is supported by this pool.');
+  }
+  if (!input.normalized) {
+    return {
+      duplicate: false,
+      ignored: true,
+      eventId: input.externalEventId ?? null,
+      conversationId: null,
+    };
+  }
 
-  return db.transaction(async (tx) => {
-    const now = new Date();
-    const [integration] = await tx
-      .insert(integrations)
-      .values({
-        workspaceId: workspace.id,
-        provider: input.provider,
-        displayName: providerLabel(input.provider),
-        status: 'connected',
-        lastEventAt: now,
-      })
-      .onConflictDoUpdate({
-        target: [integrations.workspaceId, integrations.provider],
-        set: { status: 'connected', lastEventAt: now, updatedAt: now },
-      })
-      .returning({ id: integrations.id });
-
-    const fallbackId = crypto.randomUUID();
-    const externalEventId = normalizedIdentifier(
-      input.normalized?.eventId ?? input.externalEventId ?? input.payload.id,
-      fallbackId,
-    );
-    const eventType = normalizedIdentifier(
-      input.normalized?.eventType ?? input.eventType ?? input.payload.type,
-      'event.received',
-    );
-
-    const [event] = await tx
-      .insert(integrationEvents)
-      .values({
-        workspaceId: workspace.id,
-        integrationId: integration.id,
-        source: input.provider,
-        eventType,
-        externalEventId,
-        payload: input.payload,
-      })
-      .onConflictDoNothing()
-      .returning({ id: integrationEvents.id });
-
-    if (!event) {
-      return { duplicate: true, eventId: null, conversationId: null };
-    }
-
-    if (!input.normalized) {
-      return { duplicate: false, eventId: event.id, conversationId: null };
-    }
-
-    const normalized = input.normalized;
-    const [contact] = await tx
-      .insert(contacts)
-      .values({
-        workspaceId: workspace.id,
-        integrationId: integration.id,
+  const normalized = input.normalized;
+  const result = await telegramBackendRequest<{
+    conversation: { id: string };
+    message: { id: string } | null;
+    duplicate: boolean;
+  }>('/v1/intake/messages', {
+    method: 'POST',
+    headers: {
+      'idempotency-key':
+        normalized.eventId ||
+        input.externalEventId ||
+        fallbackEventKey(input.provider, input.payload),
+    },
+    body: JSON.stringify({
+      occurredAt: normalized.occurredAt.toISOString(),
+      contact: {
         externalId: normalized.contact.externalId,
         displayName: normalized.contact.displayName,
         email: normalized.contact.email,
-        avatarUrl: normalized.contact.avatarUrl,
         metadata: { provider: input.provider },
-      })
-      .onConflictDoUpdate({
-        target: [contacts.integrationId, contacts.externalId],
-        set: {
-          displayName: normalized.contact.displayName,
-          email: normalized.contact.email,
-          avatarUrl: normalized.contact.avatarUrl,
-          updatedAt: now,
-        },
-      })
-      .returning({ id: contacts.id });
-
-    const [conversation] = await tx
-      .insert(conversations)
-      .values({
-        workspaceId: workspace.id,
-        integrationId: integration.id,
-        contactId: contact.id,
-        externalThreadId: normalized.thread.externalId,
+      },
+      thread: {
+        externalId: normalized.thread.externalId,
         subject: normalized.thread.subject,
-        unreadCount: 0,
-        lastMessageAt: normalized.occurredAt,
-      })
-      .onConflictDoUpdate({
-        target: [conversations.integrationId, conversations.externalThreadId],
-        set: {
-          contactId: contact.id,
-          subject: normalized.thread.subject,
-          unreadCount: sql`${conversations.unreadCount}`,
-          lastMessageAt: normalized.occurredAt,
-          updatedAt: now,
-        },
-      })
-      .returning({ id: conversations.id });
-
-    const [insertedMessage] = await tx
-      .insert(messages)
-      .values({
-        conversationId: conversation.id,
-        externalMessageId: normalized.message.externalId,
-        direction: normalized.message.direction,
-        authorName:
-          normalized.message.authorName ?? normalized.contact.displayName,
+      },
+      message: {
+        externalId: normalized.message.externalId,
         body: normalized.message.text,
+        direction: normalized.message.direction,
+        authorName: normalized.message.authorName,
+        sentAt: normalized.occurredAt.toISOString(),
         payload: normalized.raw,
-        sentAt: normalized.occurredAt,
-      })
-      .onConflictDoNothing()
-      .returning({ id: messages.id });
-
-    if (insertedMessage && normalized.message.direction === 'inbound') {
-      await tx
-        .update(conversations)
-        .set({
-          unreadCount: sql`${conversations.unreadCount} + 1`,
-          updatedAt: now,
-        })
-        .where(eq(conversations.id, conversation.id));
-    }
-
-    await tx
-      .update(integrationEvents)
-      .set({ status: 'processed', processedAt: now })
-      .where(eq(integrationEvents.id, event.id));
-
-    return {
-      duplicate: false,
-      eventId: event.id,
-      conversationId: conversation.id,
-    };
+      },
+      payload: input.payload,
+    }),
   });
+
+  return {
+    duplicate: result.duplicate,
+    ignored: false,
+    eventId: normalized.eventId,
+    conversationId: result.conversation.id,
+    messageId: result.message?.id ?? null,
+  };
 }
