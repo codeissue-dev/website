@@ -7,6 +7,9 @@
   "engines": {
     "node": ">=20.11.0"
   },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:vercel": "vercel dev",
@@ -21,7 +24,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "admin:create": "tsx scripts/create-admin.ts"
+    "admin:create": "tsx scripts/create-admin.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",
@@ -47,6 +51,8 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.0",
     "globals": "^16.4.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.20.6",
