@@ -1,15 +1,17 @@
 import Link from "next/link";
 
-import { buttonClass } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
+import { SectionHeading } from "@/components/ui/section-heading";
 import type { PublishedPortfolioItem } from "@/lib/content/queries";
 import { pluralize } from "@/lib/utils";
 
 export function PortfolioCard({ item }: { item: PublishedPortfolioItem }) {
   return (
-    <article className="flex flex-col gap-3 bg-surface p-5">
+    <article className="interactive-card flex flex-col gap-3 bg-surface p-5 sm:p-6">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         {item.industry ? (
-          <span className="font-mono text-xs tracking-wide text-ink-subtle uppercase">
+          <span className="font-mono text-xs tracking-wide text-accent uppercase">
             {item.industry}
           </span>
         ) : null}
@@ -20,88 +22,65 @@ export function PortfolioCard({ item }: { item: PublishedPortfolioItem }) {
           </span>
         ) : null}
       </div>
-
       <h3 className="text-base font-semibold text-ink">{item.title}</h3>
-      <p className="text-sm text-ink-muted">{item.summary}</p>
-
+      <p className="text-sm leading-relaxed text-ink-muted">{item.summary}</p>
       {item.techStack.length > 0 ? (
-        <ul className="mt-auto flex flex-wrap gap-1.5 pt-1">
+        <ul className="mt-auto flex flex-wrap gap-1.5 pt-2">
           {item.techStack.map((tech) => (
             <li
               key={tech}
-              className="rounded-md border border-line px-2 py-0.5 font-mono text-xs text-ink-muted"
+              className="rounded-md border border-line bg-surface-muted/60 px-2 py-0.5 font-mono text-xs text-ink-muted"
             >
               {tech}
             </li>
           ))}
         </ul>
       ) : null}
-
       {item.projectUrl ? (
-        <a
+        <Link
           href={item.projectUrl}
           target="_blank"
           rel="noreferrer noopener"
-          className="text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink"
+          className="mt-1 text-sm font-semibold text-ink underline decoration-accent/45 underline-offset-4 transition-colors hover:decoration-accent"
         >
           Visit the project
-        </a>
+        </Link>
       ) : null}
     </article>
   );
 }
 
-/**
- * Published work.
- *
- * Rows come from `portfolio_items` where `published` is true. When nothing is
- * published the section says so rather than inventing a client list.
- */
+/** Published work comes only from rows explicitly published by an administrator. */
 export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] }) {
   return (
     <section id="work" aria-labelledby="work-heading" className="border-b border-line">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-2xl">
-            <h2
-              id="work-heading"
-              className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
-            >
-              Completed projects
-            </h2>
-            <p className="mt-3 text-ink-muted">
-              Work we are allowed to talk about, written up by the people who built it.
-            </p>
-          </div>
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <SectionHeading
+            id="work-heading"
+            eyebrow="Selected work"
+            title="Completed projects"
+            description="Work we are allowed to talk about, written up by the people who built it."
+          />
           {items.length > 0 ? (
-            <Link
-              href="/work"
-              className={buttonClass({ variant: "secondary", size: "sm" })}
-            >
+            <ButtonLink href="/work" variant="secondary" size="sm">
               All projects
-            </Link>
+            </ButtonLink>
           ) : null}
         </div>
-
         {items.length === 0 ? (
-          <div className="mt-10 rounded-panel border border-dashed border-line px-6 py-12 text-center">
-            <p className="text-sm font-semibold text-ink">
-              No case studies are published yet
-            </p>
-            <p className="mx-auto mt-2 max-w-lg text-sm text-ink-muted">
-              Client work is only published here once the customer has approved the
-              write-up, so this section stays empty until then. Ask us directly about
-              relevant experience when you submit a request.
-            </p>
-            <Link
-              href="/register"
-              className={buttonClass({ size: "sm", className: "mt-6" })}
-            >
-              Submit a request
-            </Link>
-          </div>
+          <EmptyState
+            className="mt-10 py-12"
+            title="No case studies are published yet"
+            description="Client work is only published here once the customer has approved the write-up, so this section stays empty until then. Ask us directly about relevant experience when you submit a request."
+            action={
+              <ButtonLink href="/register" size="sm">
+                Submit a request
+              </ButtonLink>
+            }
+          />
         ) : (
-          <div className="mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+          <div className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {items.map((item) => (
               <PortfolioCard key={item.id} item={item} />
             ))}

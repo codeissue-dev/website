@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-
 import { UserRoleForm } from "@/components/forms/user-role-form";
-import { buttonClass } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeading } from "@/components/ui/page-heading";
 import { CONTROL_CLASS } from "@/components/ui/fields";
 import { Pagination } from "@/components/ui/pagination";
 import { Panel, PanelHeader } from "@/components/ui/panel";
@@ -35,13 +34,10 @@ export default async function AdminUsersPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">People</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Roles decide what an account can reach. Granting the executor role lets you
-          assign projects to that person; it never grants access to unrelated projects.
-        </p>
-      </div>
+      <PageHeading
+        title="People"
+        description="Roles decide what an account can reach. Granting the executor role lets you assign projects to that person; it never grants access to unrelated projects."
+      />
 
       <Panel>
         <form
@@ -108,16 +104,13 @@ export default async function AdminUsersPage({
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button type="submit" className={buttonClass({ size: "sm" })}>
+            <Button type="submit" size="sm">
               Apply
-            </button>
+            </Button>
             {isFiltered ? (
-              <Link
-                href="/admin/users"
-                className={buttonClass({ variant: "ghost", size: "sm" })}
-              >
+              <ButtonLink href="/admin/users" variant="ghost" size="sm">
                 Clear
-              </Link>
+              </ButtonLink>
             ) : null}
           </div>
         </form>

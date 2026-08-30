@@ -11,7 +11,7 @@ import {
 
 const password = "correct horse battery staple";
 
-test("hashes are self-describing and never contain the password", async () => {
+void test("hashes are self-describing and never contain the password", async () => {
   const stored = await hashPassword(password);
   const segments = stored.split("$");
 
@@ -20,7 +20,7 @@ test("hashes are self-describing and never contain the password", async () => {
   assert.ok(!stored.includes(password));
 });
 
-test("the same password produces a different hash every time", async () => {
+void test("the same password produces a different hash every time", async () => {
   const first = await hashPassword(password);
   const second = await hashPassword(password);
 
@@ -29,7 +29,7 @@ test("the same password produces a different hash every time", async () => {
   assert.equal(await verifyPassword(password, second), true);
 });
 
-test("verification rejects wrong passwords, missing and corrupt hashes", async () => {
+void test("verification rejects wrong passwords, missing and corrupt hashes", async () => {
   const stored = await hashPassword(password);
 
   assert.equal(await verifyPassword("correct horse battery stapl", stored), false);
@@ -40,7 +40,7 @@ test("verification rejects wrong passwords, missing and corrupt hashes", async (
   assert.equal(await verifyPassword(password, "scrypt$16384$8$1$abc"), false);
 });
 
-test("passwords at the supported boundaries round trip", async () => {
+void test("passwords at the supported boundaries round trip", async () => {
   const shortest = "a".repeat(PASSWORD_MIN_LENGTH);
   const longest = "b".repeat(PASSWORD_MAX_LENGTH);
 
@@ -48,7 +48,7 @@ test("passwords at the supported boundaries round trip", async () => {
   assert.equal(await verifyPassword(longest, await hashPassword(longest)), true);
 });
 
-test("emails are normalized before they are stored or compared", () => {
+void test("emails are normalized before they are stored or compared", () => {
   assert.equal(normalizeEmail("  Person@Example.COM "), "person@example.com");
   assert.equal(normalizeEmail("person@example.com"), "person@example.com");
 });

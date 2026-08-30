@@ -1,3 +1,5 @@
+import { EmptyState } from "@/components/ui/empty-state";
+import { SectionHeading } from "@/components/ui/section-heading";
 import type { PublishedTestimonial } from "@/lib/content/queries";
 
 function Attribution({ testimonial }: { testimonial: PublishedTestimonial }) {
@@ -6,21 +8,16 @@ function Attribution({ testimonial }: { testimonial: PublishedTestimonial }) {
   );
 
   return (
-    <footer className="mt-4 text-sm">
-      <p className="font-medium text-ink">{testimonial.authorName}</p>
+    <footer className="mt-5 border-t border-line/70 pt-4 text-sm">
+      <p className="font-semibold text-ink">{testimonial.authorName}</p>
       {details.length > 0 ? (
-        <p className="text-ink-muted">{details.join(", ")}</p>
+        <p className="mt-0.5 text-ink-muted">{details.join(", ")}</p>
       ) : null}
     </footer>
   );
 }
 
-/**
- * Published testimonials.
- *
- * Every quote is a row an administrator entered and published; none of this text
- * lives in the source code.
- */
+/** Every quote is stored in the CMS and published with the customer's approval. */
 export function TestimonialsSection({
   testimonials,
 }: {
@@ -30,46 +27,38 @@ export function TestimonialsSection({
     <section
       id="testimonials"
       aria-labelledby="testimonials-heading"
-      className="border-b border-line bg-surface-muted"
+      className="border-b border-line bg-surface-muted/55"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="max-w-2xl">
-          <h2
-            id="testimonials-heading"
-            className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
-          >
-            What customers say
-          </h2>
-          <p className="mt-3 text-ink-muted">
-            Feedback is published only with the customer&rsquo;s approval, in their own
-            words.
-          </p>
-        </div>
-
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+        <SectionHeading
+          id="testimonials-heading"
+          eyebrow="Proof"
+          title="What customers say"
+          description="Feedback is published only with the customer&rsquo;s approval, in their own words."
+        />
         {testimonials.length === 0 ? (
-          <div className="mt-10 rounded-panel border border-dashed border-line bg-surface px-6 py-12 text-center">
-            <p className="text-sm font-semibold text-ink">
-              No testimonials are published yet
-            </p>
-            <p className="mx-auto mt-2 max-w-lg text-sm text-ink-muted">
-              We would rather show an empty section than write praise on a
-              customer&rsquo;s behalf. Quotes appear here as soon as they are approved.
-            </p>
-          </div>
+          <EmptyState
+            className="mt-10 bg-surface py-12"
+            title="No testimonials are published yet"
+            description="We would rather show an empty section than write praise on a customer&rsquo;s behalf. Quotes appear here as soon as they are approved."
+          />
         ) : (
-          <ul className="mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial) => (
-              <li key={testimonial.id} className="bg-surface p-5">
+              <li
+                key={testimonial.id}
+                className="interactive-card bg-surface p-5 sm:p-6"
+              >
                 <figure className="flex h-full flex-col">
                   {testimonial.rating !== null ? (
                     <p
-                      className="font-mono text-xs text-ink-subtle"
+                      className="font-mono text-xs font-semibold tracking-wide text-accent"
                       aria-label={`Rated ${testimonial.rating} out of 5`}
                     >
                       {testimonial.rating}/5
                     </p>
                   ) : null}
-                  <blockquote className="mt-2 flex-1 text-sm text-ink">
+                  <blockquote className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-ink">
                     <p>&ldquo;{testimonial.quote}&rdquo;</p>
                   </blockquote>
                   <Attribution testimonial={testimonial} />

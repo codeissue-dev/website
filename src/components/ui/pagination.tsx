@@ -1,11 +1,6 @@
-import Link from "next/link";
+import { ButtonLink, buttonClass } from "@/components/ui/button";
 
-import { buttonClass } from "@/components/ui/button";
-
-/**
- * Server-rendered pagination: plain links, so paging works without JavaScript
- * and every page is a real, shareable URL.
- */
+/** Server-rendered pagination with real shareable Next.js routes. */
 export function Pagination({
   page,
   pageCount,
@@ -43,13 +38,14 @@ export function Pagination({
             Previous
           </span>
         ) : (
-          <Link
+          <ButtonLink
             href={hrefForPage(previousPage)}
-            className={buttonClass({ variant: "secondary", size: "sm" })}
+            variant="secondary"
+            size="sm"
             rel="prev"
           >
             Previous
-          </Link>
+          </ButtonLink>
         )}
         {nextPage === null ? (
           <span
@@ -63,13 +59,14 @@ export function Pagination({
             Next
           </span>
         ) : (
-          <Link
+          <ButtonLink
             href={hrefForPage(nextPage)}
-            className={buttonClass({ variant: "secondary", size: "sm" })}
+            variant="secondary"
+            size="sm"
             rel="next"
           >
             Next
-          </Link>
+          </ButtonLink>
         )}
       </div>
     </nav>

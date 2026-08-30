@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { ActivityList } from "@/components/orders/activity-list";
-import { buttonClass } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
+import { PageHeading } from "@/components/ui/page-heading";
 import { Panel, PanelHeader, Stat } from "@/components/ui/panel";
 import { requireRoleForPage } from "@/lib/auth/actor";
+import { ROLE_LABELS, USER_ROLES } from "@/lib/auth/roles";
 import { ORDER_STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders/status";
 import { loadAdminStats } from "@/lib/stats/queries";
-import { ROLE_LABELS, USER_ROLES } from "@/lib/auth/roles";
 import { pluralize } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -21,19 +21,15 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-ink">Overview</h1>
-          <p className="mt-1 text-sm text-ink-muted">
-            Every figure on this page is counted in PostgreSQL when the page is
-            requested.
-          </p>
-        </div>
-        <Link href="/admin/orders" className={buttonClass({ size: "sm" })}>
-          Review projects
-        </Link>
-      </div>
-
+      <PageHeading
+        title="Overview"
+        description="Every figure on this page is counted in PostgreSQL when the page is requested."
+        action={
+          <ButtonLink href="/admin/orders" size="sm">
+            Review projects
+          </ButtonLink>
+        }
+      />
       <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Projects" value={stats.totalOrders} />
         <Stat
@@ -50,13 +46,12 @@ export default async function AdminOverviewPage() {
           label="Average delivery"
           value={
             stats.averageDeliveryDays === null
-              ? "\u2014"
+              ? "—"
               : `${stats.averageDeliveryDays} ${pluralize(stats.averageDeliveryDays, "day", "days")}`
           }
           detail="Submission to completion"
         />
       </dl>
-
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <Panel>
           <PanelHeader
@@ -65,7 +60,6 @@ export default async function AdminOverviewPage() {
           />
           <ActivityList entries={stats.recentActivity} />
         </Panel>
-
         <div className="flex flex-col gap-5">
           <Panel>
             <PanelHeader title="Projects by status" />
@@ -85,17 +79,13 @@ export default async function AdminOverviewPage() {
               ))}
             </dl>
           </Panel>
-
           <Panel>
             <PanelHeader
               title="People"
               actions={
-                <Link
-                  href="/admin/users"
-                  className={buttonClass({ variant: "ghost", size: "sm" })}
-                >
+                <ButtonLink href="/admin/users" variant="ghost" size="sm">
                   Manage
-                </Link>
+                </ButtonLink>
               }
             />
             <dl className="divide-y divide-line">
@@ -112,7 +102,6 @@ export default async function AdminOverviewPage() {
               ))}
             </dl>
           </Panel>
-
           <Panel>
             <PanelHeader title="Public content" />
             <dl className="divide-y divide-line">

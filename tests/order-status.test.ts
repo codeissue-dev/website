@@ -12,7 +12,7 @@ import {
   validateTransition,
 } from "../src/lib/orders/status";
 
-test("every status has a label, a transition list and a lifecycle group", () => {
+void test("every status has a label, a transition list and a lifecycle group", () => {
   for (const status of ORDER_STATUSES) {
     assert.equal(typeof ORDER_STATUS_LABELS[status], "string");
     assert.ok(Array.isArray(ORDER_TRANSITIONS[status]));
@@ -23,7 +23,7 @@ test("every status has a label, a transition list and a lifecycle group", () => 
   }
 });
 
-test("transition targets are real statuses and never self-referential", () => {
+void test("transition targets are real statuses and never self-referential", () => {
   for (const status of ORDER_STATUSES) {
     for (const transition of ORDER_TRANSITIONS[status]) {
       assert.ok(
@@ -39,7 +39,7 @@ test("transition targets are real statuses and never self-referential", () => {
   }
 });
 
-test("a customer cannot move their own request into development", () => {
+void test("a customer cannot move their own request into development", () => {
   const result = validateTransition({
     order: { status: "SUBMITTED", assignedExecutorId: null },
     orderRole: "CUSTOMER",
@@ -49,7 +49,7 @@ test("a customer cannot move their own request into development", () => {
   assert.equal(result.ok, false);
 });
 
-test("an executor cannot mark a project as delivered", () => {
+void test("an executor cannot mark a project as delivered", () => {
   const result = validateTransition({
     order: { status: "QUALITY_ASSURANCE", assignedExecutorId: "executor-1" },
     orderRole: "EXECUTOR",
@@ -59,7 +59,7 @@ test("an executor cannot mark a project as delivered", () => {
   assert.equal(result.ok, false);
 });
 
-test("an administrator marks a project as delivered from QA", () => {
+void test("an administrator marks a project as delivered from QA", () => {
   const result = validateTransition({
     order: { status: "QUALITY_ASSURANCE", assignedExecutorId: "executor-1" },
     orderRole: "ADMIN",
@@ -69,7 +69,7 @@ test("an administrator marks a project as delivered from QA", () => {
   assert.equal(result.ok, true);
 });
 
-test("development requires an assigned executor", () => {
+void test("development requires an assigned executor", () => {
   const unassigned = validateTransition({
     order: { status: "ACCEPTED", assignedExecutorId: null },
     orderRole: "ADMIN",
@@ -87,7 +87,7 @@ test("development requires an assigned executor", () => {
   assert.equal(assigned.ok, true);
 });
 
-test("transitions that require a note reject an empty note", () => {
+void test("transitions that require a note reject an empty note", () => {
   const withoutNote = validateTransition({
     order: { status: "IN_PROGRESS", assignedExecutorId: "executor-1" },
     orderRole: "EXECUTOR",
@@ -105,7 +105,7 @@ test("transitions that require a note reject an empty note", () => {
   assert.equal(withNote.ok, true);
 });
 
-test("a status cannot transition to itself", () => {
+void test("a status cannot transition to itself", () => {
   const result = validateTransition({
     order: { status: "IN_PROGRESS", assignedExecutorId: "executor-1" },
     orderRole: "ADMIN",
@@ -115,7 +115,7 @@ test("a status cannot transition to itself", () => {
   assert.equal(result.ok, false);
 });
 
-test("COMPLETED is terminal and offers no transitions to anybody", () => {
+void test("COMPLETED is terminal and offers no transitions to anybody", () => {
   assert.equal(ORDER_TRANSITIONS.COMPLETED.length, 0);
   for (const role of ["ADMIN", "EXECUTOR", "CUSTOMER"] as const) {
     assert.equal(
@@ -126,7 +126,7 @@ test("COMPLETED is terminal and offers no transitions to anybody", () => {
   }
 });
 
-test("findAllowedTransition mirrors listAllowedTransitions", () => {
+void test("findAllowedTransition mirrors listAllowedTransitions", () => {
   const order = { status: "SUBMITTED", assignedExecutorId: null } as const;
   const allowed = listAllowedTransitions(order, "ADMIN");
   for (const transition of allowed) {

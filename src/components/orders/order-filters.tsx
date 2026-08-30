@@ -1,16 +1,9 @@
-import Link from "next/link";
-
-import { buttonClass } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
 import { CONTROL_CLASS } from "@/components/ui/fields";
 import { ORDER_STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders/status";
 import { ORDER_STATUS_FILTER_ALL, type OrderListParams } from "@/lib/validation/orders";
 
-/**
- * Search, filter and page size as a plain GET form.
- *
- * No client JavaScript is involved: the browser submits the query string, the
- * server parses it with Zod, and every filtered list is a shareable URL.
- */
+/** Search, filter and page size as a plain GET form. */
 export function OrderFilters({
   action,
   params,
@@ -47,7 +40,6 @@ export function OrderFilters({
             className={CONTROL_CLASS}
           />
         </div>
-
         <div className="flex flex-col gap-1.5">
           <label htmlFor="orders-status" className="text-xs font-medium text-ink-muted">
             Status
@@ -66,7 +58,6 @@ export function OrderFilters({
             ))}
           </select>
         </div>
-
         {showAssignment ? (
           <div className="flex flex-col gap-1.5">
             <label
@@ -87,7 +78,6 @@ export function OrderFilters({
             </select>
           </div>
         ) : null}
-
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="orders-per-page"
@@ -109,15 +99,14 @@ export function OrderFilters({
           </select>
         </div>
       </div>
-
       <div className="flex flex-wrap items-center gap-2">
-        <button type="submit" className={buttonClass({ size: "sm" })}>
+        <Button type="submit" size="sm">
           Apply
-        </button>
+        </Button>
         {isFiltered ? (
-          <Link href={action} className={buttonClass({ variant: "ghost", size: "sm" })}>
+          <ButtonLink href={action} variant="ghost" size="sm">
             Clear
-          </Link>
+          </ButtonLink>
         ) : null}
       </div>
     </form>

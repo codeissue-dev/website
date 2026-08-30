@@ -36,7 +36,7 @@ function orderInput(overrides: Record<string, string> = {}) {
   };
 }
 
-test("a complete brief is accepted and optional fields normalize to null", () => {
+void test("a complete brief is accepted and optional fields normalize to null", () => {
   const parsed = createOrderSchema.parse(orderInput());
 
   assert.equal(parsed.technicalPreferences, null);
@@ -44,7 +44,7 @@ test("a complete brief is accepted and optional fields normalize to null", () =>
   assert.equal(parsed.desiredDeadline, null);
 });
 
-test("a thin brief is rejected field by field", () => {
+void test("a thin brief is rejected field by field", () => {
   const result = createOrderSchema.safeParse(
     orderInput({
       title: "app",
@@ -62,7 +62,7 @@ test("a thin brief is rejected field by field", () => {
   }
 });
 
-test("deadlines must be real calendar dates in the future", () => {
+void test("deadlines must be real calendar dates in the future", () => {
   assert.equal(
     createOrderSchema.parse(orderInput({ desiredDeadline: inThirtyDays }))
       .desiredDeadline,
@@ -78,7 +78,7 @@ test("deadlines must be real calendar dates in the future", () => {
   }
 });
 
-test("chat messages are bounded by the database check constraint", () => {
+void test("chat messages are bounded by the database check constraint", () => {
   const orderId = randomUUID();
 
   assert.equal(
@@ -95,7 +95,7 @@ test("chat messages are bounded by the database check constraint", () => {
   );
 });
 
-test("order list filters survive a query-string round trip", () => {
+void test("order list filters survive a query-string round trip", () => {
   const params = parseOrderListParams({
     q: " payments ",
     status: "IN_PROGRESS",
@@ -119,7 +119,7 @@ test("order list filters survive a query-string round trip", () => {
   assert.deepEqual(reparsed, params);
 });
 
-test("hand-edited list URLs fall back to safe defaults", () => {
+void test("hand-edited list URLs fall back to safe defaults", () => {
   const defaults = parseOrderListParams({});
   assert.deepEqual(defaults, {
     q: "",
@@ -138,7 +138,7 @@ test("hand-edited list URLs fall back to safe defaults", () => {
   assert.equal(buildOrderListQueryString(defaults), "");
 });
 
-test("people list filters behave the same way", () => {
+void test("people list filters behave the same way", () => {
   const params = parseUserListParams({ q: "dana", role: "EXECUTOR", page: "2" });
   assert.deepEqual(params, { q: "dana", role: "EXECUTOR", page: 2, perPage: 20 });
   assert.equal(buildUserListQueryString(params), "?q=dana&role=EXECUTOR&page=2");
@@ -148,7 +148,7 @@ test("people list filters behave the same way", () => {
   assert.equal(buildUserListQueryString(defaults), "");
 });
 
-test("portfolio slugs are normalized and technology lists de-duplicated", () => {
+void test("portfolio slugs are normalized and technology lists de-duplicated", () => {
   const parsed = portfolioItemSchema.parse({
     slug: "  Warehouse-Picking  ",
     title: "Warehouse picking assistant",
@@ -173,7 +173,7 @@ test("portfolio slugs are normalized and technology lists de-duplicated", () => 
   assert.equal(parsed.published, true);
 });
 
-test("portfolio input is rejected when it would break the public page", () => {
+void test("portfolio input is rejected when it would break the public page", () => {
   const base = {
     slug: "warehouse-picking",
     title: "Warehouse picking assistant",
@@ -210,7 +210,7 @@ test("portfolio input is rejected when it would break the public page", () => {
   );
 });
 
-test("testimonials require a substantial quote and a sane rating", () => {
+void test("testimonials require a substantial quote and a sane rating", () => {
   const base = {
     authorName: "Marta Feld",
     authorRole: "Operations lead",
@@ -251,7 +251,7 @@ test("testimonials require a substantial quote and a sane rating", () => {
   );
 });
 
-test("registration normalizes the email and reports mismatched passwords", () => {
+void test("registration normalizes the email and reports mismatched passwords", () => {
   const parsed = registerSchema.parse({
     name: "  Marta Feld ",
     email: "  Marta@Example.COM ",
@@ -275,7 +275,7 @@ test("registration normalizes the email and reports mismatched passwords", () =>
   }
 });
 
-test("weak passwords are rejected before any hashing happens", () => {
+void test("weak passwords are rejected before any hashing happens", () => {
   for (const password of ["short", "alllettersnodigits", "1234567890123456"]) {
     const result = registerSchema.safeParse({
       name: "Marta Feld",

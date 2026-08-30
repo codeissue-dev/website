@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { OrderFilters } from "@/components/orders/order-filters";
 import { OrderList } from "@/components/orders/order-list";
-import { buttonClass } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeading } from "@/components/ui/page-heading";
 import { Pagination } from "@/components/ui/pagination";
 import { Panel, PanelHeader } from "@/components/ui/panel";
 import { requireActorForPage } from "@/lib/auth/actor";
@@ -19,11 +19,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const TITLES: Record<string, { title: string; description: string }> = {
-  CUSTOMER: {
-    title: "Your projects",
-    description: "Every request you have submitted, newest first.",
-  },
+const CUSTOMER_COPY = {
+  title: "Your projects",
+  description: "Every request you have submitted, newest first.",
+};
+
+const TITLES: Record<string, typeof CUSTOMER_COPY> = {
+  CUSTOMER: CUSTOMER_COPY,
   EXECUTOR: {
     title: "Assigned work",
     description: "Projects assigned to you. Nothing else is visible here.",
@@ -43,35 +45,28 @@ export default async function OrdersPage({
     requireActorForPage("/orders"),
     searchParams,
   ]);
-
   const params = parseOrderListParams(rawParams);
-  // The query itself is scoped to the actor: a customer cannot widen it with
-  // query parameters, and an executor only ever sees assigned work.
   const result = await listOrdersForActor(actor, params);
-  const copy = TITLES[actor.role] ?? TITLES.CUSTOMER;
+  const copy = TITLES[actor.role] ?? CUSTOMER_COPY;
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-ink">
-            {copy?.title}
-          </h1>
-          <p className="mt-1 text-sm text-ink-muted">{copy?.description}</p>
-        </div>
-        {actor.role === "CUSTOMER" ? (
-          <Link href="/orders/new" className={buttonClass({ size: "sm" })}>
-            New request
-          </Link>
-        ) : null}
-      </div>
-
+      <PageHeading
+        title={copy.title}
+        description={copy.description}
+        action={
+          actor.role === "CUSTOMER" ? (
+            <ButtonLink href="/orders/new" size="sm">
+              New request
+            </ButtonLink>
+          ) : undefined
+        }
+      />
       <OrderFilters
         action="/orders"
         params={params}
         showAssignment={actor.role === "ADMIN"}
       />
-
       <Panel>
         <PanelHeader
           title={`${result.total} ${result.total === 1 ? "project" : "projects"}`}
@@ -89,9 +84,9 @@ export default async function OrdersPage({
             }
             action={
               actor.role === "CUSTOMER" ? (
-                <Link href="/orders/new" className={buttonClass({ size: "sm" })}>
+                <ButtonLink href="/orders/new" size="sm">
                   Submit your first request
-                </Link>
+                </ButtonLink>
               ) : undefined
             }
           />
@@ -103,7 +98,6 @@ export default async function OrdersPage({
           />
         )}
       </Panel>
-
       <Pagination
         page={result.page}
         pageCount={result.pageCount}

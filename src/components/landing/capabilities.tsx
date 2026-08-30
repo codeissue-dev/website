@@ -1,3 +1,5 @@
+import { SectionHeading } from "@/components/ui/section-heading";
+
 const CAPABILITIES: Array<{ title: string; body: string }> = [
   {
     title: "Internal tools",
@@ -32,26 +34,28 @@ export function Capabilities() {
       aria-labelledby="capabilities-heading"
       className="border-b border-line"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="max-w-2xl">
-          <h2
-            id="capabilities-heading"
-            className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
-          >
-            What we take on
-          </h2>
-          <p className="mt-3 text-ink-muted">
-            Small teams and operators come to codeissue with a problem that is already
-            costing them time. These are the shapes that work turns out to take most
-            often.
-          </p>
-        </div>
-
-        <ul className="mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+        <SectionHeading
+          id="capabilities-heading"
+          eyebrow="Capabilities"
+          title="What we take on"
+          description="Small teams and operators come to codeissue with a problem that is already costing them time. These are the shapes that work turns out to take most often."
+        />
+        <ul className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {CAPABILITIES.map((capability) => (
-            <li key={capability.title} className="bg-surface p-5">
-              <h3 className="text-sm font-semibold text-ink">{capability.title}</h3>
-              <p className="mt-2 text-sm text-ink-muted">{capability.body}</p>
+            <li
+              key={capability.title}
+              className="interactive-card bg-surface p-5 sm:p-6"
+            >
+              <span className="font-mono text-xs tracking-wide text-accent uppercase">
+                /
+              </span>
+              <h3 className="mt-5 text-base font-semibold text-ink">
+                {capability.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                {capability.body}
+              </p>
             </li>
           ))}
         </ul>

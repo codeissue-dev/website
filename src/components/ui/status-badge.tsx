@@ -3,14 +3,14 @@ import { ORDER_STATUS_LABELS, type OrderStatus } from "@/lib/orders/status";
 import { cn } from "@/lib/utils";
 
 const STATUS_TONES: Record<OrderStatus, string> = {
-  SUBMITTED: "border-line-strong text-ink-muted",
-  REVIEWING: "border-caution/45 text-caution",
-  ACCEPTED: "border-accent/45 text-accent",
-  IN_PROGRESS: "border-accent/45 text-accent",
-  WAITING_FOR_CUSTOMER: "border-caution/45 text-caution",
-  QUALITY_ASSURANCE: "border-accent/45 text-accent",
-  COMPLETED: "border-positive/45 text-positive",
-  CANCELED: "border-critical/40 text-critical",
+  SUBMITTED: "border-line-strong bg-surface-muted text-ink-muted",
+  REVIEWING: "border-caution/35 bg-caution/10 text-caution",
+  ACCEPTED: "border-accent/35 bg-accent/10 text-accent",
+  IN_PROGRESS: "border-accent/35 bg-accent/10 text-accent",
+  WAITING_FOR_CUSTOMER: "border-caution/35 bg-caution/10 text-caution",
+  QUALITY_ASSURANCE: "border-accent/35 bg-accent/10 text-accent",
+  COMPLETED: "border-positive/35 bg-positive/10 text-positive",
+  CANCELED: "border-critical/35 bg-critical/10 text-critical",
 };
 
 export function StatusBadge({
@@ -23,7 +23,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap",
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap",
         STATUS_TONES[status],
         className,
       )}
@@ -47,7 +47,7 @@ export function RoleBadge({ role, className }: { role: UserRole; className?: str
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted",
+        "inline-flex items-center rounded-full border border-line bg-surface-muted px-2.5 py-0.5 text-xs font-semibold text-ink-muted",
         className,
       )}
     >

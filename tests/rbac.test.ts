@@ -30,7 +30,7 @@ const order: OrderAccessContext = {
   assignedExecutorId: executor.id,
 };
 
-test("order roles are resolved from the relationship, not from the global role", () => {
+void test("order roles are resolved from the relationship, not from the global role", () => {
   assert.equal(resolveOrderRole(customer, order), "CUSTOMER");
   assert.equal(resolveOrderRole(executor, order), "EXECUTOR");
   assert.equal(resolveOrderRole(admin, order), "ADMIN");
@@ -38,13 +38,13 @@ test("order roles are resolved from the relationship, not from the global role",
   assert.equal(resolveOrderRole(otherExecutor, order), null);
 });
 
-test("an unrelated customer can neither read nor talk in someone else's project", () => {
+void test("an unrelated customer can neither read nor talk in someone else's project", () => {
   assert.equal(canReadOrder(otherCustomer, order), false);
   assert.equal(canParticipateInOrderChat(otherCustomer, order), false);
   assert.deepEqual([...transitionsAvailableTo(otherCustomer, order)], []);
 });
 
-test("an executor loses access when the assignment is removed", () => {
+void test("an executor loses access when the assignment is removed", () => {
   const unassigned: OrderAccessContext = { ...order, assignedExecutorId: null };
 
   assert.equal(canReadOrder(executor, order), true);
@@ -53,7 +53,7 @@ test("an executor loses access when the assignment is removed", () => {
   assert.deepEqual([...transitionsAvailableTo(executor, unassigned)], []);
 });
 
-test("a customer is never offered a staff-only transition", () => {
+void test("a customer is never offered a staff-only transition", () => {
   const offered = transitionsAvailableTo(customer, order).map(
     (transition) => transition.to,
   );
@@ -62,7 +62,7 @@ test("a customer is never offered a staff-only transition", () => {
   assert.ok(!offered.includes("COMPLETED"));
 });
 
-test("an assigned executor may move work forward but not deliver it", () => {
+void test("an assigned executor may move work forward but not deliver it", () => {
   const offered = transitionsAvailableTo(executor, order).map(
     (transition) => transition.to,
   );
@@ -71,7 +71,7 @@ test("an assigned executor may move work forward but not deliver it", () => {
   assert.ok(!offered.includes("COMPLETED"));
 });
 
-test("administration is limited to administrators", () => {
+void test("administration is limited to administrators", () => {
   for (const actor of [customer, executor]) {
     assert.equal(canViewAllOrders(actor), false);
     assert.equal(canAssignExecutors(actor), false);
@@ -85,7 +85,7 @@ test("administration is limited to administrators", () => {
   assert.equal(canManagePublicContent(admin), true);
 });
 
-test("assertions throw ForbiddenError for non-administrators", () => {
+void test("assertions throw ForbiddenError for non-administrators", () => {
   assert.throws(() => assertCanAssignExecutors(executor), ForbiddenError);
   assert.throws(() => assertCanManageUsers(customer), ForbiddenError);
   assert.throws(() => assertCanManagePublicContent(executor), ForbiddenError);
@@ -95,7 +95,7 @@ test("assertions throw ForbiddenError for non-administrators", () => {
   assertCanManagePublicContent(admin);
 });
 
-test("a customer cannot reach another project by guessing identifiers", () => {
+void test("a customer cannot reach another project by guessing identifiers", () => {
   const foreign: OrderAccessContext = {
     status: "SUBMITTED",
     customerId: otherCustomer.id,

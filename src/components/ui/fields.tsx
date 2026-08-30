@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export const CONTROL_CLASS =
-  "w-full rounded-md border border-line bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-subtle disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-critical";
+  "w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-ink shadow-[inset_0_1px_1px_rgb(16_24_40/0.02)] transition-[border-color,box-shadow,background-color] duration-200 placeholder:text-ink-subtle focus:border-accent focus:bg-surface focus:shadow-[0_0_0_3px_rgb(39_131_222/0.12)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 aria-[invalid=true]:border-critical aria-[invalid=true]:focus:shadow-[0_0_0_3px_rgb(229_100_88/0.12)]";
 
 type FieldShellProps = {
   id: string;
@@ -14,15 +14,11 @@ type FieldShellProps = {
   children: ReactNode;
 };
 
-/**
- * One label/hint/error shell for every control, so the accessible wiring
- * (`for`, `aria-describedby`, `aria-invalid`) is written once and cannot drift
- * between forms.
- */
+/** Shared accessible label/hint/error shell for form controls. */
 function FieldShell({ id, label, hint, error, required, children }: FieldShellProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-ink">
+      <label htmlFor={id} className="text-sm font-semibold text-ink">
         {label}
         {required ? (
           <span aria-hidden="true" className="ml-1 text-ink-subtle">
@@ -32,7 +28,7 @@ function FieldShell({ id, label, hint, error, required, children }: FieldShellPr
       </label>
       {children}
       {hint ? (
-        <p id={`${id}-hint`} className="text-xs text-ink-muted">
+        <p id={`${id}-hint`} className="text-xs leading-relaxed text-ink-muted">
           {hint}
         </p>
       ) : null}
@@ -177,18 +173,18 @@ export function CheckboxField({
         name={name}
         type="checkbox"
         className={cn(
-          "mt-0.5 size-4 rounded border-line-strong text-ink accent-ink",
+          "mt-0.5 size-4 rounded border-line-strong text-ink accent-ink transition-shadow focus:ring-2 focus:ring-accent/30",
           className,
         )}
         aria-describedby={hint ? `${fieldId}-hint` : undefined}
         {...props}
       />
       <div className="flex flex-col gap-0.5">
-        <label htmlFor={fieldId} className="text-sm font-medium text-ink">
+        <label htmlFor={fieldId} className="text-sm font-semibold text-ink">
           {label}
         </label>
         {hint ? (
-          <p id={`${fieldId}-hint`} className="text-xs text-ink-muted">
+          <p id={`${fieldId}-hint`} className="text-xs leading-relaxed text-ink-muted">
             {hint}
           </p>
         ) : null}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { buttonClass } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import { loadPublishedPortfolioItem } from "@/lib/content/queries";
 import { paragraphs, pluralize } from "@/lib/utils";
 
@@ -14,7 +14,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const item = await loadPublishedPortfolioItem(slug);
   if (item === null) return { title: "Project not found" };
-
   return {
     title: item.title,
     description: item.summary,
@@ -34,77 +33,82 @@ export default async function WorkDetailPage({ params }: PageProps) {
   if (item === null) notFound();
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
+    <article className="page-enter mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
       <Link
         href="/work"
-        className="font-mono text-xs text-ink-muted transition-colors hover:text-ink"
+        className="font-mono text-xs font-semibold tracking-wide text-ink-muted uppercase transition-colors hover:text-accent"
       >
         &larr; All projects
       </Link>
-
-      <h1 className="mt-6 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      <p className="section-eyebrow mt-10">Case study</p>
+      <h1 className="hero-title max-w-3xl text-[clamp(2.35rem,5vw,4.5rem)]">
         {item.title}
       </h1>
-      <p className="mt-4 text-lg text-ink-muted">{item.summary}</p>
+      <p className="hero-copy mt-5 text-lg">{item.summary}</p>
 
-      <dl className="mt-8 grid gap-4 border-y border-line py-5 sm:grid-cols-3">
+      <dl className="mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-3">
         {item.industry ? (
-          <div>
-            <dt className="text-xs tracking-wide text-ink-subtle uppercase">
+          <div className="bg-surface p-4">
+            <dt className="font-mono text-xs tracking-wide text-ink-subtle uppercase">
               Industry
             </dt>
-            <dd className="mt-1 text-sm text-ink">{item.industry}</dd>
+            <dd className="mt-1.5 text-sm font-semibold text-ink">{item.industry}</dd>
           </div>
         ) : null}
         {item.deliveryWeeks !== null ? (
-          <div>
-            <dt className="text-xs tracking-wide text-ink-subtle uppercase">
+          <div className="bg-surface p-4">
+            <dt className="font-mono text-xs tracking-wide text-ink-subtle uppercase">
               Delivery
             </dt>
-            <dd className="mt-1 text-sm text-ink">
+            <dd className="mt-1.5 text-sm font-semibold text-ink">
               {item.deliveryWeeks} {pluralize(item.deliveryWeeks, "week", "weeks")}
             </dd>
           </div>
         ) : null}
         {item.techStack.length > 0 ? (
-          <div>
-            <dt className="text-xs tracking-wide text-ink-subtle uppercase">Stack</dt>
-            <dd className="mt-1 text-sm text-ink">{item.techStack.join(", ")}</dd>
+          <div className="bg-surface p-4">
+            <dt className="font-mono text-xs tracking-wide text-ink-subtle uppercase">
+              Stack
+            </dt>
+            <dd className="mt-1.5 text-sm font-semibold leading-relaxed text-ink">
+              {item.techStack.join(", ")}
+            </dd>
           </div>
         ) : null}
       </dl>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">The problem</h2>
-        <div className="mt-3 flex flex-col gap-3 text-sm text-ink-muted">
+      <section className="mt-12 border-l-2 border-accent/45 pl-5 sm:pl-7">
+        <h2 className="text-xl font-semibold tracking-tight text-ink">The problem</h2>
+        <div className="mt-4 flex flex-col gap-3 text-sm leading-relaxed text-ink-muted">
           {paragraphs(item.problem).map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold tracking-tight text-ink">What we built</h2>
-        <div className="mt-3 flex flex-col gap-3 text-sm text-ink-muted">
+      <section className="mt-12 border-l-2 border-signal/65 pl-5 sm:pl-7">
+        <h2 className="text-xl font-semibold tracking-tight text-ink">What we built</h2>
+        <div className="mt-4 flex flex-col gap-3 text-sm leading-relaxed text-ink-muted">
           {paragraphs(item.solution).map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
       </section>
 
-      <div className="mt-12 flex flex-wrap items-center gap-3 border-t border-line pt-8">
-        <Link href="/register" className={buttonClass({ size: "sm" })}>
+      <div className="mt-14 flex flex-wrap items-center gap-3 border-t border-line pt-8">
+        <ButtonLink href="/register" size="sm">
           Start a project like this
-        </Link>
+        </ButtonLink>
         {item.projectUrl ? (
-          <a
+          <ButtonLink
             href={item.projectUrl}
             target="_blank"
             rel="noreferrer noopener"
-            className={buttonClass({ variant: "secondary", size: "sm" })}
+            variant="secondary"
+            size="sm"
           >
             Visit the project
-          </a>
+          </ButtonLink>
         ) : null}
       </div>
     </article>

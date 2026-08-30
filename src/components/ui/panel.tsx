@@ -14,8 +14,7 @@ export function Panel({
   return (
     <Element
       className={cn(
-        "rounded-panel border border-line bg-surface",
-        "shadow-[0_1px_2px_rgb(0_0_0/0.04)]",
+        "surface-card overflow-hidden rounded-panel border border-line",
         className,
       )}
     >
@@ -38,14 +37,16 @@ export function PanelHeader({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-start justify-between gap-3 border-b border-line px-4 py-3 sm:px-5",
+        "flex flex-wrap items-start justify-between gap-3 border-b border-line/90 px-4 py-3.5 sm:px-5",
         className,
       )}
     >
       <div className="min-w-0">
-        <h2 className="text-sm font-semibold text-ink">{title}</h2>
+        <h2 className="text-sm font-semibold tracking-tight text-ink">{title}</h2>
         {description ? (
-          <p className="mt-0.5 text-xs text-ink-muted">{description}</p>
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-ink-muted">
+            {description}
+          </p>
         ) : null}
       </div>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
@@ -74,14 +75,16 @@ export function Stat({
   detail?: string;
 }) {
   return (
-    <div className="rounded-panel border border-line bg-surface px-4 py-3.5">
-      <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
+    <div className="stat-card rounded-panel border border-line px-4 py-4">
+      <dt className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">
         {label}
       </dt>
-      <dd className="mt-1.5 text-2xl font-semibold tracking-tight text-ink tabular-nums">
+      <dd className="mt-2 text-2xl font-semibold tracking-tight text-ink tabular-nums">
         {value}
       </dd>
-      {detail ? <p className="mt-1 text-xs text-ink-muted">{detail}</p> : null}
+      {detail ? (
+        <p className="mt-1 text-xs leading-relaxed text-ink-muted">{detail}</p>
+      ) : null}
     </div>
   );
 }

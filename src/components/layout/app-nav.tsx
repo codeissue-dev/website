@@ -5,10 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 
-export type NavItem = {
-  href: string;
-  label: string;
-};
+export type NavItem = { href: string; label: string };
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard" || href === "/admin") return pathname === href;
@@ -16,10 +13,7 @@ function isActive(pathname: string, href: string): boolean {
   return pathname.startsWith(`${href}/`);
 }
 
-/**
- * Signed-in navigation. A Client Component only because the active item is
- * derived from the current path.
- */
+/** Client-only to identify the current route. */
 export function AppNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
 
@@ -34,10 +28,10 @@ export function AppNav({ items }: { items: NavItem[] }) {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-8 items-center rounded-md px-2.5 text-sm whitespace-nowrap transition-colors",
+                  "inline-flex h-9 items-center rounded-lg px-2.5 text-sm whitespace-nowrap transition-[background-color,color,transform] duration-200",
                   active
-                    ? "bg-surface-muted font-medium text-ink"
-                    : "text-ink-muted hover:text-ink",
+                    ? "bg-ink font-medium text-inverse shadow-sm"
+                    : "text-ink-muted hover:-translate-y-px hover:bg-surface-muted hover:text-ink",
                 )}
               >
                 {item.label}

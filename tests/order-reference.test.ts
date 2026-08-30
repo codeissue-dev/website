@@ -8,14 +8,14 @@ import {
   ORDER_REFERENCE_PATTERN,
 } from "../src/lib/orders/reference";
 
-test("generated references carry the year and match the public pattern", () => {
+void test("generated references carry the year and match the public pattern", () => {
   const reference = generateOrderReference(new Date("2026-02-17T08:30:00.000Z"));
   assert.match(reference, ORDER_REFERENCE_PATTERN);
   assert.ok(reference.startsWith("CI-2026-"));
   assert.equal(reference.length, "CI-2026-".length + 6);
 });
 
-test("references avoid ambiguous characters", () => {
+void test("references avoid ambiguous characters", () => {
   for (let attempt = 0; attempt < 200; attempt += 1) {
     const suffix = generateOrderReference().slice("CI-2026-".length);
     for (const character of suffix) {
@@ -27,7 +27,7 @@ test("references avoid ambiguous characters", () => {
   }
 });
 
-test("references are unlikely to collide", () => {
+void test("references are unlikely to collide", () => {
   const seen = new Set<string>();
   for (let attempt = 0; attempt < 500; attempt += 1) {
     seen.add(generateOrderReference(new Date("2026-02-17T08:30:00.000Z")));
@@ -35,12 +35,12 @@ test("references are unlikely to collide", () => {
   assert.ok(seen.size > 490, `only ${seen.size} unique references in 500 attempts`);
 });
 
-test("user input is normalized before it reaches a query", () => {
+void test("user input is normalized before it reaches a query", () => {
   assert.equal(normalizeOrderReference("  ci-2026-abcdef "), "CI-2026-ABCDEF");
   assert.ok(isOrderReference(normalizeOrderReference(" ci-2026-234567 ")));
 });
 
-test("invalid references are rejected", () => {
+void test("invalid references are rejected", () => {
   for (const invalid of [
     "",
     "CI-2026",

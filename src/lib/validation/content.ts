@@ -42,8 +42,8 @@ const optionalPositiveInt = (
 const sortOrderSchema = z
   .string()
   .transform((value) => value.trim())
-  .transform((value) => (value.length === 0 ? "0" : value))
-  .pipe(z.coerce.number().int().min(-1000).max(1000));
+  .transform((value) => (value.length === 0 ? 0 : Number(value)))
+  .pipe(z.number().int().min(-1000).max(1000));
 
 export const portfolioItemSchema = z.object({
   slug: slugSchema,

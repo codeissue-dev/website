@@ -75,6 +75,12 @@ httpServer.on("upgrade", (request: IncomingMessage, socket: Duplex, head: Buffer
   });
 });
 
+function rawDataToText(data: RawData): string {
+  if (Array.isArray(data)) return Buffer.concat(data).toString("utf8");
+  if (data instanceof ArrayBuffer) return Buffer.from(data).toString("utf8");
+  return data.toString("utf8");
+}
+
 function attachConnection(
   webSocket: WebSocket,
   actor: {
@@ -99,7 +105,7 @@ function attachConnection(
       webSocket.close(4003, "binary frames are not supported");
       return;
     }
-    void connection.handleRawFrame(data.toString());
+    void connection.handleRawFrame(rawDataToText(data));
   });
 
   webSocket.on("close", () => {

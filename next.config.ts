@@ -20,8 +20,8 @@ const nextConfig: NextConfig = {
   // `pg` and `ws` use Node built-ins and native protocol handling; keep them
   // outside the bundler so the server runtime loads them directly.
   serverExternalPackages: ["pg", "ws"],
-  async headers() {
-    return [
+  headers: () =>
+    Promise.resolve([
       {
         source: "/:path*",
         headers: baseSecurityHeaders,
@@ -35,8 +35,7 @@ const nextConfig: NextConfig = {
         source: "/:path(dashboard|orders|admin|account)",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
       },
-    ];
-  },
+    ]),
 };
 
 export default nextConfig;

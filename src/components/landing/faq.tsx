@@ -1,3 +1,5 @@
+import { SectionHeading } from "@/components/ui/section-heading";
+
 const QUESTIONS: Array<{ question: string; answer: string }> = [
   {
     question: "What happens right after I submit a request?",
@@ -39,42 +41,31 @@ const QUESTIONS: Array<{ question: string; answer: string }> = [
 export function Faq() {
   return (
     <section id="faq" aria-labelledby="faq-heading" className="border-b border-line">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]">
-        <div>
-          <h2
-            id="faq-heading"
-            className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl"
-          >
-            Questions we get asked
-          </h2>
-          <p className="mt-3 text-ink-muted">
-            If something here is missing, ask it in the project chat once your request
-            is in. A person answers it.
-          </p>
-        </div>
-
-        <div className="overflow-hidden rounded-panel border border-line">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
+        <SectionHeading
+          id="faq-heading"
+          eyebrow="FAQ"
+          title="Questions we get asked"
+          description="If something here is missing, ask it in the project chat once your request is in. A person answers it."
+        />
+        <div className="overflow-hidden rounded-panel border border-line bg-surface shadow-[0_8px_24px_rgb(16_24_40/0.04)]">
           {QUESTIONS.map((entry) => (
             <details
               key={entry.question}
-              className="group border-b border-line last:border-b-0"
+              className="faq-row group border-b border-line last:border-b-0"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-ink">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-ink sm:px-6">
                 {entry.question}
                 <span
                   aria-hidden="true"
-                  className="font-mono text-ink-subtle group-open:hidden"
+                  className="font-mono text-lg leading-none text-accent"
                 >
                   +
                 </span>
-                <span
-                  aria-hidden="true"
-                  className="hidden font-mono text-ink-subtle group-open:inline"
-                >
-                  &minus;
-                </span>
               </summary>
-              <p className="px-5 pb-4 text-sm text-ink-muted">{entry.answer}</p>
+              <p className="max-w-3xl px-5 pb-5 text-sm leading-relaxed text-ink-muted sm:px-6">
+                {entry.answer}
+              </p>
             </details>
           ))}
         </div>

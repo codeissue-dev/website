@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import "dotenv/config";
 
 /**
  * Creates the first administrator, or promotes an existing account.

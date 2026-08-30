@@ -1,6 +1,6 @@
 "use client";
 
-import 'dotenv/config'
+import "dotenv/config";
 
 import { useEffect, useRef, useState } from "react";
 

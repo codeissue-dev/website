@@ -17,7 +17,7 @@ const actorUser = alias(users, "activity_actor");
 function emptyStatusCounts(): Record<OrderStatus, number> {
   const counts: Record<string, number> = {};
   for (const status of ORDER_STATUSES) counts[status] = 0;
-  return counts as Record<OrderStatus, number>;
+  return counts;
 }
 
 async function countOrdersByStatus(

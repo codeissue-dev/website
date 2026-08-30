@@ -34,21 +34,20 @@ const COLUMNS: Array<{
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-line">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
-        <div className="flex flex-col gap-2.5">
+    <footer className="relative overflow-hidden border-t border-line bg-surface-muted/65">
+      <div aria-hidden="true" className="grid-backdrop absolute inset-0 opacity-35" />
+      <div className="relative mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
+        <div className="flex flex-col gap-3">
           <Wordmark />
-          <p className="max-w-xs text-sm text-ink-muted">
+          <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
             Custom software, built to a written brief and tracked from the first message
             to delivery.
           </p>
         </div>
-
         {COLUMNS.map((column) => (
-          <div key={column.heading} className="flex flex-col gap-2.5">
-            <h2 className="text-xs font-semibold tracking-wide text-ink uppercase">
+          <div key={column.heading} className="flex flex-col gap-3">
+            <h2 className="font-mono text-xs font-semibold tracking-[0.1em] text-ink uppercase">
               {column.heading}
             </h2>
             <ul className="flex flex-col gap-2">
@@ -56,7 +55,7 @@ export function SiteFooter() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-ink-muted transition-colors hover:text-ink"
+                    className="text-sm text-ink-muted underline decoration-transparent underline-offset-4 transition-colors hover:text-ink hover:decoration-accent"
                   >
                     {link.label}
                   </Link>
@@ -66,8 +65,7 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-1.5 border-t border-line px-4 py-5 text-xs text-ink-subtle sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-1.5 border-t border-line px-4 py-5 text-xs text-ink-subtle sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>© {year} codeissue</p>
         <p>Requests are answered by the people who do the work.</p>
       </div>

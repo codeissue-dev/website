@@ -39,7 +39,7 @@ function statusEvent(): StatusEventPayload {
   };
 }
 
-test("subscribe frames parse and default the cursor to null", () => {
+void test("subscribe frames parse and default the cursor to null", () => {
   const frame = parseClientFrame(JSON.stringify({ type: "subscribe", orderId }));
   assert.ok(frame);
   assert.equal(frame.type, "subscribe");
@@ -49,7 +49,7 @@ test("subscribe frames parse and default the cursor to null", () => {
   }
 });
 
-test("backfill frames keep an explicit cursor", () => {
+void test("backfill frames keep an explicit cursor", () => {
   const frame = parseClientFrame(
     JSON.stringify({ type: "backfill", orderId, since: createdAt }),
   );
@@ -59,7 +59,7 @@ test("backfill frames keep an explicit cursor", () => {
   }
 });
 
-test("malformed, unknown and non-uuid client frames are rejected", () => {
+void test("malformed, unknown and non-uuid client frames are rejected", () => {
   assert.equal(parseClientFrame("not json"), null);
   assert.equal(parseClientFrame(JSON.stringify({ type: "drop-table" })), null);
   assert.equal(
@@ -76,7 +76,7 @@ test("malformed, unknown and non-uuid client frames are rejected", () => {
   );
 });
 
-test("server frames survive an encode/parse round trip", () => {
+void test("server frames survive an encode/parse round trip", () => {
   const message = chatMessage();
   const encoded = encodeServerFrame({ type: "message", orderId, message });
   assert.ok(encoded.length < MAX_CLIENT_FRAME_BYTES);
@@ -86,7 +86,7 @@ test("server frames survive an encode/parse round trip", () => {
   assert.deepEqual(parsed, { type: "message", orderId, message });
 });
 
-test("ready frames pin the protocol version", () => {
+void test("ready frames pin the protocol version", () => {
   const parsed = parseServerFrame(
     encodeServerFrame({
       type: "ready",
@@ -110,7 +110,7 @@ test("ready frames pin the protocol version", () => {
   assert.equal(wrongVersion, null);
 });
 
-test("event ids identify replayable frames only", () => {
+void test("event ids identify replayable frames only", () => {
   const message = chatMessage();
   const event = statusEvent();
   assert.equal(
@@ -124,7 +124,7 @@ test("event ids identify replayable frames only", () => {
   assert.equal(serverFrameEventId({ type: "ping", at: createdAt }), null);
 });
 
-test("notifications carry identifiers and participants, not content", () => {
+void test("notifications carry identifiers and participants, not content", () => {
   const payload = {
     v: REALTIME_PROTOCOL_VERSION,
     kind: "message",

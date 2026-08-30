@@ -19,7 +19,7 @@ import {
 const actor: ActorLike = { id: randomUUID(), role: "EXECUTOR" };
 const now = new Date("2026-03-01T12:00:00.000Z");
 
-test("a freshly issued ticket verifies to the same identity", () => {
+void test("a freshly issued ticket verifies to the same identity", () => {
   const { ticket, expiresAt } = issueRealtimeTicket(actor, now);
   const verified = verifyRealtimeTicket(ticket, now);
 
@@ -30,7 +30,7 @@ test("a freshly issued ticket verifies to the same identity", () => {
   );
 });
 
-test("tickets expire", () => {
+void test("tickets expire", () => {
   const { ticket } = issueRealtimeTicket(actor, now);
   const justBefore = new Date(now.getTime() + (REALTIME_TICKET_TTL_SECONDS - 1) * 1000);
   const justAfter = new Date(now.getTime() + REALTIME_TICKET_TTL_SECONDS * 1000);
@@ -39,7 +39,7 @@ test("tickets expire", () => {
   assert.equal(verifyRealtimeTicket(ticket, justAfter), null);
 });
 
-test("a tampered payload fails the signature check", () => {
+void test("a tampered payload fails the signature check", () => {
   const { ticket } = issueRealtimeTicket(actor, now);
   const [body, signature] = ticket.split(".");
   assert.ok(body);
@@ -58,7 +58,7 @@ test("a tampered payload fails the signature check", () => {
   assert.equal(verifyRealtimeTicket(`${forgedBody}.${signature}`, now), null);
 });
 
-test("an escalated role cannot be self-signed without the secret", () => {
+void test("an escalated role cannot be self-signed without the secret", () => {
   const forged = Buffer.from(
     JSON.stringify({ v: "v1", sub: actor.id, role: "ADMIN", exp: 4102444800 }),
     "utf8",
@@ -67,7 +67,7 @@ test("an escalated role cannot be self-signed without the secret", () => {
   assert.equal(verifyRealtimeTicket(`${forged}.signature`, now), null);
 });
 
-test("empty, malformed and unsigned tickets are rejected", () => {
+void test("empty, malformed and unsigned tickets are rejected", () => {
   assert.equal(verifyRealtimeTicket(null, now), null);
   assert.equal(verifyRealtimeTicket("", now), null);
   assert.equal(verifyRealtimeTicket("no-separator", now), null);
