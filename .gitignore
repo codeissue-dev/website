@@ -34,3 +34,8 @@ pnpm-debug.log*
 # os
 .DS_Store
 Thumbs.db
+
+*.tgz
+*.zip
+.package-backups/
+artifacts/
