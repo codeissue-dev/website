@@ -1,8 +1,0 @@
-.git
-.next
-node_modules
-coverage
-*.zip
-.env
-.env.local
-npm-debug.log*

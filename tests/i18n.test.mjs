@@ -1,2 +1,0 @@
-// Test implementation migrated to i18n.test.ts.
-// This compatibility placeholder is retained for snapshot-based package updates.

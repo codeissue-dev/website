@@ -1,0 +1,24 @@
+name: codeissue
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: codeissue
+      POSTGRES_USER: codeissue
+      POSTGRES_PASSWORD: codeissue
+    ports:
+      - "127.0.0.1:5452:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codeissue -d codeissue"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    stop_grace_period: 10s
+
+volumes:
+  postgres-data:
