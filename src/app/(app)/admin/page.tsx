@@ -46,7 +46,7 @@ export default async function AdminOverviewPage() {
           label="Average delivery"
           value={
             stats.averageDeliveryDays === null
-              ? "—"
+              ? "-"
               : `${stats.averageDeliveryDays} ${pluralize(stats.averageDeliveryDays, "day", "days")}`
           }
           detail="Submission to completion"

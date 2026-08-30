@@ -2,64 +2,64 @@ import { SectionHeading } from "@/components/ui/section-heading";
 
 const QUESTIONS: Array<{ question: string; answer: string }> = [
   {
-    question: "What happens right after I submit a request?",
+    question: "What happens after I submit a request?",
     answer:
-      "Your request is stored as a project with a reference you can quote, and its history starts with the submission itself. A member of the team reads the brief and replies in the project chat with questions or a scope proposal. You are not left guessing whether it arrived.",
+      "Your brief becomes a project with its own reference and activity record. Someone reads it, replies in the project thread and works with you on the scope.",
   },
   {
-    question: "How is the price decided?",
+    question: "How do you price the work?",
     answer:
-      "We only quote after reading the brief, because an honest number depends on scope. Discussion happens in the project chat where it stays on the record, and scope changes are agreed there before they are built.",
+      "After reading the brief. An honest estimate depends on the scope, so the conversation and any changes stay visible in the project thread.",
   },
   {
     question: "Who owns the code?",
     answer:
-      "You do. You get the source, the migrations and the deployment instructions, so nothing about the project depends on us staying involved.",
+      "You do. Delivery includes the source, migrations and deployment notes, so the product is not tied to a black box.",
   },
   {
     question: "Can you take over an existing project?",
     answer:
-      "Yes. Describe the current state in the request, including what is broken and what must keep working. Rescue work starts with getting the project building and tested again before anything new is added.",
+      "Yes. Tell us what is working, what is not and what cannot break. We start by making the project safe to build on again.",
   },
   {
-    question: "Do you use AI to write the code?",
+    question: "Do you use AI while building?",
     answer:
-      "We use whatever tooling makes the work correct and fast, including AI assistance where it helps, and every line is reviewed by the engineer who is accountable for it. What you receive is reviewed, tested software, not generated output nobody read.",
+      "We use tools where they help, but the engineer responsible for the work reviews every change. The outcome is tested software, not unreviewed output.",
   },
   {
     question: "How do I follow progress?",
     answer:
-      "Each project page shows the current status, the full status history with author and time, and the conversation. Updates arrive live while the page is open, and nothing is lost if you close it: the history is stored in the database.",
-  },
-  {
-    question: "What if the project needs changes after delivery?",
-    answer:
-      "Send the next change through the same request flow. It keeps the same account, the same reference format and the same history, so context is never rebuilt from scratch.",
+      "The project page keeps the status, history and conversation together. You can check it at any time and updates arrive while it is open.",
   },
 ];
 
 export function Faq() {
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="border-b border-line">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
+    <section
+      id="faq"
+      aria-labelledby="faq-heading"
+      className="public-section border-b border-line"
+    >
+      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] lg:gap-16">
         <SectionHeading
           id="faq-heading"
-          eyebrow="FAQ"
-          title="Questions we get asked"
-          description="If something here is missing, ask it in the project chat once your request is in. A person answers it."
+          eyebrow="Questions"
+          title={
+            <>
+              A few useful <span className="heading-accent">answers.</span>
+            </>
+          }
+          description="If your question is not here, include it in the brief. It will be answered in the project thread."
         />
-        <div className="overflow-hidden rounded-panel border border-line bg-surface shadow-[0_8px_24px_rgb(16_24_40/0.04)]">
+        <div className="faq-panel self-start overflow-hidden rounded-panel border border-line bg-surface/75">
           {QUESTIONS.map((entry) => (
             <details
               key={entry.question}
               className="faq-row group border-b border-line last:border-b-0"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-ink sm:px-6">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 text-sm font-semibold text-ink sm:px-6">
                 {entry.question}
-                <span
-                  aria-hidden="true"
-                  className="font-mono text-lg leading-none text-accent"
-                >
+                <span aria-hidden="true" className="faq-icon">
                   +
                 </span>
               </summary>

@@ -3,27 +3,27 @@ import { SectionHeading } from "@/components/ui/section-heading";
 const CAPABILITIES: Array<{ title: string; body: string }> = [
   {
     title: "Internal tools",
-    body: "Replace the spreadsheet that runs a critical process with something your team can actually rely on: real permissions, real history, real exports.",
+    body: "Replace the spreadsheet behind a critical process with software your team can use every day.",
   },
   {
-    title: "Customer-facing products",
-    body: "Portals, booking flows, dashboards and account areas, built to load fast and behave correctly on the devices your customers really use.",
+    title: "Customer products",
+    body: "Portals, booking flows and account areas that feel fast and dependable on every screen.",
   },
   {
-    title: "Integrations and automation",
-    body: "Move data between the systems you already pay for, on a schedule or on an event, with retries and a log you can inspect when something looks wrong.",
+    title: "Integrations",
+    body: "Connect the systems you already rely on and keep the data moving without manual copy and paste.",
   },
   {
-    title: "Data and reporting",
-    body: "Model the data properly in PostgreSQL, then put the numbers your team argues about behind one page instead of four conflicting reports.",
+    title: "Reporting",
+    body: "Give the team one trustworthy view of the numbers instead of a collection of competing files.",
   },
   {
-    title: "Rescue and migration",
-    body: "Take over a stalled codebase, get it building again, migrate it off whatever is failing, and document what was wrong so it stays fixed.",
+    title: "Recovery work",
+    body: "Stabilise a stalled codebase, untangle the risky parts and leave it easier to change.",
   },
   {
-    title: "Ongoing changes",
-    body: "Shipping is the middle of the project, not the end. Send the next change through the same request flow and keep the same history.",
+    title: "The next release",
+    body: "Keep improving a product with the same people, context and project history close at hand.",
   },
 ];
 
@@ -32,30 +32,34 @@ export function Capabilities() {
     <section
       id="capabilities"
       aria-labelledby="capabilities-heading"
-      className="border-b border-line"
+      className="public-section border-b border-line"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
         <SectionHeading
           id="capabilities-heading"
-          eyebrow="Capabilities"
-          title="What we take on"
-          description="Small teams and operators come to codeissue with a problem that is already costing them time. These are the shapes that work turns out to take most often."
+          eyebrow="What we build"
+          title={
+            <>
+              Software with a job to do,{" "}
+              <span className="heading-accent">not filler.</span>
+            </>
+          }
+          description="The best projects start with a real bottleneck, a useful question or a task that has outgrown the tools around it."
         />
-        <ul className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-          {CAPABILITIES.map((capability) => (
+        <ul className="bento-grid stagger-grid mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
+          {CAPABILITIES.map((capability, index) => (
             <li
               key={capability.title}
-              className="interactive-card bg-surface p-5 sm:p-6"
+              className={`bento-card bento-card-${index + 1} interactive-card`}
             >
-              <span className="font-mono text-xs tracking-wide text-accent uppercase">
-                /
+              <span className="feature-index">
+                {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-5 text-base font-semibold text-ink">
-                {capability.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                {capability.body}
-              </p>
+              <h3>{capability.title}</h3>
+              <p>{capability.body}</p>
+              <span aria-hidden="true" className="feature-arrow">
+                ↗
+              </span>
             </li>
           ))}
         </ul>

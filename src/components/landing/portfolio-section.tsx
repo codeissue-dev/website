@@ -6,46 +6,66 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import type { PublishedPortfolioItem } from "@/lib/content/queries";
 import { pluralize } from "@/lib/utils";
 
-export function PortfolioCard({ item }: { item: PublishedPortfolioItem }) {
+export function PortfolioCard({
+  item,
+  index = 0,
+}: {
+  item: PublishedPortfolioItem;
+  index?: number;
+}) {
+  const artVariant = (index % 3) + 1;
+
   return (
-    <article className="interactive-card flex flex-col gap-3 bg-surface p-5 sm:p-6">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        {item.industry ? (
-          <span className="font-mono text-xs tracking-wide text-accent uppercase">
-            {item.industry}
-          </span>
-        ) : null}
-        {item.deliveryWeeks !== null ? (
-          <span className="text-xs text-ink-subtle">
-            {item.deliveryWeeks} {pluralize(item.deliveryWeeks, "week", "weeks")} to
-            delivery
-          </span>
-        ) : null}
+    <article className="project-card interactive-card flex h-full flex-col">
+      <div aria-hidden="true" className={`project-art project-art-${artVariant}`}>
+        <span className="project-art-count">{String(index + 1).padStart(2, "0")}</span>
+        <div className="project-art-window">
+          <span />
+          <span />
+          <span />
+          <i />
+          <i />
+          <i />
+        </div>
+        <span className="project-art-spark project-art-spark-one" />
+        <span className="project-art-spark project-art-spark-two" />
       </div>
-      <h3 className="text-base font-semibold text-ink">{item.title}</h3>
-      <p className="text-sm leading-relaxed text-ink-muted">{item.summary}</p>
-      {item.techStack.length > 0 ? (
-        <ul className="mt-auto flex flex-wrap gap-1.5 pt-2">
-          {item.techStack.map((tech) => (
-            <li
-              key={tech}
-              className="rounded-md border border-line bg-surface-muted/60 px-2 py-0.5 font-mono text-xs text-ink-muted"
+
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          {item.industry ? <span className="project-meta">{item.industry}</span> : null}
+          {item.deliveryWeeks !== null ? (
+            <span className="project-duration">
+              {item.deliveryWeeks} {pluralize(item.deliveryWeeks, "week", "weeks")} to
+              delivery
+            </span>
+          ) : null}
+        </div>
+        <h3 className="mt-4">{item.title}</h3>
+        <p className="mt-2">{item.summary}</p>
+        {item.techStack.length > 0 ? (
+          <ul className="project-stack mt-5 flex flex-wrap gap-1.5">
+            {item.techStack.map((tech) => (
+              <li key={tech}>{tech}</li>
+            ))}
+          </ul>
+        ) : null}
+        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-6">
+          <Link href={`/work/${item.slug}`} className="project-link">
+            Read the case <span aria-hidden="true">↗</span>
+          </Link>
+          {item.projectUrl ? (
+            <Link
+              href={item.projectUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="project-link project-link-muted"
             >
-              {tech}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      {item.projectUrl ? (
-        <Link
-          href={item.projectUrl}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="mt-1 text-sm font-semibold text-ink underline decoration-accent/45 underline-offset-4 transition-colors hover:decoration-accent"
-        >
-          Visit the project
-        </Link>
-      ) : null}
+              View live project
+            </Link>
+          ) : null}
+        </div>
+      </div>
     </article>
   );
 }
@@ -53,38 +73,49 @@ export function PortfolioCard({ item }: { item: PublishedPortfolioItem }) {
 /** Published work comes only from rows explicitly published by an administrator. */
 export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] }) {
   return (
-    <section id="work" aria-labelledby="work-heading" className="border-b border-line">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-        <div className="flex flex-wrap items-end justify-between gap-5">
+    <section
+      id="work"
+      aria-labelledby="work-heading"
+      className="public-section border-b border-line"
+    >
+      <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
             id="work-heading"
-            eyebrow="Selected work"
-            title="Completed projects"
-            description="Work we are allowed to talk about, written up by the people who built it."
+            eyebrow="Public projects"
+            title={
+              <>
+                Finished work,{" "}
+                <span className="heading-accent">shared with permission.</span>
+              </>
+            }
+            description="Every project here has an approved public write-up. The work stays private unless the client chooses otherwise."
           />
           {items.length > 0 ? (
             <ButtonLink href="/work" variant="secondary" size="sm">
-              All projects
+              View all projects
             </ButtonLink>
           ) : null}
         </div>
         {items.length === 0 ? (
           <EmptyState
-            className="mt-10 py-12"
-            title="No case studies are published yet"
-            description="Client work is only published here once the customer has approved the write-up, so this section stays empty until then. Ask us directly about relevant experience when you submit a request."
+            className="public-empty mt-10 py-12"
+            title="Public case studies are on their way"
+            description="We only show a finished project after the client approves it for publication."
             action={
               <ButtonLink href="/register" size="sm">
-                Submit a request
+                Start a project
               </ButtonLink>
             }
           />
         ) : (
-          <div className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <PortfolioCard key={item.id} item={item} />
+          <ul className="project-grid stagger-grid mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item, index) => (
+              <li key={item.id}>
+                <PortfolioCard item={item} index={index} />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </div>
     </section>

@@ -24,13 +24,13 @@ const DATE_TIME_FORMAT = new Intl.DateTimeFormat("en-GB", {
 /** Absolute UTC date, identical on the server and after hydration. */
 export function formatDate(value: Date | string): string {
   const date = typeof value === "string" ? new Date(value) : value;
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "-";
   return DATE_FORMAT.format(date);
 }
 
 export function formatDateTime(value: Date | string): string {
   const date = typeof value === "string" ? new Date(value) : value;
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "-";
   return `${DATE_TIME_FORMAT.format(date)} UTC`;
 }
 
@@ -59,7 +59,7 @@ export function formatRelativeTime(
   now: Date = new Date(),
 ): string {
   const date = typeof value === "string" ? new Date(value) : value;
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "-";
 
   const diff = date.getTime() - now.getTime();
   const magnitude = Math.abs(diff);

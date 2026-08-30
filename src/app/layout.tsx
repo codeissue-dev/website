@@ -11,7 +11,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "codeissue — custom software development",
+    default: "codeissue: custom software development",
     template: "%s · codeissue",
   },
   description: DESCRIPTION,
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "codeissue",
-    title: "codeissue — custom software development",
+    title: "codeissue: custom software development",
     description: DESCRIPTION,
     url: "/",
   },
   twitter: {
     card: "summary",
-    title: "codeissue — custom software development",
+    title: "codeissue: custom software development",
     description: DESCRIPTION,
   },
   formatDetection: { telephone: false },

@@ -2,17 +2,35 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeading } from "@/components/ui/section-heading";
 import type { PublishedTestimonial } from "@/lib/content/queries";
 
+function Rating({ rating }: { rating: number | null }) {
+  if (rating === null) return null;
+
+  return (
+    <p className="review-rating" aria-label={`Rated ${rating} out of 5`}>
+      <span aria-hidden="true" className="review-rating-dots">
+        {Array.from({ length: rating }, (_, index) => (
+          <i key={index} />
+        ))}
+      </span>
+      {rating} / 5
+    </p>
+  );
+}
+
 function Attribution({ testimonial }: { testimonial: PublishedTestimonial }) {
   const details = [testimonial.authorRole, testimonial.company].filter(
     (value): value is string => value !== null && value.length > 0,
   );
 
   return (
-    <footer className="mt-5 border-t border-line/70 pt-4 text-sm">
-      <p className="font-semibold text-ink">{testimonial.authorName}</p>
-      {details.length > 0 ? (
-        <p className="mt-0.5 text-ink-muted">{details.join(", ")}</p>
-      ) : null}
+    <footer className="review-attribution">
+      <span className="review-avatar" aria-hidden="true">
+        {testimonial.authorName.slice(0, 1)}
+      </span>
+      <div>
+        <p>{testimonial.authorName}</p>
+        {details.length > 0 ? <span>{details.join(", ")}</span> : null}
+      </div>
     </footer>
   );
 }
@@ -27,46 +45,54 @@ export function TestimonialsSection({
     <section
       id="testimonials"
       aria-labelledby="testimonials-heading"
-      className="border-b border-line bg-surface-muted/55"
+      className="public-section border-b border-line"
     >
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-        <SectionHeading
-          id="testimonials-heading"
-          eyebrow="Proof"
-          title="What customers say"
-          description="Feedback is published only with the customer&rsquo;s approval, in their own words."
-        />
-        {testimonials.length === 0 ? (
-          <EmptyState
-            className="mt-10 bg-surface py-12"
-            title="No testimonials are published yet"
-            description="We would rather show an empty section than write praise on a customer&rsquo;s behalf. Quotes appear here as soon as they are approved."
-          />
-        ) : (
-          <ul className="stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <li
-                key={testimonial.id}
-                className="interactive-card bg-surface p-5 sm:p-6"
-              >
-                <figure className="flex h-full flex-col">
-                  {testimonial.rating !== null ? (
-                    <p
-                      className="font-mono text-xs font-semibold tracking-wide text-accent"
-                      aria-label={`Rated ${testimonial.rating} out of 5`}
-                    >
-                      {testimonial.rating}/5
-                    </p>
-                  ) : null}
-                  <blockquote className="mt-3 flex-1 text-[0.95rem] leading-relaxed text-ink">
-                    <p>&ldquo;{testimonial.quote}&rdquo;</p>
-                  </blockquote>
-                  <Attribution testimonial={testimonial} />
-                </figure>
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)] lg:gap-16">
+          <div>
+            <SectionHeading
+              id="testimonials-heading"
+              eyebrow="Client reviews"
+              title={
+                <>
+                  Words from people who{" "}
+                  <span className="heading-accent">shipped with us.</span>
+                </>
+              }
+              description="Quotes are published in the client&rsquo;s own words and only after they approve sharing them."
+            />
+            <div className="review-note mt-7">
+              <span className="review-note-orbit" aria-hidden="true" />
+              <p>
+                Feedback belongs next to the finished work, not in a made-up carousel.
+              </p>
+            </div>
+          </div>
+          {testimonials.length === 0 ? (
+            <EmptyState
+              className="public-empty self-start py-12"
+              title="Reviews will appear here"
+              description="We publish client feedback only when it is approved for the public site."
+            />
+          ) : (
+            <ul className="review-grid stagger-grid grid gap-3 sm:grid-cols-2">
+              {testimonials.map((testimonial) => (
+                <li key={testimonial.id} className="review-card interactive-card">
+                  <figure className="flex h-full flex-col p-5 sm:p-6">
+                    <span aria-hidden="true" className="review-quote-mark">
+                      &ldquo;
+                    </span>
+                    <Rating rating={testimonial.rating} />
+                    <blockquote className="mt-4 flex-1">
+                      <p>{testimonial.quote}</p>
+                    </blockquote>
+                    <Attribution testimonial={testimonial} />
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </section>
   );
