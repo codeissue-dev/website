@@ -57,7 +57,8 @@ void test("truncate only shortens longer values", () => {
   assert.equal(truncate("short", 10), "short");
   const long = truncate("a much longer sentence", 10);
   assert.ok(long.length <= 10);
-  assert.ok(long.endsWith("\u2026"));
+  assert.ok(long.endsWith("..."));
+  assert.ok(truncate("exactly ten", 4).length <= 4);
 });
 
 void test("paragraphs splits textarea input into blocks", () => {

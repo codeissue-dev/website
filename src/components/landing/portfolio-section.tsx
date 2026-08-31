@@ -2,76 +2,49 @@ import Link from "next/link";
 
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ExternalLinkIcon } from "@/components/ui/icon";
 import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { PORTFOLIO_SECTION } from "@/content/landing";
 import type { PublishedPortfolioItem } from "@/lib/content/queries";
-import { numberLabel, pluralize } from "@/lib/utils";
+import { pluralize } from "@/lib/utils";
 
-/** Decorative cover art. Three variants keep a grid of cards from looking flat. */
-function ProjectArt({ index }: { index: number }) {
+/** One published project. Every value shown here comes from the CMS row. */
+export function PortfolioCard({ item }: { item: PublishedPortfolioItem }) {
+  const meta = [
+    item.industry,
+    item.deliveryWeeks === null
+      ? null
+      : `${item.deliveryWeeks} ${pluralize(item.deliveryWeeks, "week", "weeks")} to delivery`,
+  ].filter((value): value is string => value !== null && value.length > 0);
+
   return (
-    <div aria-hidden="true" className={`project-art project-art-${(index % 3) + 1}`}>
-      <span className="project-art-count">{numberLabel(index)}</span>
-      <div className="project-art-window">
-        <span />
-        <span />
-        <span />
-        <i />
-        <i />
-        <i />
-      </div>
-      <span className="project-art-spark project-art-spark-one" />
-      <span className="project-art-spark project-art-spark-two" />
-    </div>
-  );
-}
-
-export function PortfolioCard({
-  item,
-  index = 0,
-}: {
-  item: PublishedPortfolioItem;
-  index?: number;
-}) {
-  return (
-    <article className="project-card interactive-card flex h-full flex-col">
-      <ProjectArt index={index} />
-
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          {item.industry ? <span className="project-meta">{item.industry}</span> : null}
-          {item.deliveryWeeks !== null ? (
-            <span className="project-duration">
-              {item.deliveryWeeks} {pluralize(item.deliveryWeeks, "week", "weeks")} to
-              delivery
-            </span>
-          ) : null}
-        </div>
-        <h3 className="mt-4">{item.title}</h3>
-        <p className="mt-2">{item.summary}</p>
-        {item.techStack.length > 0 ? (
-          <ul className="project-stack mt-5 flex flex-wrap gap-1.5">
-            {item.techStack.map((tech) => (
-              <li key={tech}>{tech}</li>
-            ))}
-          </ul>
-        ) : null}
-        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3 pt-6">
-          <Link href={`/work/${item.slug}`} className="project-link">
-            Read the case <span aria-hidden="true">↗</span>
+    <article className="project-card">
+      {meta.length > 0 ? <p className="project-meta">{meta.join(", ")}</p> : null}
+      <h3 className="mt-3">{item.title}</h3>
+      <p className="mt-2">{item.summary}</p>
+      {item.techStack.length > 0 ? (
+        <ul className="project-stack mt-5 flex flex-wrap gap-1.5">
+          {item.techStack.map((tech) => (
+            <li key={tech}>{tech}</li>
+          ))}
+        </ul>
+      ) : null}
+      <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6">
+        <Link href={`/work/${item.slug}`} className="project-link">
+          Read the case study
+        </Link>
+        {item.projectUrl ? (
+          <Link
+            href={item.projectUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="project-link"
+          >
+            Open live project
+            <ExternalLinkIcon />
           </Link>
-          {item.projectUrl ? (
-            <Link
-              href={item.projectUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="project-link project-link-muted"
-            >
-              View live project
-            </Link>
-          ) : null}
-        </div>
+        ) : null}
       </div>
     </article>
   );
@@ -85,7 +58,7 @@ export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] })
         <SectionHeading
           id="work-heading"
           eyebrow={PORTFOLIO_SECTION.eyebrow}
-          heading={PORTFOLIO_SECTION.heading}
+          title={PORTFOLIO_SECTION.title}
           description={PORTFOLIO_SECTION.description}
         />
         {items.length > 0 ? (
@@ -100,7 +73,7 @@ export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] })
       </div>
       {items.length === 0 ? (
         <EmptyState
-          className="public-empty mt-10 py-12"
+          className="mt-10"
           title={PORTFOLIO_SECTION.empty.title}
           description={PORTFOLIO_SECTION.empty.description}
           action={
@@ -110,10 +83,10 @@ export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] })
           }
         />
       ) : (
-        <ul className="project-grid stagger-grid mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item, index) => (
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          {items.map((item) => (
             <li key={item.id}>
-              <PortfolioCard item={item} index={index} />
+              <PortfolioCard item={item} />
             </li>
           ))}
         </ul>

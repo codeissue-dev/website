@@ -47,7 +47,7 @@ export function UserRoleForm({
       />
       <FormMessage state={state} />
       <div className="flex justify-end">
-        <SubmitButton size="sm" variant="secondary" pendingLabel="Saving…">
+        <SubmitButton size="sm" variant="secondary" pendingLabel="Saving...">
           Update role
         </SubmitButton>
       </div>

@@ -5,10 +5,10 @@ import { useFormStatus } from "react-dom";
 import { Button, type ButtonSize, type ButtonVariant } from "@/components/ui/button";
 
 /**
- * Submit button bound to the enclosing form's pending state.
+ * Submit button bound to the enclosing form.
  *
- * `useFormStatus` reads the real submission state, so the disabled and pending
- * appearance always reflects work that is genuinely in flight.
+ * `useFormStatus` reports the real submission state, so the pending label and
+ * the disabled state always describe work that is genuinely in flight.
  */
 export function SubmitButton({
   children,
@@ -42,15 +42,12 @@ export function SubmitButton({
       name={name}
       value={value}
     >
-      {pending ? (pendingLabel ?? "Working…") : children}
+      {pending ? (pendingLabel ?? "Working...") : children}
     </Button>
   );
 }
 
-/**
- * Submit button for destructive actions: requires an explicit confirmation
- * before the form is allowed to submit.
- */
+/** Destructive submit: the browser asks for confirmation before the form posts. */
 export function ConfirmSubmitButton({
   children,
   confirmMessage,
@@ -80,7 +77,7 @@ export function ConfirmSubmitButton({
         if (!window.confirm(confirmMessage)) event.preventDefault();
       }}
     >
-      {pending ? (pendingLabel ?? "Working…") : children}
+      {pending ? (pendingLabel ?? "Working...") : children}
     </Button>
   );
 }

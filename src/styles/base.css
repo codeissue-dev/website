@@ -1,68 +1,76 @@
-/* Document defaults: colour scheme, typography rhythm and motion safety. */
+/* Element defaults: colour scheme, typography rhythm, focus and motion safety. */
 
 @layer base {
   :root {
     color-scheme: light dark;
   }
 
+  /*
+   * The dark scheme swaps the same token names, so every component follows
+   * without a second set of rules.
+   */
   @media (prefers-color-scheme: dark) {
     :root {
-      --color-canvas: oklch(15.5% 0.016 260);
-      --color-surface: oklch(18.5% 0.018 260);
-      --color-surface-muted: oklch(22.5% 0.022 260);
-      --color-line: oklch(29% 0.022 260);
-      --color-line-strong: oklch(40% 0.03 260);
-      --color-ink: oklch(97% 0.008 260);
-      --color-ink-muted: oklch(76% 0.018 260);
-      --color-ink-subtle: oklch(62% 0.02 260);
-      --color-inverse: oklch(15.5% 0.016 260);
-      --color-accent: oklch(72% 0.15 255);
-      --color-accent-ink: oklch(16% 0.016 260);
-      --color-signal: oklch(84% 0.14 88);
-      --color-positive: oklch(76% 0.14 155);
-      --color-caution: oklch(80% 0.13 80);
-      --color-critical: oklch(70% 0.17 25);
+      --color-canvas: oklch(17% 0.008 255);
+      --color-surface: oklch(20.5% 0.009 255);
+      --color-surface-muted: oklch(24.5% 0.01 255);
+      --color-line: oklch(30% 0.012 255);
+      --color-line-strong: oklch(40% 0.014 255);
+      --color-ink: oklch(96% 0.004 255);
+      --color-ink-muted: oklch(78% 0.008 255);
+      --color-ink-subtle: oklch(67% 0.01 255);
+      --color-inverse: oklch(17% 0.008 255);
+      --color-accent: oklch(74% 0.12 250);
+      --color-accent-strong: oklch(82% 0.1 250);
+      --color-accent-soft: oklch(28% 0.035 253);
+      --color-accent-ink: oklch(17% 0.008 255);
+      --color-positive: oklch(75% 0.13 155);
+      --color-caution: oklch(79% 0.12 75);
+      --color-critical: oklch(70% 0.16 25);
     }
   }
 
   html {
     -webkit-text-size-adjust: 100%;
+    /* Anchor links land below the sticky bar. */
+    scroll-padding-top: 4.5rem;
     scroll-behavior: smooth;
   }
 
   body {
     min-width: 320px;
     background-color: var(--color-canvas);
-    background-image:
-      radial-gradient(circle at 8% -10%, rgb(39 131 222 / 0.09), transparent 25rem),
-      radial-gradient(circle at 96% 0%, rgb(234 183 54 / 0.08), transparent 22rem);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 0.9375rem;
-    line-height: 1.6;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  ::selection {
-    background-color: var(--color-ink);
-    color: var(--color-inverse);
   }
 
   h1,
   h2,
   h3,
   h4 {
-    font-weight: 650;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1.18;
     text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-inverse);
   }
 
   input,
@@ -71,6 +79,10 @@
   button {
     font: inherit;
     color: inherit;
+  }
+
+  hr {
+    border-color: var(--color-line);
   }
 
   @media (prefers-reduced-motion: reduce) {

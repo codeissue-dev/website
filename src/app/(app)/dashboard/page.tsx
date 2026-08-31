@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ActivityList } from "@/components/orders/activity-list";
 import { OrderList } from "@/components/orders/order-list";
 import { ButtonLink } from "@/components/ui/button";
+import { CountList } from "@/components/ui/count-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeading } from "@/components/ui/page-heading";
 import { Panel, PanelHeader, Stat } from "@/components/ui/panel";
@@ -33,12 +34,15 @@ export default async function DashboardPage() {
       perPage: 5,
     }),
   ]);
-  const activeStatuses = ORDER_STATUSES.filter(
+  const statusRows = ORDER_STATUSES.filter(
     (status) => stats.statusCounts[status] > 0,
-  );
+  ).map((status) => ({
+    label: ORDER_STATUS_LABELS[status],
+    value: stats.statusCounts[status],
+  }));
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <PageHeading
         title={isExecutor ? "Your work" : "Your projects"}
         description={
@@ -54,7 +58,7 @@ export default async function DashboardPage() {
           )
         }
       />
-      <dl className="grid gap-3 sm:grid-cols-3">
+      <dl className="grid gap-4 sm:grid-cols-3">
         <Stat
           label={isExecutor ? "Assigned projects" : "Projects"}
           value={stats.totalOrders}
@@ -62,18 +66,19 @@ export default async function DashboardPage() {
         <Stat label="In progress" value={stats.openOrders} detail="Not yet closed" />
         <Stat label="Completed" value={stats.completedOrders} />
       </dl>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <Panel>
           <PanelHeader
             title="Latest projects"
             actions={
               <ButtonLink href="/orders" variant="ghost" size="sm">
-                View all
+                View all projects
               </ButtonLink>
             }
           />
           {recentOrders.rows.length === 0 ? (
             <EmptyState
+              className="m-4"
               title={isExecutor ? "Nothing assigned yet" : "No requests yet"}
               description={
                 isExecutor
@@ -96,29 +101,13 @@ export default async function DashboardPage() {
             />
           )}
         </Panel>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <Panel>
             <PanelHeader title="By status" />
-            {activeStatuses.length === 0 ? (
-              <p className="px-4 py-6 text-sm text-ink-muted sm:px-5">
-                Nothing to count yet.
-              </p>
+            {statusRows.length === 0 ? (
+              <p className="px-4 py-5 text-sm text-ink-muted">Nothing to count yet.</p>
             ) : (
-              <dl className="divide-y divide-line">
-                {activeStatuses.map((status) => (
-                  <div
-                    key={status}
-                    className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5"
-                  >
-                    <dt className="text-sm text-ink-muted">
-                      {ORDER_STATUS_LABELS[status]}
-                    </dt>
-                    <dd className="text-sm font-medium text-ink tabular-nums">
-                      {stats.statusCounts[status]}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <CountList rows={statusRows} />
             )}
           </Panel>
           <Panel>

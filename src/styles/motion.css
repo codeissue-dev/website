@@ -1,13 +1,12 @@
 /*
- * Every keyframe used by the interface.
- *
- * Reduced-motion handling stays in base.css so it applies to all of them.
+ * Motion is limited to two jobs: settling new content into place and showing
+ * that a control changed state. Reduced-motion handling lives in base.css.
  */
 
-@keyframes page-enter {
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -15,131 +14,9 @@
   }
 }
 
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes aurora-drift {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.96);
-  }
-  to {
-    transform: translate3d(-3rem, 2.5rem, 0) scale(1.08);
-  }
-}
-
-@keyframes float-ring {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(0, -12px, 0);
-  }
-}
-
-@keyframes star-field {
-  from {
-    background-position:
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  to {
-    background-position:
-      5rem -8rem,
-      -7rem 4rem,
-      8rem 7rem,
-      -4rem -7rem;
-  }
-}
-
-@keyframes aurora-float {
-  from {
-    transform: translateX(50%) translate3d(-1rem, 0, 0) scale(0.94);
-  }
-  to {
-    transform: translateX(50%) translate3d(1.6rem, 2rem, 0) scale(1.08);
-  }
-}
-
-@keyframes orbit-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate3d(0, -0.7rem, 0) rotate(4deg);
-  }
-}
-
-@keyframes console-arrive {
-  from {
-    opacity: 0;
-    transform: translateY(1.1rem) scale(0.975);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes console-sheen {
-  0%,
-  22% {
-    background-position: 110% 0;
-  }
-  58%,
-  100% {
-    background-position: -120% 0;
-  }
-}
-
-@keyframes live-pulse {
-  0% {
-    box-shadow: 0 0 0 0 currentColor;
-    transform: scale(0.92);
-  }
-  60%,
-  100% {
-    box-shadow: 0 0 0 0.55rem transparent;
-    transform: scale(1);
-  }
-}
-
-@keyframes progress-grow {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes art-orbit {
-  from {
-    transform: rotate(-17deg) scale(0.96) translate3d(-0.35rem, 0.2rem, 0);
-  }
-  to {
-    transform: rotate(-8deg) scale(1.08) translate3d(0.35rem, -0.15rem, 0);
-  }
-}
-
-@keyframes spark-drift {
-  from {
-    transform: translate3d(-0.25rem, 0.2rem, 0) scale(0.82);
-    opacity: 0.55;
-  }
-  to {
-    transform: translate3d(0.45rem, -0.35rem, 0) scale(1.2);
-    opacity: 1;
+@layer components {
+  /* Applied to the main region of a route, so a navigation lands calmly. */
+  .page-enter {
+    animation: fade-in 220ms ease-out both;
   }
 }

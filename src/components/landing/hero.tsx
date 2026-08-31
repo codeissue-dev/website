@@ -1,46 +1,59 @@
-import { HeroConsole } from "@/components/landing/hero-console";
 import { ButtonLink } from "@/components/ui/button";
+import { Panel, PanelHeader } from "@/components/ui/panel";
 import { Container } from "@/components/ui/section";
-import { HERO, HERO_PROOF } from "@/content/landing";
+import { HERO, HERO_PROOF, PROCESS_STEPS } from "@/content/landing";
+import { numberLabel } from "@/lib/utils";
 
 /**
- * The opening panel: a short promise, two clear actions and an illustration of
- * the project space. All motion is decorative and disabled for visitors who ask
- * for reduced motion.
+ * Opening screen.
+ *
+ * The panel on the right lists the four real delivery steps from the process
+ * copy rather than a mock interface, so nothing in the hero promises a feature
+ * that does not exist.
  */
 export function Hero() {
   return (
-    <section className="hero-shell relative overflow-hidden">
-      <div aria-hidden="true" className="hero-stars absolute inset-0" />
-      <div aria-hidden="true" className="hero-aurora" />
-      <div aria-hidden="true" className="hero-orbit hero-orbit-one" />
-      <div aria-hidden="true" className="hero-orbit hero-orbit-two" />
-
-      <Container className="relative z-10 pb-16 pt-20 sm:pb-24 sm:pt-28 lg:pb-28 lg:pt-32">
-        <div className="hero-intro stagger-list">
-          <p className="section-eyebrow">{HERO.eyebrow}</p>
-          <h1 className="hero-title mt-4">
-            {HERO.heading.lead}{" "}
-            <span className="hero-gradient">{HERO.heading.accent}</span>
-          </h1>
-          <p className="hero-copy mt-6">{HERO.body}</p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <ButtonLink href={HERO.primaryAction.href} size="lg">
-              {HERO.primaryAction.label}
-            </ButtonLink>
-            <ButtonLink href={HERO.secondaryAction.href} variant="secondary" size="lg">
-              {HERO.secondaryAction.label}
-            </ButtonLink>
+    <section aria-labelledby="hero-heading">
+      <Container className="py-16 sm:py-24">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,21rem)] lg:items-start lg:gap-16">
+          <div>
+            <p className="section-eyebrow">{HERO.eyebrow}</p>
+            <h1 id="hero-heading" className="title-hero mt-4">
+              {HERO.title}
+            </h1>
+            <p className="lede mt-5 max-w-xl">{HERO.body}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ButtonLink href={HERO.primaryAction.href} size="lg">
+                {HERO.primaryAction.label}
+              </ButtonLink>
+              <ButtonLink
+                href={HERO.secondaryAction.href}
+                variant="secondary"
+                size="lg"
+              >
+                {HERO.secondaryAction.label}
+              </ButtonLink>
+            </div>
           </div>
+          <Panel as="aside">
+            <PanelHeader title={HERO.panelTitle} />
+            <ol className="divide-y divide-line">
+              {PROCESS_STEPS.map((step, index) => (
+                <li key={step.title} className="data-row">
+                  <span>{step.title}</span>
+                  <span>{numberLabel(index)}</span>
+                </li>
+              ))}
+            </ol>
+          </Panel>
         </div>
-
-        <HeroConsole />
-
-        <dl className="hero-proof stagger-grid mt-10 grid gap-px overflow-hidden rounded-panel border border-line sm:mt-12 sm:grid-cols-3">
+        <dl className="hero-points mt-14 grid gap-6 border-t border-line pt-8 sm:grid-cols-3 sm:gap-8">
           {HERO_PROOF.map((point) => (
             <div key={point.term}>
-              <dt>{point.term}</dt>
-              <dd>{point.detail}</dd>
+              <dt>
+                <strong>{point.term}</strong>
+              </dt>
+              <dd className="mt-1 leading-relaxed">{point.detail}</dd>
             </div>
           ))}
         </dl>

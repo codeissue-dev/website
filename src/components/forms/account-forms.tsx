@@ -28,7 +28,7 @@ export function ProfileForm({ name }: { name: string }) {
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving…">
+        <SubmitButton size="sm" pendingLabel="Saving...">
           Save name
         </SubmitButton>
       </div>
@@ -76,7 +76,7 @@ export function PasswordForm() {
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving…">
+        <SubmitButton size="sm" pendingLabel="Saving...">
           Change password
         </SubmitButton>
       </div>

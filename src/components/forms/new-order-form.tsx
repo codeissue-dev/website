@@ -97,7 +97,7 @@ export function NewOrderForm() {
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton pendingLabel="Submitting…">Submit request</SubmitButton>
+        <SubmitButton pendingLabel="Submitting...">Submit request</SubmitButton>
       </div>
     </form>
   );

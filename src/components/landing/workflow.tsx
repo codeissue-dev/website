@@ -1,39 +1,42 @@
+import { Panel } from "@/components/ui/panel";
 import { Section, SectionSplit } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { WORKFLOW_SECTION } from "@/content/landing";
-import {
-  ORDER_STATUS_DESCRIPTIONS,
-  ORDER_STATUS_LABELS,
-  ORDER_STATUSES,
-} from "@/lib/orders/status";
-import { numberLabel } from "@/lib/utils";
+import { ORDER_STATUS_DESCRIPTIONS, ORDER_STATUSES } from "@/lib/orders/status";
 
-/** Delivery workflow generated from the same state machine as the platform. */
+/**
+ * The delivery stages, rendered with the same badge the workspace uses.
+ *
+ * The list is generated from the status module, so the public page cannot
+ * describe a stage the platform does not have.
+ */
 export function Workflow() {
   return (
     <Section id="workflow" labelledBy="workflow-heading">
       <SectionSplit
+        sticky
         aside={
           <SectionHeading
             id="workflow-heading"
             eyebrow={WORKFLOW_SECTION.eyebrow}
-            heading={WORKFLOW_SECTION.heading}
+            title={WORKFLOW_SECTION.title}
             description={WORKFLOW_SECTION.description}
           />
         }
       >
-        <dl className="workflow-grid stagger-grid grid gap-3 sm:grid-cols-2">
-          {ORDER_STATUSES.map((status, index) => (
-            <div key={status} className="workflow-card interactive-card">
-              <span className="workflow-number">{numberLabel(index)}</span>
-              <div>
-                <dt>{ORDER_STATUS_LABELS[status]}</dt>
+        <Panel>
+          <dl>
+            {ORDER_STATUSES.map((status) => (
+              <div key={status} className="workflow-row">
+                <dt>
+                  <StatusBadge status={status} />
+                </dt>
                 <dd>{ORDER_STATUS_DESCRIPTIONS[status]}</dd>
               </div>
-              <span aria-hidden="true" className="workflow-beacon" />
-            </div>
-          ))}
-        </dl>
+            ))}
+          </dl>
+        </Panel>
       </SectionSplit>
     </Section>
   );

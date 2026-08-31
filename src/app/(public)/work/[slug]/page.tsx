@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ButtonLink } from "@/components/ui/button";
+import { ArrowLeftIcon } from "@/components/ui/icon";
 import { Container } from "@/components/ui/section";
 import { SITE } from "@/content/site";
 import { loadPublishedPortfolioItem } from "@/lib/content/queries";
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: item.summary,
     alternates: { canonical: `/work/${item.slug}` },
     openGraph: {
-      title: `${item.title} · ${SITE.name}`,
+      title: `${item.title} - ${SITE.name}`,
       description: item.summary,
       type: "article",
       url: `/work/${item.slug}`,
@@ -29,20 +30,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-/** A published case study: only rows an administrator marked public reach here. */
-function CaseSection({
-  title,
-  body,
-  className,
-}: {
-  title: string;
-  body: string;
-  className: string;
-}) {
+/** One part of the write-up. Bodies are stored as text and split into paragraphs. */
+function CaseSection({ title, body }: { title: string; body: string }) {
   return (
-    <section className={className}>
+    <section className="case-section mt-12">
       <h2>{title}</h2>
-      <div className="mt-4 flex flex-col gap-3">
+      <div className="prose-block mt-4 flex flex-col gap-4">
         {paragraphs(body).map((paragraph, index) => (
           <p key={index}>{paragraph}</p>
         ))}
@@ -51,29 +44,26 @@ function CaseSection({
   );
 }
 
+/** A published case study: only rows an administrator marked public reach here. */
 export default async function WorkDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const item = await loadPublishedPortfolioItem(slug);
   if (item === null) notFound();
 
   return (
-    <Container
-      width="narrow"
-      className="case-study page-enter pb-20 pt-24 sm:pb-28 sm:pt-32"
-    >
+    <Container width="narrow" className="py-16 sm:py-20">
       <article>
         <Link href="/work" className="case-back">
-          <span aria-hidden="true">←</span> All public projects
+          <ArrowLeftIcon />
+          All public projects
         </Link>
-        <div className="mt-10 max-w-3xl">
+        <div className="mt-8">
           <p className="section-eyebrow">Case study</p>
-          <h1 className="hero-title mt-4 max-w-3xl text-[clamp(2.5rem,5.3vw,4.7rem)]">
-            {item.title}
-          </h1>
-          <p className="hero-copy mt-5 text-lg">{item.summary}</p>
+          <h1 className="title-hero mt-4">{item.title}</h1>
+          <p className="lede mt-5">{item.summary}</p>
         </div>
 
-        <dl className="case-meta mt-10 grid gap-3 sm:grid-cols-3">
+        <dl className="case-meta mt-10 grid gap-4 sm:grid-cols-3">
           {item.industry ? (
             <div>
               <dt>Industry</dt>
@@ -96,16 +86,8 @@ export default async function WorkDetailPage({ params }: PageProps) {
           ) : null}
         </dl>
 
-        <CaseSection
-          title="The problem"
-          body={item.problem}
-          className="case-section case-section-accent mt-12"
-        />
-        <CaseSection
-          title="What we built"
-          body={item.solution}
-          className="case-section case-section-signal mt-12"
-        />
+        <CaseSection title="The problem" body={item.problem} />
+        <CaseSection title="What we built" body={item.solution} />
 
         <div className="mt-14 flex flex-wrap items-center gap-3 border-t border-line pt-8">
           <ButtonLink href="/register" size="sm">
@@ -119,7 +101,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
               variant="secondary"
               size="sm"
             >
-              View live project
+              Open live project
             </ButtonLink>
           ) : null}
         </div>

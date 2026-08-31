@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { ActivityList } from "@/components/orders/activity-list";
 import { ButtonLink } from "@/components/ui/button";
+import { CountList } from "@/components/ui/count-list";
 import { PageHeading } from "@/components/ui/page-heading";
 import { Panel, PanelHeader, Stat } from "@/components/ui/panel";
 import { requireRoleForPage } from "@/lib/auth/actor";
@@ -20,7 +21,7 @@ export default async function AdminOverviewPage() {
   const stats = await loadAdminStats();
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <PageHeading
         title="Overview"
         description="Every figure on this page is counted in PostgreSQL when the page is requested."
@@ -30,7 +31,7 @@ export default async function AdminOverviewPage() {
           </ButtonLink>
         }
       />
-      <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Projects" value={stats.totalOrders} />
         <Stat
           label="Open"
@@ -46,13 +47,13 @@ export default async function AdminOverviewPage() {
           label="Average delivery"
           value={
             stats.averageDeliveryDays === null
-              ? "-"
+              ? "no data yet"
               : `${stats.averageDeliveryDays} ${pluralize(stats.averageDeliveryDays, "day", "days")}`
           }
           detail="Submission to completion"
         />
       </dl>
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <Panel>
           <PanelHeader
             title="Recent activity"
@@ -60,76 +61,42 @@ export default async function AdminOverviewPage() {
           />
           <ActivityList entries={stats.recentActivity} />
         </Panel>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <Panel>
             <PanelHeader title="Projects by status" />
-            <dl className="divide-y divide-line">
-              {ORDER_STATUSES.map((status) => (
-                <div
-                  key={status}
-                  className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5"
-                >
-                  <dt className="text-sm text-ink-muted">
-                    {ORDER_STATUS_LABELS[status]}
-                  </dt>
-                  <dd className="text-sm font-medium text-ink tabular-nums">
-                    {stats.statusCounts[status]}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <CountList
+              rows={ORDER_STATUSES.map((status) => ({
+                label: ORDER_STATUS_LABELS[status],
+                value: stats.statusCounts[status],
+              }))}
+            />
           </Panel>
           <Panel>
             <PanelHeader
               title="People"
               actions={
                 <ButtonLink href="/admin/users" variant="ghost" size="sm">
-                  Manage
+                  Manage people
                 </ButtonLink>
               }
             />
-            <dl className="divide-y divide-line">
-              {USER_ROLES.map((role) => (
-                <div
-                  key={role}
-                  className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5"
-                >
-                  <dt className="text-sm text-ink-muted">{ROLE_LABELS[role]}</dt>
-                  <dd className="text-sm font-medium text-ink tabular-nums">
-                    {stats.usersByRole[role]}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <CountList
+              rows={USER_ROLES.map((role) => ({
+                label: ROLE_LABELS[role],
+                value: stats.usersByRole[role],
+              }))}
+            />
           </Panel>
           <Panel>
             <PanelHeader title="Public content" />
-            <dl className="divide-y divide-line">
-              <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-                <dt className="text-sm text-ink-muted">Portfolio published</dt>
-                <dd className="text-sm font-medium text-ink tabular-nums">
-                  {stats.publishedPortfolioItems}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-                <dt className="text-sm text-ink-muted">Portfolio drafts</dt>
-                <dd className="text-sm font-medium text-ink tabular-nums">
-                  {stats.draftPortfolioItems}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-                <dt className="text-sm text-ink-muted">Testimonials published</dt>
-                <dd className="text-sm font-medium text-ink tabular-nums">
-                  {stats.publishedTestimonials}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-                <dt className="text-sm text-ink-muted">Testimonial drafts</dt>
-                <dd className="text-sm font-medium text-ink tabular-nums">
-                  {stats.draftTestimonials}
-                </dd>
-              </div>
-            </dl>
+            <CountList
+              rows={[
+                { label: "Portfolio published", value: stats.publishedPortfolioItems },
+                { label: "Portfolio drafts", value: stats.draftPortfolioItems },
+                { label: "Testimonials published", value: stats.publishedTestimonials },
+                { label: "Testimonial drafts", value: stats.draftTestimonials },
+              ]}
+            />
           </Panel>
         </div>
       </div>

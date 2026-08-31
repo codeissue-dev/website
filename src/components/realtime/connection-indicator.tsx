@@ -42,7 +42,7 @@ export function ConnectionIndicator({
     >
       <span
         aria-hidden="true"
-        className={cn("size-1.5 rounded-full", DOT_TONES[state])}
+        className={cn("size-1.5 rounded-pill", DOT_TONES[state])}
       />
       <span aria-live="polite">{LABELS[state]}</span>
     </span>

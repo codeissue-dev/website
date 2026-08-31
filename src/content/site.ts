@@ -7,7 +7,7 @@
 export const SITE = {
   name: "codeissue",
   title: "codeissue: custom software development",
-  titleTemplate: "%s · codeissue",
+  titleTemplate: "%s - codeissue",
   description:
     "codeissue builds custom software from a written brief: submit your project, follow every status change, and talk to the engineers doing the work.",
   summary:

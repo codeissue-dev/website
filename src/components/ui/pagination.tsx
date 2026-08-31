@@ -1,6 +1,6 @@
 import { ButtonLink, buttonClass } from "@/components/ui/button";
 
-/** Server-rendered pagination with real shareable Next.js routes. */
+/** Server-rendered pagination: every page is a real, shareable route. */
 export function Pagination({
   page,
   pageCount,
@@ -16,25 +16,23 @@ export function Pagination({
 }) {
   const previousPage = page > 1 ? page - 1 : null;
   const nextPage = page < pageCount ? page + 1 : null;
+  const disabledClass = buttonClass({
+    variant: "secondary",
+    size: "sm",
+    className: "pointer-events-none",
+  });
 
   return (
     <nav
       aria-label={`${itemLabel} pagination`}
-      className="flex flex-wrap items-center justify-between gap-3 border-t border-line px-4 py-3 sm:px-5"
+      className="flex flex-wrap items-center justify-between gap-3"
     >
       <p className="text-xs text-ink-muted" aria-live="polite">
-        Page {page} of {Math.max(pageCount, 1)} · {total} {itemLabel}
+        Page {page} of {Math.max(pageCount, 1)}, {total} {itemLabel} in total
       </p>
       <div className="flex items-center gap-2">
         {previousPage === null ? (
-          <span
-            aria-disabled="true"
-            className={buttonClass({
-              variant: "secondary",
-              size: "sm",
-              className: "pointer-events-none opacity-55",
-            })}
-          >
+          <span aria-disabled="true" className={disabledClass}>
             Previous
           </span>
         ) : (
@@ -48,14 +46,7 @@ export function Pagination({
           </ButtonLink>
         )}
         {nextPage === null ? (
-          <span
-            aria-disabled="true"
-            className={buttonClass({
-              variant: "secondary",
-              size: "sm",
-              className: "pointer-events-none opacity-55",
-            })}
-          >
+          <span aria-disabled="true" className={disabledClass}>
             Next
           </span>
         ) : (

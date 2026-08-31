@@ -18,6 +18,7 @@ import { requireRoleForPage } from "@/lib/auth/actor";
 import { listAllTestimonials, listDeliveredOrderOptions } from "@/lib/content/queries";
 import type { TestimonialRow } from "@/lib/db/schema";
 import { formatDate } from "@/lib/utils";
+import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "Testimonials",
@@ -49,14 +50,17 @@ export default async function AdminTestimonialsPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">Testimonials</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Real quotes, entered here and stored in the database. {published} of{" "}
-          {testimonials.length} {testimonials.length === 1 ? "quote is" : "quotes are"}{" "}
-          published. Publish only what the author has approved.
-        </p>
-      </div>
+      <PageHeading
+        title="Testimonials"
+        description={
+          <>
+            Real quotes, entered here and stored in the database. {published} of{" "}
+            {testimonials.length}{" "}
+            {testimonials.length === 1 ? "quote is" : "quotes are"} published. Publish
+            only what the author has approved.
+          </>
+        }
+      />
 
       <Panel>
         <PanelHeader

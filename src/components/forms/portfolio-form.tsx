@@ -192,7 +192,7 @@ export function PortfolioForm({
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving…">
+        <SubmitButton size="sm" pendingLabel="Saving...">
           {submitLabel}
         </SubmitButton>
       </div>

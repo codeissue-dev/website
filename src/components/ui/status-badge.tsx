@@ -2,15 +2,21 @@ import type { UserRole } from "@/lib/auth/roles";
 import { ORDER_STATUS_LABELS, type OrderStatus } from "@/lib/orders/status";
 import { cn } from "@/lib/utils";
 
+/**
+ * Status tones.
+ *
+ * Only three meanings exist: work is moving (accent), somebody is waiting
+ * (caution), the project ended well or badly (positive, critical).
+ */
 const STATUS_TONES: Record<OrderStatus, string> = {
-  SUBMITTED: "border-line-strong bg-surface-muted text-ink-muted",
-  REVIEWING: "border-caution/35 bg-caution/10 text-caution",
-  ACCEPTED: "border-accent/35 bg-accent/10 text-accent",
-  IN_PROGRESS: "border-accent/35 bg-accent/10 text-accent",
-  WAITING_FOR_CUSTOMER: "border-caution/35 bg-caution/10 text-caution",
-  QUALITY_ASSURANCE: "border-accent/35 bg-accent/10 text-accent",
-  COMPLETED: "border-positive/35 bg-positive/10 text-positive",
-  CANCELED: "border-critical/35 bg-critical/10 text-critical",
+  SUBMITTED: "badge-neutral",
+  REVIEWING: "badge-caution",
+  ACCEPTED: "badge-accent",
+  IN_PROGRESS: "badge-accent",
+  WAITING_FOR_CUSTOMER: "badge-caution",
+  QUALITY_ASSURANCE: "badge-accent",
+  COMPLETED: "badge-positive",
+  CANCELED: "badge-critical",
 };
 
 export function StatusBadge({
@@ -21,13 +27,7 @@ export function StatusBadge({
   className?: string;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap",
-        STATUS_TONES[status],
-        className,
-      )}
-    >
+    <span className={cn("badge", STATUS_TONES[status], className)}>
       {ORDER_STATUS_LABELS[status]}
     </span>
   );
@@ -45,13 +45,6 @@ export function roleLabel(role: UserRole): string {
 
 export function RoleBadge({ role, className }: { role: UserRole; className?: string }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border border-line bg-surface-muted px-2.5 py-0.5 text-xs font-semibold text-ink-muted",
-        className,
-      )}
-    >
-      {ROLE_LABELS[role]}
-    </span>
+    <span className={cn("badge badge-neutral", className)}>{ROLE_LABELS[role]}</span>
   );
 }

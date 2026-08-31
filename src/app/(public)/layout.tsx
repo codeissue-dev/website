@@ -10,10 +10,9 @@ export default async function PublicLayout({ children }: { children: ReactNode }
   const actor = await getActor();
 
   return (
-    <div className="public-shell flex min-h-dvh flex-col">
-      <div aria-hidden="true" className="public-star-layer" />
+    <div className="flex min-h-dvh flex-col bg-canvas">
       <SiteHeader actor={actor} />
-      <main id="main-content" className="relative z-10 flex-1">
+      <main id="main-content" className="page-enter flex-1">
         {children}
       </main>
       <SiteFooter />

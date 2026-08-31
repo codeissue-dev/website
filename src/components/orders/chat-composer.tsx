@@ -41,7 +41,7 @@ export function ChatComposer({ orderId }: { orderId: string }) {
         rows={3}
         required
         maxLength={MAX_MESSAGE_LENGTH}
-        placeholder="Write a message about this project…"
+        placeholder="Write a message about this project..."
         className={`${CONTROL_CLASS} resize-y`}
         aria-invalid={state.status === "error" ? true : undefined}
         aria-describedby={state.status === "error" ? "chat-body-error" : undefined}
@@ -61,7 +61,7 @@ export function ChatComposer({ orderId }: { orderId: string }) {
             ? bodyError
             : "Enter sends, Shift + Enter adds a line."}
         </p>
-        <SubmitButton size="sm" pendingLabel="Sending…">
+        <SubmitButton size="sm" pendingLabel="Sending...">
           Send
         </SubmitButton>
       </div>

@@ -11,17 +11,19 @@ import { workspaceNavLinks } from "@/content/navigation";
 import type { Actor } from "@/lib/auth/actor";
 import { displayName } from "@/lib/utils";
 
-/** Chrome for every signed-in page. */
+/**
+ * Chrome for every signed-in page.
+ *
+ * It is the public header with a different set of links: same bar, same height,
+ * same wordmark and the same link treatment, so moving between the site and the
+ * workspace does not feel like moving between two products.
+ */
 export function AppShell({ actor, children }: { actor: Actor; children: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col bg-canvas">
-      <header className="sticky top-0 z-30 border-b border-line/85 bg-surface/85 backdrop-blur-md">
-        <Container className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
-          <Link
-            href="/"
-            className="flex items-center rounded-md transition-opacity hover:opacity-75"
-            aria-label="codeissue home"
-          >
+      <header className="site-bar">
+        <Container className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 sm:h-14 sm:flex-nowrap sm:py-0">
+          <Link href="/" className="flex items-center" aria-label="codeissue home">
             <Wordmark size="sm" />
           </Link>
           <div className="order-3 w-full sm:order-2 sm:w-auto">
@@ -40,8 +42,8 @@ export function AppShell({ actor, children }: { actor: Actor; children: ReactNod
           </div>
         </Container>
       </header>
-      <Container as="main" className="page-enter flex-1 py-6 sm:py-8">
-        <div id="main-content">{children}</div>
+      <Container as="main" id="main-content" className="page-enter flex-1 py-8">
+        {children}
       </Container>
     </div>
   );

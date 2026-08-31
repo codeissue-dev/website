@@ -43,7 +43,7 @@ src/
   actions/               Server Actions: auth, orders, chat, content, users
   components/            UI primitives, landing sections, forms, order views
   content/               Public copy and navigation, kept out of the components
-  styles/                Design system split by purpose (theme, base, motion)
+  styles/                One design system: tokens, defaults, classes, motion
   lib/
     auth/                roles, password hashing, RBAC helpers, session actor
     db/                  schema.ts + client.ts (the only Pool and Drizzle client)
@@ -66,10 +66,17 @@ tests/                   node:test unit tests
   without touching a component.
 - Layout primitives (`Container`, `Section`, `SectionSplit`) own the page rhythm;
   sections compose them instead of repeating max widths and padding.
-- Styles are split by purpose in `src/styles/`: `theme.css` holds the tokens,
-  `base.css` element defaults, `primitives.css` shared pieces,
-  `public-site.css` the marketing surface, `refinements.css` the small touches
-  layered on top, and `motion.css` every animation.
+- Repeated pieces are components, not copies: `Button` and `ButtonLink`,
+  `PageHeading` for every signed-in view, `Panel` with `PanelHeader` and
+  `Stat`, `CountList` for label-and-number lists, `EmptyState`, `StatusBadge`,
+  and the icons in `components/ui/icon.tsx`.
+- The design system is four files in `src/styles/`, imported in cascade order:
+  `theme.css` holds the tokens (colour, type, radius), `base.css` the element
+  defaults, `components.css` the classes that the public pages and the
+  workspace both render (`.btn`, `.surface-card`, `.data-row`, `.badge`, the
+  heading scale), and `motion.css` the few animations the interface uses.
+- A page never invents its own palette, heading size or card treatment. It
+  uses those classes, or the class is added once and reused everywhere.
 - `src/app/globals.css` is only an import manifest, so the load order of the
   design system stays readable.
 
@@ -124,14 +131,14 @@ The durable source of truth is PostgreSQL. WebSockets only accelerate delivery.
    Postgres with the same `resolveOrderRole()` rules the pages use. An
    unauthorized subscription is answered with an error frame, never with data.
 3. **Persist first.** Chat messages and status events are written to Postgres
-   inside a transaction. Only then is `pg_notify('codeissue_order_events', …)`
-   issued, carrying identifiers and participant ids — never message content.
+   inside a transaction. Only then is `pg_notify('codeissue_order_events', ...)`
+   issued, carrying identifiers and participant ids, never message content.
 4. **Fan-out.** Each runtime instance keeps exactly one `LISTEN` connection (the
    hub). On notification it loads the authoritative row and pushes it to the
    local sockets that are both subscribed to that order and authorized for it.
    Nothing assumes that two instances share memory.
 5. **Recovery.** The client reconnects with exponential backoff plus jitter
-   (1s → 30s), then sends `backfill` with the timestamp of the newest event it
+   (one second up to thirty), then sends `backfill` with the timestamp of the newest event it
    already has. Missed messages and status events are replayed from Postgres and
    de-duplicated by event id. Notifications are treated as a wake-up signal, not
    as storage, so a dropped notification cannot lose data.
@@ -157,7 +164,7 @@ The durable source of truth is PostgreSQL. WebSockets only accelerate delivery.
   CLI installed globally (`pnpm add -g vercel`); it is deliberately not a
   project dependency.
 - **Self-hosting:** run `server/realtime/standalone.ts` behind TLS and set
-  `NEXT_PUBLIC_REALTIME_URL=wss://…`.
+  `NEXT_PUBLIC_REALTIME_URL=wss://your-host`.
 
 If Fluid compute is unavailable, the app still works end to end: chat and status
 changes are persisted through Server Actions and rendered on load. Only push
@@ -198,7 +205,7 @@ secret, and the app refuses to start without the required values.
 | `DATABASE_URL`                | yes      | PostgreSQL 18 connection string used by `pg`                          |
 | `AUTH_SECRET`                 | yes      | Auth.js signing secret (min. 32 chars) and realtime ticket key source |
 | `DATABASE_SSL`                | no       | `require` for managed providers, `disable` locally (default)          |
-| `DATABASE_POOL_MAX`           | no       | Max pooled connections per instance (1–50, default 3)                 |
+| `DATABASE_POOL_MAX`           | no       | Max pooled connections per instance (1 to 50, default 3)              |
 | `NEXT_PUBLIC_SITE_URL`        | no       | Canonical origin for metadata, sitemap, robots                        |
 | `NEXT_PUBLIC_REALTIME_URL`    | no       | External WebSocket gateway; empty means same-origin `/api/realtime`   |
 | `REALTIME_PORT`               | no       | Port for `pnpm dev:realtime` (default 8787)                           |
@@ -245,10 +252,10 @@ yourself; every later `generate` diffs normally from the snapshot it just wrote.
 ## Local development
 
 ```bash
-# Terminal 1 — app
+# Terminal 1: the app
 pnpm dev
 
-# Terminal 2 — realtime gateway (needed with plain `next dev`)
+# Terminal 2: the realtime gateway (needed with plain `next dev`)
 pnpm dev:realtime
 # with NEXT_PUBLIC_REALTIME_URL=ws://localhost:8787 in .env.local
 ```
@@ -290,8 +297,8 @@ marked `force-dynamic`.
 
 1. Import the repository and keep the defaults (`pnpm install`, `pnpm build`).
 2. Add `DATABASE_URL`, `AUTH_SECRET` and, for a managed database,
-   `DATABASE_SSL=require`. Set `DATABASE_POOL_MAX` to a small number — every
-   instance owns its own pool — and prefer your provider's pooled connection
+   `DATABASE_SSL=require`. Set `DATABASE_POOL_MAX` to a small number, because every
+   instance owns its own pool, and prefer your provider's pooled connection
    string.
 3. Enable **Fluid compute** for the project. It is required for WebSocket
    support and is available on Hobby. Leave `NEXT_PUBLIC_REALTIME_URL` empty so
@@ -308,7 +315,7 @@ marked `force-dynamic`.
 only module that calls `drizzle()`. `getDb()` is a lazy accessor: the pool is
 created on first use, cached on `globalThis` so hot reload and repeated Lambda
 invocations reuse it, and never opened during module evaluation. Auth.js uses
-the same instance — `DrizzleAdapter(getDb(), { …tables })` — so there is exactly
+the same instance, `DrizzleAdapter(getDb(), { ...tables })`, so there is exactly
 one client for authentication and application queries.
 
 Keep `DATABASE_POOL_MAX` small (default 3) on serverless platforms: the number
@@ -343,9 +350,17 @@ verification, the RBAC matrix, the status machine, realtime frame contracts,
 realtime ticket signing and expiry, order references, and the Zod schemas that
 guard every form and query string.
 
+Two suites guard the surface instead of the logic. `tests/content.test.ts`
+checks the public copy: every section reads as a plain sentence, no shouted
+labels, no decorative dashes, and every navigation link points at a real
+route. `tests/design-system.test.ts` checks the visual language: the four
+style layers stay the single source, gradients and glows cannot come back,
+the radius scale keeps one set of values, and every class defined in
+`components.css` is still rendered by a component.
+
 ## Branding
 
 The wordmark is text (`codeissue`), so there is no image to break. Drop a file
 into `public/` and set `NEXT_PUBLIC_BRAND_LOGO_PATH=/brand/logo.svg` to replace
-it. `src/app/icon.svg` is a deliberately minimal favicon placeholder — replacing
-that one file replaces the favicon everywhere.
+it. `src/app/icon.svg` is a deliberately minimal favicon placeholder, so
+replacing that one file replaces the favicon everywhere.

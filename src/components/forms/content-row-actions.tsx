@@ -43,7 +43,7 @@ export function ContentRowActions({
           <SubmitButton
             size="sm"
             variant="secondary"
-            pendingLabel={published ? "Unpublishing…" : "Publishing…"}
+            pendingLabel={published ? "Unpublishing..." : "Publishing..."}
           >
             {published ? "Unpublish" : "Publish"}
           </SubmitButton>
@@ -54,7 +54,7 @@ export function ContentRowActions({
           <ConfirmSubmitButton
             size="sm"
             confirmMessage={deleteConfirmMessage}
-            pendingLabel="Deleting…"
+            pendingLabel="Deleting..."
           >
             Delete
           </ConfirmSubmitButton>

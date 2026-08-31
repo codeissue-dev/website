@@ -24,24 +24,20 @@ export type ProofPoint = {
   readonly detail: string;
 };
 
-/**
- * Section headings are split into a plain part and an accented part so the
- * highlight colour stays a styling decision made in the component.
- */
-export type SplitHeading = {
-  readonly lead: string;
-  readonly accent: string;
+/** Heading and supporting copy for a section of the public site. */
+export type SectionCopy = {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly description: string;
 };
 
 export const HERO = {
   eyebrow: "Software for work that is ready to move",
-  heading: {
-    lead: "Build the product that",
-    accent: "keeps work moving.",
-  } satisfies SplitHeading,
+  title: "Build the product that keeps work moving.",
   body: "Bring the process that needs fixing. We turn it into focused software and keep the project clear from the first brief to the handover.",
   primaryAction: { href: "/register", label: "Start a project" },
   secondaryAction: { href: "/work", label: "Browse public projects" },
+  panelTitle: "How a project moves",
 } as const;
 
 export const HERO_PROOF: readonly ProofPoint[] = [
@@ -59,52 +55,12 @@ export const HERO_PROOF: readonly ProofPoint[] = [
   },
 ];
 
-/**
- * The decorative project console in the hero.
- *
- * It is illustrative, marked `aria-hidden` in the component, and mirrors the
- * real delivery flow instead of inventing metrics that do not exist.
- */
-export const HERO_CONSOLE = {
-  title: "project space",
-  liveLabel: "Live",
-  nav: ["Overview", "Brief", "Conversation", "Delivery"],
-  navNote: "Everything in one thread",
-  breadcrumb: "New request / Product workspace",
-  kicker: "Project brief",
-  projectTitle: "A better home for the work",
-  status: "In progress",
-  summary: [
-    { label: "Scope", value: "Confirmed" },
-    { label: "Next step", value: "Build review" },
-    { label: "Updates", value: "In the thread" },
-  ],
-  progress: {
-    label: "Delivery progress",
-    percent: 72,
-    ticks: ["Brief", "Scope", "Build", "Review"],
-  },
-  activityTitle: "Recent activity",
-  activity: [
-    { tone: "blue", label: "Scope approved" },
-    { tone: "violet", label: "Build started" },
-    { tone: "mint", label: "Update posted" },
-  ],
-  messageTitle: "Project update",
-  footerLabel: "The path stays visible",
-} as const;
-
-export type ConsoleActivityTone = (typeof HERO_CONSOLE.activity)[number]["tone"];
-
 export const CAPABILITIES_SECTION = {
   eyebrow: "What we build",
-  heading: {
-    lead: "Software with a job to do,",
-    accent: "not filler.",
-  } satisfies SplitHeading,
+  title: "Software with a job to do, not filler.",
   description:
     "The best projects start with a real bottleneck, a useful question or a task that has outgrown the tools around it.",
-} as const;
+} as const satisfies SectionCopy;
 
 export const CAPABILITIES: readonly LandingCard[] = [
   {
@@ -135,10 +91,7 @@ export const CAPABILITIES: readonly LandingCard[] = [
 
 export const PROCESS_SECTION = {
   eyebrow: "How it works",
-  heading: {
-    lead: "A short path from a note to",
-    accent: "a useful release.",
-  } satisfies SplitHeading,
+  title: "A short path from a note to a useful release.",
   description:
     "No sales maze. The written brief starts the conversation, and the project space keeps it moving.",
   action: { href: "/register", label: "Open a project" },
@@ -165,20 +118,14 @@ export const PROCESS_STEPS: readonly ProcessStep[] = [
 
 export const WORKFLOW_SECTION = {
   eyebrow: "The project space",
-  heading: {
-    lead: "Everyone sees the same",
-    accent: "next step.",
-  } satisfies SplitHeading,
+  title: "Everyone sees the same next step.",
   description:
     "The stages below are the real states used by the platform. Only the right moves are available, and every change is recorded.",
-} as const;
+} as const satisfies SectionCopy;
 
 export const PORTFOLIO_SECTION = {
   eyebrow: "Public projects",
-  heading: {
-    lead: "Finished work,",
-    accent: "shared with permission.",
-  } satisfies SplitHeading,
+  title: "Finished work, shared with permission.",
   description:
     "Every project here has an approved public write-up. The work stays private unless the client chooses otherwise.",
   action: { href: "/work", label: "View all projects" },
@@ -191,12 +138,9 @@ export const PORTFOLIO_SECTION = {
 
 export const TESTIMONIALS_SECTION = {
   eyebrow: "Client reviews",
-  heading: {
-    lead: "Words from people who",
-    accent: "shipped with us.",
-  } satisfies SplitHeading,
+  title: "Words from people who shipped with us.",
   description:
-    "Quotes are published in the client\u2019s own words and only after they approve sharing them.",
+    "Quotes are published in the client's own words and only after they approve sharing them.",
   note: "Feedback belongs next to the finished work, not in a made-up carousel.",
   empty: {
     title: "Reviews will appear here",
@@ -207,13 +151,10 @@ export const TESTIMONIALS_SECTION = {
 
 export const FAQ_SECTION = {
   eyebrow: "Questions",
-  heading: {
-    lead: "A few useful",
-    accent: "answers.",
-  } satisfies SplitHeading,
+  title: "A few useful answers.",
   description:
     "If your question is not here, include it in the brief. It will be answered in the project thread.",
-} as const;
+} as const satisfies SectionCopy;
 
 export const FAQ_ENTRIES: readonly FaqEntry[] = [
   {
@@ -250,10 +191,7 @@ export const FAQ_ENTRIES: readonly FaqEntry[] = [
 
 export const CTA_SECTION = {
   eyebrow: "Start with the work you have",
-  heading: {
-    lead: "Give the next project",
-    accent: "a clear place to start.",
-  } satisfies SplitHeading,
+  title: "Give the next project a clear place to start.",
   description:
     "Open an account, write the brief and keep the conversation next to the work from day one.",
   primaryAction: { href: "/register", label: "Open a project" },
@@ -262,10 +200,7 @@ export const CTA_SECTION = {
 
 export const WORK_INDEX = {
   eyebrow: "Public projects",
-  heading: {
-    lead: "Things we finished and",
-    accent: "can show.",
-  } satisfies SplitHeading,
+  title: "Things we finished and can show.",
   description:
     "Every write-up below has been approved by the client. We do not turn private work into portfolio material without permission.",
   empty: {

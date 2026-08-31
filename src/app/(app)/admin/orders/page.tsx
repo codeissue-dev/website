@@ -11,6 +11,7 @@ import {
   buildOrderListQueryString,
   parseOrderListParams,
 } from "@/lib/validation/orders";
+import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -32,13 +33,10 @@ export default async function AdminOrdersPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">Projects</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Search by reference, title or customer. Open a project to assign it, move its
-          status or reply in the chat.
-        </p>
-      </div>
+      <PageHeading
+        title="Projects"
+        description="Search by reference, title or customer. Open a project to assign it, move its status or reply in the chat."
+      />
 
       <OrderFilters action="/admin/orders" params={params} showAssignment />
 

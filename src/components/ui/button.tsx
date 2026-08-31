@@ -12,30 +12,27 @@ type ButtonStyleOptions = {
   className?: string;
 };
 
-const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-lg border border-transparent font-medium whitespace-nowrap transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-out focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-55";
-
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
-    "border-ink bg-ink text-inverse shadow-[0_8px_20px_rgb(18_24_38/0.16)] hover:-translate-y-px hover:border-accent hover:bg-accent hover:shadow-[0_12px_26px_rgb(39_131_222/0.24)] active:translate-y-0",
-  secondary:
-    "border-line bg-surface/90 text-ink shadow-[0_1px_2px_rgb(18_24_38/0.05)] hover:-translate-y-px hover:border-line-strong hover:bg-surface-muted hover:shadow-[0_8px_18px_rgb(18_24_38/0.08)] active:translate-y-0",
-  ghost:
-    "text-ink-muted hover:-translate-y-px hover:bg-surface-muted hover:text-ink active:translate-y-0",
-  danger:
-    "border-critical/40 text-critical hover:-translate-y-px hover:border-critical/60 hover:bg-critical/10 active:translate-y-0",
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  ghost: "btn-ghost",
+  danger: "btn-danger",
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: "h-9 px-3 text-[0.8125rem]",
-  md: "h-10 px-4 text-sm",
-  lg: "h-11 px-5 text-sm",
+  sm: "btn-sm",
+  md: "btn-md",
+  lg: "btn-lg",
 };
 
-/** Shared visual contract for buttons, button links, and disabled pagination. */
+/**
+ * The button contract, shared by real buttons, links that look like buttons and
+ * the disabled pagination controls. The appearance itself lives in
+ * `styles/components.css`.
+ */
 export function buttonClass(options: ButtonStyleOptions = {}): string {
   return cn(
-    BASE,
+    "btn",
     VARIANTS[options.variant ?? "primary"],
     SIZES[options.size ?? "md"],
     options.className,
@@ -47,7 +44,6 @@ export type ButtonProps = ComponentProps<"button"> & {
   size?: ButtonSize;
 };
 
-/** Reusable native button with the shared interaction treatment. */
 export function Button({ variant, size, className, type, ...props }: ButtonProps) {
   return (
     <button
@@ -63,7 +59,6 @@ export type ButtonLinkProps = ComponentProps<typeof Link> & {
   size?: ButtonSize;
 };
 
-/** A Next.js Link that follows the shared button contract. */
 export function ButtonLink({ variant, size, className, ...props }: ButtonLinkProps) {
   return <Link className={buttonClass({ variant, size, className })} {...props} />;
 }

@@ -18,6 +18,7 @@ import { requireRoleForPage } from "@/lib/auth/actor";
 import { listAllPortfolioItems } from "@/lib/content/queries";
 import type { PortfolioItemRow } from "@/lib/db/schema";
 import { formatDate } from "@/lib/utils";
+import { PageHeading } from "@/components/ui/page-heading";
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -49,14 +50,16 @@ export default async function AdminPortfolioPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-semibold tracking-tight text-ink">Portfolio</h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Case studies for the public site. {published} of {items.length}{" "}
-          {items.length === 1 ? "item is" : "items are"} published. Nothing appears
-          publicly until you publish it.
-        </p>
-      </div>
+      <PageHeading
+        title="Portfolio"
+        description={
+          <>
+            Case studies for the public site. {published} of {items.length}{" "}
+            {items.length === 1 ? "item is" : "items are"} published. Nothing appears
+            publicly until you publish it.
+          </>
+        }
+      />
 
       <Panel>
         <PanelHeader

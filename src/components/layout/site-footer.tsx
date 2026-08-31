@@ -9,9 +9,8 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="public-footer relative z-10 overflow-hidden border-t border-line">
-      <div aria-hidden="true" className="footer-glow" />
-      <Container className="relative grid gap-8 py-12 md:grid-cols-[1.45fr_repeat(3,1fr)] md:py-14">
+    <footer className="border-t border-line">
+      <Container className="grid gap-8 py-12 md:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div className="flex flex-col gap-3">
           <Wordmark />
           <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
@@ -33,7 +32,7 @@ export function SiteFooter() {
           </div>
         ))}
       </Container>
-      <Container className="relative flex flex-col gap-1.5 border-t border-line py-5 text-xs text-ink-subtle sm:flex-row sm:items-center sm:justify-between">
+      <Container className="flex flex-col gap-1.5 border-t border-line py-5 text-xs text-ink-subtle sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {year} {SITE.name}
         </p>

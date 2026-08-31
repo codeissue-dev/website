@@ -68,7 +68,7 @@ export function OrderStatusForm({
         error={firstFieldError(state, "toStatus")}
         options={available.map((transition) => ({
           value: transition.to,
-          label: `${transition.actionLabel} → ${ORDER_STATUS_LABELS[transition.to]}`,
+          label: `${transition.actionLabel} to ${ORDER_STATUS_LABELS[transition.to]}`,
         }))}
       />
 
@@ -99,12 +99,12 @@ export function OrderStatusForm({
           <ConfirmSubmitButton
             size="sm"
             confirmMessage={`${active.actionLabel}: this is visible to the customer and recorded in the project history. Continue?`}
-            pendingLabel="Saving…"
+            pendingLabel="Saving..."
           >
             {active.actionLabel}
           </ConfirmSubmitButton>
         ) : (
-          <SubmitButton size="sm" pendingLabel="Saving…">
+          <SubmitButton size="sm" pendingLabel="Saving...">
             {active.actionLabel}
           </SubmitButton>
         )}

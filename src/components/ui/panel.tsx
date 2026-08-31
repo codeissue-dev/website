@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
+/** A bordered surface. The same panel is used on public pages and in the workspace. */
 export function Panel({
   children,
   className,
@@ -35,14 +36,9 @@ export function PanelHeader({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "flex flex-wrap items-start justify-between gap-3 border-b border-line/90 px-4 py-3.5 sm:px-5",
-        className,
-      )}
-    >
+    <div className={cn("panel-header", className)}>
       <div className="min-w-0">
-        <h2 className="text-sm font-semibold tracking-tight text-ink">{title}</h2>
+        <h2 className="panel-title">{title}</h2>
         {description ? (
           <p className="mt-1 max-w-2xl text-xs leading-relaxed text-ink-muted">
             {description}
@@ -61,10 +57,10 @@ export function PanelBody({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={cn("px-4 py-4 sm:px-5", className)}>{children}</div>;
+  return <div className={cn("px-4 py-4", className)}>{children}</div>;
 }
 
-/** A single figure. Every value shown here is read from Postgres by the caller. */
+/** A single figure. Every value shown here is counted in PostgreSQL by the caller. */
 export function Stat({
   label,
   value,
@@ -75,13 +71,9 @@ export function Stat({
   detail?: string;
 }) {
   return (
-    <div className="stat-card rounded-panel border border-line px-4 py-4">
-      <dt className="text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">
-        {label}
-      </dt>
-      <dd className="mt-2 text-2xl font-semibold tracking-tight text-ink tabular-nums">
-        {value}
-      </dd>
+    <div className="stat-card">
+      <dt className="label-quiet">{label}</dt>
+      <dd className="stat-value">{value}</dd>
       {detail ? (
         <p className="mt-1 text-xs leading-relaxed text-ink-muted">{detail}</p>
       ) : null}

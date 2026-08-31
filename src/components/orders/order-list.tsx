@@ -7,7 +7,7 @@ import { displayName, formatDate, pluralize, toIsoString } from "@/lib/utils";
 /**
  * Order list.
  *
- * Rendered as linked cards rather than a wide table so the same markup works
+ * Rendered as linked rows rather than a wide table so the same markup works
  * from a narrow phone up, without horizontal scrolling.
  */
 export function OrderList({
@@ -25,7 +25,7 @@ export function OrderList({
         <li key={order.id}>
           <Link
             href={`/orders/${order.reference}`}
-            className="flex flex-col gap-2 px-4 py-3.5 transition-colors hover:bg-surface-muted sm:px-5"
+            className="row-link flex flex-col gap-2"
           >
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
               <span className="font-mono text-xs text-ink-muted">
@@ -33,7 +33,7 @@ export function OrderList({
               </span>
               <StatusBadge status={order.status} />
               {order.unreadCount > 0 ? (
-                <span className="inline-flex items-center rounded-full bg-ink px-2 py-0.5 text-xs font-medium text-inverse">
+                <span className="badge badge-count">
                   {order.unreadCount} new
                   <span className="sr-only">
                     {" "}

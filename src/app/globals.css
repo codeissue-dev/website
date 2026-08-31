@@ -1,24 +1,19 @@
 /*
  * Stylesheet entry point.
  *
- * The design system is split by purpose so a change has one obvious home:
+ * Tailwind first, then the project layers in cascade order:
+ *   theme       design tokens: colour, type, radius
+ *   base        element defaults
+ *   components  shared classes used by the public pages and the workspace
+ *   motion      the few animations the interface uses
  *
- *   theme.css        design tokens (colour, type, radius)
- *   base.css         document defaults and motion safety
- *   primitives.css   shared product primitives (cards, headings, motion classes)
- *   utilities.css    custom Tailwind utilities
- *   public-site.css  the marketing surface: shell, hero, sections, footer
- *   refinements.css  typography rhythm, depth and scroll-driven polish
- *   motion.css       every keyframe used by the interface
- *
- * Import order is the cascade order: later files may refine earlier ones.
+ * There is one system for the whole product. A page never defines its own
+ * palette, heading sizes or card treatment.
  */
+
 @import "tailwindcss";
 
 @import "../styles/theme.css";
 @import "../styles/base.css";
-@import "../styles/primitives.css";
-@import "../styles/utilities.css";
-@import "../styles/public-site.css";
-@import "../styles/refinements.css";
+@import "../styles/components.css";
 @import "../styles/motion.css";

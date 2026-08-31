@@ -69,7 +69,7 @@ export function AssignExecutorForm({
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving…">
+        <SubmitButton size="sm" pendingLabel="Saving...">
           Save assignment
         </SubmitButton>
       </div>

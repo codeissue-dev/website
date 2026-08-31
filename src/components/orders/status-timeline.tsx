@@ -19,13 +19,10 @@ export function StatusTimeline({ events }: { events: StatusEventPayload[] }) {
   }
 
   return (
-    <ol className="relative flex flex-col gap-4 border-l border-line pl-5">
+    <ol className="timeline relative flex flex-col gap-4">
       {events.map((event) => (
         <li key={event.id} className="relative">
-          <span
-            aria-hidden="true"
-            className="absolute top-1.5 -left-[1.4375rem] size-2 rounded-full border border-line-strong bg-surface"
-          />
+          <span aria-hidden="true" className="timeline-dot" />
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={event.toStatus} />
             {event.fromStatus ? (
@@ -40,16 +37,14 @@ export function StatusTimeline({ events }: { events: StatusEventPayload[] }) {
             <time dateTime={toIsoString(event.createdAt)}>
               {formatDateTime(event.createdAt)}
             </time>
-            {" · "}
+            {", "}
             {event.actor.name ?? roleLabel(event.actor.role)}
             {" ("}
             {roleLabel(event.actor.role)}
             {")"}
           </p>
           {event.note ? (
-            <p className="mt-1.5 rounded-md border border-line bg-surface-muted px-3 py-2 text-sm whitespace-pre-line text-ink">
-              {event.note}
-            </p>
+            <p className="note mt-2 whitespace-pre-line text-ink">{event.note}</p>
           ) : null}
         </li>
       ))}

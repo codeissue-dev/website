@@ -87,7 +87,7 @@ export function displayName(name: string | null, email: string): string {
 
 export function truncate(value: string, max: number): string {
   if (value.length <= max) return value;
-  return `${value.slice(0, Math.max(0, max - 1)).trimEnd()}…`;
+  return `${value.slice(0, Math.max(0, max - 3)).trimEnd()}...`;
 }
 
 /** Splits free-form textarea content into displayable paragraphs. */

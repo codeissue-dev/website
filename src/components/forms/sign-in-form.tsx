@@ -40,7 +40,7 @@ export function SignInForm({ next }: { next: string }) {
 
       <FormMessage state={state} />
 
-      <SubmitButton pendingLabel="Signing in…">Sign in</SubmitButton>
+      <SubmitButton pendingLabel="Signing in...">Sign in</SubmitButton>
     </form>
   );
 }

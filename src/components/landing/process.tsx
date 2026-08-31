@@ -14,7 +14,7 @@ export function Process() {
             <SectionHeading
               id="process-heading"
               eyebrow={PROCESS_SECTION.eyebrow}
-              heading={PROCESS_SECTION.heading}
+              title={PROCESS_SECTION.title}
               description={PROCESS_SECTION.description}
             />
             <ButtonLink
@@ -28,14 +28,14 @@ export function Process() {
           </>
         }
       >
-        <ol className="process-list stagger-list">
+        <ol>
           {PROCESS_STEPS.map((step, index) => (
             <li key={step.title} className="process-step">
-              <span className="process-number">{numberLabel(index)}</span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </div>
+              <span className="process-number" aria-hidden="true">
+                {numberLabel(index)}
+              </span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
             </li>
           ))}
         </ol>

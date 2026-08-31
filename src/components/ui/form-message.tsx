@@ -24,7 +24,7 @@ export function FormMessage({
     <p
       role={isError ? "alert" : "status"}
       className={cn(
-        "rounded-md border px-3 py-2 text-sm",
+        "rounded-control border px-3 py-2 text-sm",
         isError
           ? "border-critical/40 bg-critical/8 text-critical"
           : "border-positive/40 bg-positive/8 text-positive",

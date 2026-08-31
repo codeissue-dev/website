@@ -1,33 +1,47 @@
 /*
  * Design tokens.
  *
- * Colour, type and radius decisions live here only, so a visual change is a
- * token change rather than an edit spread across component styles.
+ * One palette, one type pairing, one radius scale. The landing page and the
+ * signed-in workspace read the same values, so a visual decision is made here
+ * once instead of per page.
  */
 
 @theme {
-  --color-canvas: oklch(98.8% 0.004 260);
+  /* Neutrals carry the interface. */
+  --color-canvas: oklch(99% 0.002 255);
   --color-surface: oklch(100% 0 0);
-  --color-surface-muted: oklch(96.8% 0.009 255);
-  --color-line: oklch(89.7% 0.012 255);
-  --color-line-strong: oklch(78% 0.022 255);
-  --color-ink: oklch(20% 0.025 260);
-  --color-ink-muted: oklch(47% 0.025 260);
-  --color-ink-subtle: oklch(62% 0.02 260);
+  --color-surface-muted: oklch(97.2% 0.004 255);
+  --color-line: oklch(91% 0.006 255);
+  --color-line-strong: oklch(82% 0.01 255);
+  --color-ink: oklch(24% 0.014 255);
+  --color-ink-muted: oklch(49% 0.012 255);
+  --color-ink-subtle: oklch(61% 0.012 255);
   --color-inverse: oklch(100% 0 0);
-  --color-accent: oklch(55% 0.18 258);
-  --color-accent-ink: oklch(100% 0 0);
-  --color-signal: oklch(78% 0.16 86);
-  --color-positive: oklch(52% 0.13 152);
-  --color-caution: oklch(59% 0.14 75);
-  --color-critical: oklch(52% 0.19 25);
 
+  /* A single accent: links, focus, the primary action. */
+  --color-accent: oklch(49% 0.15 253);
+  --color-accent-strong: oklch(42% 0.15 253);
+  --color-accent-soft: oklch(96.5% 0.017 253);
+  --color-accent-ink: oklch(100% 0 0);
+
+  /* Delivery states need their own meaning, so they get their own colours. */
+  --color-positive: oklch(48% 0.12 152);
+  --color-caution: oklch(54% 0.12 70);
+  --color-critical: oklch(50% 0.17 25);
+
+  /*
+   * Type pairing: an old-style serif for headings, the platform interface sans
+   * for text, a monospace face for references and counts.
+   */
+  --font-display: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
     monospace;
 
-  --radius-panel: 1rem;
+  /* Three radii, each with a job: controls, panels, pills. */
+  --radius-control: 0.5rem;
+  --radius-panel: 0.75rem;
+  --radius-pill: 9999px;
 }

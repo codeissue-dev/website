@@ -39,9 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <h3 className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-        {label}
-      </h3>
+      <h3 className="label-quiet">{label}</h3>
       <div className="mt-1.5 flex flex-col gap-2 text-sm text-ink">
         {paragraphs(value).map((paragraph, index) => (
           <p key={index}>{paragraph}</p>
@@ -79,7 +77,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
       {justSubmitted ? (
         <div
           role="status"
-          className="rounded-md border border-line bg-surface-muted px-4 py-3 text-sm text-ink"
+          className="rounded-control border border-line bg-surface-muted px-4 py-3 text-sm text-ink"
         >
           <span className="font-medium text-positive">Request received.</span> We review
           new briefs in the order they arrive and reply in the project chat below. Every
@@ -102,9 +100,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
               </span>
               <StatusBadge status={order.status} />
             </div>
-            <h1 className="mt-2 text-xl font-semibold tracking-tight text-ink">
-              {order.title}
-            </h1>
+            <h1 className="page-title mt-2">{order.title}</h1>
             <p className="mt-1 max-w-2xl text-sm text-ink-muted">
               {ORDER_STATUS_DESCRIPTIONS[order.status]}
             </p>
@@ -152,9 +148,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
             <PanelBody>
               <dl className="flex flex-col gap-3.5">
                 <div>
-                  <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-                    Requested deadline
-                  </dt>
+                  <dt className="label-quiet">Requested deadline</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {order.desiredDeadline === null
                       ? "Not specified"
@@ -162,18 +156,14 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-                    Last update
-                  </dt>
+                  <dt className="label-quiet">Last update</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {formatDateTime(order.updatedAt)}
                   </dd>
                 </div>
                 {order.completedAt !== null ? (
                   <div>
-                    <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-                      Completed
-                    </dt>
+                    <dt className="label-quiet">Completed</dt>
                     <dd className="mt-1 text-sm text-ink">
                       {formatDateTime(order.completedAt)}
                     </dd>
@@ -181,18 +171,14 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
                 ) : null}
                 {actor.role === "CUSTOMER" ? null : (
                   <div>
-                    <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-                      Customer
-                    </dt>
+                    <dt className="label-quiet">Customer</dt>
                     <dd className="mt-1 text-sm text-ink">
                       {displayName(order.customerName, order.customerEmail)}
                     </dd>
                   </div>
                 )}
                 <div>
-                  <dt className="text-xs font-medium tracking-wide text-ink-muted uppercase">
-                    Assigned to
-                  </dt>
+                  <dt className="label-quiet">Assigned to</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {order.assignedExecutorId === null
                       ? "Not assigned yet"
