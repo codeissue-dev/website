@@ -73,7 +73,7 @@ export function formatRelativeTime(
 }
 
 /** Initials for an avatar bubble; falls back to the email local part. */
-export function initials(name: string | null, email: string): string {
+export function initials(name: string | null, email = ""): string {
   const source =
     name && name.trim().length > 0 ? name.trim() : (email.split("@")[0] ?? email);
   const parts = source.split(/[\s._-]+/u).filter((part) => part.length > 0);
@@ -105,4 +105,12 @@ export function pluralize(count: number, singular: string, plural: string): stri
 export function percentage(part: number, total: number): number {
   if (total <= 0) return 0;
   return Math.round((part / total) * 100);
+}
+
+/**
+ * Two-digit label for a zero-based index, as used by the numbered cards and
+ * steps on the public site: 0 becomes "01".
+ */
+export function numberLabel(index: number): string {
+  return String(index + 1).padStart(2, "0");
 }

@@ -1,0 +1,251 @@
+/*
+ * Design refinements.
+ *
+ * Everything here sharpens the existing language rather than replacing it:
+ * a calmer type rhythm, more honest depth, hairline card edges and motion that
+ * responds to scrolling instead of firing once on load. Every animation is
+ * decorative, and the reduced-motion guard in base.css disables all of it.
+ */
+
+@layer base {
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    text-underline-offset: 0.22em;
+  }
+
+  :focus-visible {
+    outline-offset: 2px;
+    transition: outline-color 120ms ease;
+  }
+
+  /* Long-form measure: readable line length without hard-coding it per page. */
+  p {
+    text-wrap: pretty;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+    background-color: color-mix(in oklab, var(--color-ink) 22%, transparent);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--color-ink) 34%, transparent);
+  }
+}
+
+@layer components {
+  /* Keyboard users reach the content without walking the whole navigation. */
+  .skip-link {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    z-index: 90;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 0.7rem;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transform: translate(-50%, calc(-100% - 1rem));
+    transition: transform 180ms ease;
+  }
+
+  .skip-link:focus-visible {
+    transform: translate(-50%, 0);
+  }
+
+  /* A hairline that reads as a real edge on both light and dark surfaces. */
+  .hairline-edge {
+    position: relative;
+  }
+
+  .hairline-edge::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-ink) 8%, transparent);
+    content: "";
+    pointer-events: none;
+  }
+
+  .section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-eyebrow::before {
+    width: 1.25rem;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    opacity: 0.55;
+  }
+
+  .section-title {
+    text-wrap: balance;
+  }
+
+  /* Links that explain themselves on hover instead of shifting layout. */
+  .link-underline {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .link-underline::after {
+    position: absolute;
+    bottom: -0.15rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    opacity: 0.35;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 240ms ease;
+  }
+
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    opacity: 0.75;
+    transform: scaleX(1);
+  }
+
+  .interactive-card {
+    will-change: transform;
+  }
+
+  /* Cards keep a visible edge when hovered, not just a shadow. */
+  @media (hover: hover) {
+    .interactive-card:hover {
+      border-color: var(--color-line-strong);
+    }
+  }
+
+  .surface-card {
+    background: color-mix(in oklab, var(--color-surface) 96%, transparent);
+  }
+
+  .stat-card {
+    transition:
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  @media (hover: hover) {
+    .stat-card:hover {
+      border-color: var(--color-line-strong);
+      box-shadow: 0 12px 26px rgb(16 24 40 / 0.08);
+      transform: translateY(-2px);
+    }
+  }
+
+  .page-heading {
+    padding-bottom: 0.25rem;
+  }
+
+  .empty-state {
+    transition: border-color 200ms ease;
+  }
+
+  .empty-state:hover {
+    border-color: var(--color-line-strong);
+  }
+
+  /* Section rhythm: a quieter divider than a full-width border. */
+  .section-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-line-strong),
+      transparent
+    );
+    border: 0;
+  }
+
+  .faq-row summary {
+    transition: color 180ms ease;
+  }
+
+  .faq-row summary:hover {
+    color: var(--color-accent);
+  }
+
+  .faq-row p {
+    animation: reveal-up 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/*
+ * Scroll-driven reveals.
+ *
+ * Where the browser supports scroll-driven animations, staggered content reveals
+ * as it enters the viewport instead of animating far below the fold on load.
+ * Browsers without support keep the original load-time reveal.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .stagger-grid > *,
+    .stagger-list > * {
+      animation: reveal-up 1ms linear both;
+      animation-delay: 0ms;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+
+    .section-heading {
+      animation: reveal-up 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+}
+
+/*
+ * Small hooks that markup already used but no stylesheet defined yet.
+ * Keeping them here means the class in a component always resolves to a rule.
+ */
+@layer components {
+  /* The problem block gets the violet accent, the solution block the blue one. */
+  .case-section-accent {
+    border-color: rgb(162 145 255 / 0.62);
+  }
+
+  /* A short accent rule above a page hero, echoing the section eyebrows. */
+  .public-page-hero::before {
+    position: absolute;
+    top: -1.5rem;
+    left: 0;
+    width: 4.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgb(162 145 255 / 0.85), transparent);
+    content: "";
+  }
+
+  /* Reviews of different lengths still line up as a grid of equal cards. */
+  .review-grid > li {
+    display: flex;
+  }
+
+  .review-grid > li > * {
+    flex: 1;
+  }
+}

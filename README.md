@@ -42,6 +42,8 @@ src/
     layout.tsx, error.tsx, not-found.tsx, robots.ts, sitemap.ts, icon.svg
   actions/               Server Actions: auth, orders, chat, content, users
   components/            UI primitives, landing sections, forms, order views
+  content/               Public copy and navigation, kept out of the components
+  styles/                Design system split by purpose (theme, base, motion)
   lib/
     auth/                roles, password hashing, RBAC helpers, session actor
     db/                  schema.ts + client.ts (the only Pool and Drizzle client)
@@ -57,6 +59,19 @@ scripts/                 migrate.ts, create-admin.ts
 drizzle/                 Committed SQL migrations
 tests/                   node:test unit tests
 ```
+
+### Where a change belongs
+
+- Wording for the public pages lives in `src/content/*`, so copy can change
+  without touching a component.
+- Layout primitives (`Container`, `Section`, `SectionSplit`) own the page rhythm;
+  sections compose them instead of repeating max widths and padding.
+- Styles are split by purpose in `src/styles/`: `theme.css` holds the tokens,
+  `base.css` element defaults, `primitives.css` shared pieces,
+  `public-site.css` the marketing surface, `refinements.css` the small touches
+  layered on top, and `motion.css` every animation.
+- `src/app/globals.css` is only an import manifest, so the load order of the
+  design system stays readable.
 
 ## Security model
 

@@ -1,33 +1,31 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
+import { SITE } from "@/content/site";
 import { getSiteUrl } from "@/lib/env";
 
 import "./globals.css";
 
-const DESCRIPTION =
-  "codeissue builds custom software from a written brief: submit your project, follow every status change, and talk to the engineers doing the work.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "codeissue: custom software development",
-    template: "%s · codeissue",
+    default: SITE.title,
+    template: SITE.titleTemplate,
   },
-  description: DESCRIPTION,
-  applicationName: "codeissue",
+  description: SITE.description,
+  applicationName: SITE.name,
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "codeissue",
-    title: "codeissue: custom software development",
-    description: DESCRIPTION,
+    siteName: SITE.name,
+    title: SITE.title,
+    description: SITE.description,
     url: "/",
   },
   twitter: {
     card: "summary",
-    title: "codeissue: custom software development",
-    description: DESCRIPTION,
+    title: SITE.title,
+    description: SITE.description,
   },
   formatDetection: { telephone: false },
 };
@@ -44,6 +42,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-dvh bg-canvas font-sans text-ink antialiased">
+        {/* Keyboard users skip the navigation; every layout labels its main region. */}
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

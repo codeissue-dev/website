@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import type { NavLink } from "@/content/navigation";
 import { cn } from "@/lib/utils";
-
-export type NavItem = { href: string; label: string };
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard" || href === "/admin") return pathname === href;
@@ -14,7 +13,7 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 /** Client-only to identify the current route. */
-export function AppNav({ items }: { items: NavItem[] }) {
+export function AppNav({ items }: { items: readonly NavLink[] }) {
   const pathname = usePathname();
 
   return (

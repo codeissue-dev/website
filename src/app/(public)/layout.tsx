@@ -13,7 +13,9 @@ export default async function PublicLayout({ children }: { children: ReactNode }
     <div className="public-shell flex min-h-dvh flex-col">
       <div aria-hidden="true" className="public-star-layer" />
       <SiteHeader actor={actor} />
-      <main className="relative z-10 flex-1">{children}</main>
+      <main id="main-content" className="relative z-10 flex-1">
+        {children}
+      </main>
       <SiteFooter />
     </div>
   );

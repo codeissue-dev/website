@@ -81,7 +81,7 @@ export function TestimonialForm({
     { value: "", label: "Not linked to an order" },
     ...deliveredOrders.map((order) => ({
       value: order.id,
-      label: `${order.reference} \u2014 ${order.title}`,
+      label: `${order.reference} \u00b7 ${order.title}`,
     })),
   ];
 

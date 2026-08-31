@@ -1,0 +1,33 @@
+/*
+ * Design tokens.
+ *
+ * Colour, type and radius decisions live here only, so a visual change is a
+ * token change rather than an edit spread across component styles.
+ */
+
+@theme {
+  --color-canvas: oklch(98.8% 0.004 260);
+  --color-surface: oklch(100% 0 0);
+  --color-surface-muted: oklch(96.8% 0.009 255);
+  --color-line: oklch(89.7% 0.012 255);
+  --color-line-strong: oklch(78% 0.022 255);
+  --color-ink: oklch(20% 0.025 260);
+  --color-ink-muted: oklch(47% 0.025 260);
+  --color-ink-subtle: oklch(62% 0.02 260);
+  --color-inverse: oklch(100% 0 0);
+  --color-accent: oklch(55% 0.18 258);
+  --color-accent-ink: oklch(100% 0 0);
+  --color-signal: oklch(78% 0.16 86);
+  --color-positive: oklch(52% 0.13 152);
+  --color-caution: oklch(59% 0.14 75);
+  --color-critical: oklch(52% 0.19 25);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
+    monospace;
+
+  --radius-panel: 1rem;
+}

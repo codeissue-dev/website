@@ -1,0 +1,14 @@
+/* Tailwind utilities that need real CSS instead of a long class list. */
+
+@utility grid-backdrop {
+  background-image:
+    linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+  background-position: center top;
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 85% 65% at 50% 0%, #000 20%, transparent 78%);
+}
+
+@utility hairline {
+  border: 1px solid var(--color-line);
+}

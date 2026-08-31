@@ -3,45 +3,20 @@ import type { ReactNode } from "react";
 
 import { signOutAction } from "@/actions/auth";
 import { Wordmark } from "@/components/brand/wordmark";
-import { AppNav, type NavItem } from "@/components/layout/app-nav";
+import { AppNav } from "@/components/layout/app-nav";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/section";
 import { RoleBadge } from "@/components/ui/status-badge";
+import { workspaceNavLinks } from "@/content/navigation";
 import type { Actor } from "@/lib/auth/actor";
 import { displayName } from "@/lib/utils";
-
-function navItemsFor(actor: Actor): NavItem[] {
-  const shared: NavItem[] = [{ href: "/dashboard", label: "Dashboard" }];
-  if (actor.role === "ADMIN") {
-    return [
-      { href: "/admin", label: "Overview" },
-      { href: "/admin/orders", label: "Projects" },
-      { href: "/admin/users", label: "People" },
-      { href: "/admin/portfolio", label: "Portfolio" },
-      { href: "/admin/testimonials", label: "Testimonials" },
-      { href: "/account", label: "Account" },
-    ];
-  }
-  if (actor.role === "EXECUTOR") {
-    return [
-      ...shared,
-      { href: "/orders", label: "Assigned work" },
-      { href: "/account", label: "Account" },
-    ];
-  }
-  return [
-    ...shared,
-    { href: "/orders", label: "My projects" },
-    { href: "/orders/new", label: "New request" },
-    { href: "/account", label: "Account" },
-  ];
-}
 
 /** Chrome for every signed-in page. */
 export function AppShell({ actor, children }: { actor: Actor; children: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col bg-canvas">
-      <header className="border-b border-line/85 bg-surface/85 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-line/85 bg-surface/85 backdrop-blur-md">
+        <Container className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
           <Link
             href="/"
             className="flex items-center rounded-md transition-opacity hover:opacity-75"
@@ -50,7 +25,7 @@ export function AppShell({ actor, children }: { actor: Actor; children: ReactNod
             <Wordmark size="sm" />
           </Link>
           <div className="order-3 w-full sm:order-2 sm:w-auto">
-            <AppNav items={navItemsFor(actor)} />
+            <AppNav items={workspaceNavLinks(actor.role)} />
           </div>
           <div className="order-2 ml-auto flex items-center gap-3 sm:order-3">
             <span className="hidden text-sm text-ink-muted sm:inline">
@@ -63,11 +38,11 @@ export function AppShell({ actor, children }: { actor: Actor; children: ReactNod
               </Button>
             </form>
           </div>
-        </div>
+        </Container>
       </header>
-      <main className="page-enter mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        {children}
-      </main>
+      <Container as="main" className="page-enter flex-1 py-6 sm:py-8">
+        <div id="main-content">{children}</div>
+      </Container>
     </div>
   );
 }

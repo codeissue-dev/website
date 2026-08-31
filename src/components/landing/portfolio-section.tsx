@@ -2,9 +2,30 @@ import Link from "next/link";
 
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Section } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { PORTFOLIO_SECTION } from "@/content/landing";
 import type { PublishedPortfolioItem } from "@/lib/content/queries";
-import { pluralize } from "@/lib/utils";
+import { numberLabel, pluralize } from "@/lib/utils";
+
+/** Decorative cover art. Three variants keep a grid of cards from looking flat. */
+function ProjectArt({ index }: { index: number }) {
+  return (
+    <div aria-hidden="true" className={`project-art project-art-${(index % 3) + 1}`}>
+      <span className="project-art-count">{numberLabel(index)}</span>
+      <div className="project-art-window">
+        <span />
+        <span />
+        <span />
+        <i />
+        <i />
+        <i />
+      </div>
+      <span className="project-art-spark project-art-spark-one" />
+      <span className="project-art-spark project-art-spark-two" />
+    </div>
+  );
+}
 
 export function PortfolioCard({
   item,
@@ -13,23 +34,9 @@ export function PortfolioCard({
   item: PublishedPortfolioItem;
   index?: number;
 }) {
-  const artVariant = (index % 3) + 1;
-
   return (
     <article className="project-card interactive-card flex h-full flex-col">
-      <div aria-hidden="true" className={`project-art project-art-${artVariant}`}>
-        <span className="project-art-count">{String(index + 1).padStart(2, "0")}</span>
-        <div className="project-art-window">
-          <span />
-          <span />
-          <span />
-          <i />
-          <i />
-          <i />
-        </div>
-        <span className="project-art-spark project-art-spark-one" />
-        <span className="project-art-spark project-art-spark-two" />
-      </div>
+      <ProjectArt index={index} />
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -73,51 +80,44 @@ export function PortfolioCard({
 /** Published work comes only from rows explicitly published by an administrator. */
 export function PortfolioSection({ items }: { items: PublishedPortfolioItem[] }) {
   return (
-    <section
-      id="work"
-      aria-labelledby="work-heading"
-      className="public-section border-b border-line"
-    >
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading
-            id="work-heading"
-            eyebrow="Public projects"
-            title={
-              <>
-                Finished work,{" "}
-                <span className="heading-accent">shared with permission.</span>
-              </>
-            }
-            description="Every project here has an approved public write-up. The work stays private unless the client chooses otherwise."
-          />
-          {items.length > 0 ? (
-            <ButtonLink href="/work" variant="secondary" size="sm">
-              View all projects
-            </ButtonLink>
-          ) : null}
-        </div>
-        {items.length === 0 ? (
-          <EmptyState
-            className="public-empty mt-10 py-12"
-            title="Public case studies are on their way"
-            description="We only show a finished project after the client approves it for publication."
-            action={
-              <ButtonLink href="/register" size="sm">
-                Start a project
-              </ButtonLink>
-            }
-          />
-        ) : (
-          <ul className="project-grid stagger-grid mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item, index) => (
-              <li key={item.id}>
-                <PortfolioCard item={item} index={index} />
-              </li>
-            ))}
-          </ul>
-        )}
+    <Section id="work" labelledBy="work-heading">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading
+          id="work-heading"
+          eyebrow={PORTFOLIO_SECTION.eyebrow}
+          heading={PORTFOLIO_SECTION.heading}
+          description={PORTFOLIO_SECTION.description}
+        />
+        {items.length > 0 ? (
+          <ButtonLink
+            href={PORTFOLIO_SECTION.action.href}
+            variant="secondary"
+            size="sm"
+          >
+            {PORTFOLIO_SECTION.action.label}
+          </ButtonLink>
+        ) : null}
       </div>
-    </section>
+      {items.length === 0 ? (
+        <EmptyState
+          className="public-empty mt-10 py-12"
+          title={PORTFOLIO_SECTION.empty.title}
+          description={PORTFOLIO_SECTION.empty.description}
+          action={
+            <ButtonLink href="/register" size="sm">
+              Start a project
+            </ButtonLink>
+          }
+        />
+      ) : (
+        <ul className="project-grid stagger-grid mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item, index) => (
+            <li key={item.id}>
+              <PortfolioCard item={item} index={index} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </Section>
   );
 }
