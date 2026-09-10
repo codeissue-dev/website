@@ -2,32 +2,8 @@
 
 @layer base {
   :root {
-    color-scheme: light dark;
-  }
-
-  /*
-   * The dark scheme swaps the same token names, so every component follows
-   * without a second set of rules.
-   */
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-canvas: oklch(17% 0.008 255);
-      --color-surface: oklch(20.5% 0.009 255);
-      --color-surface-muted: oklch(24.5% 0.01 255);
-      --color-line: oklch(30% 0.012 255);
-      --color-line-strong: oklch(40% 0.014 255);
-      --color-ink: oklch(96% 0.004 255);
-      --color-ink-muted: oklch(78% 0.008 255);
-      --color-ink-subtle: oklch(67% 0.01 255);
-      --color-inverse: oklch(17% 0.008 255);
-      --color-accent: oklch(74% 0.12 250);
-      --color-accent-strong: oklch(82% 0.1 250);
-      --color-accent-soft: oklch(28% 0.035 253);
-      --color-accent-ink: oklch(17% 0.008 255);
-      --color-positive: oklch(75% 0.13 155);
-      --color-caution: oklch(79% 0.12 75);
-      --color-critical: oklch(70% 0.16 25);
-    }
+    /* The interface is OLED dark by design; there is no light variant. */
+    color-scheme: dark;
   }
 
   html {
@@ -51,10 +27,10 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-weight: 600;
-    letter-spacing: -0.012em;
-    line-height: 1.18;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
     text-wrap: balance;
   }
 
@@ -69,7 +45,7 @@
   }
 
   ::selection {
-    background-color: var(--color-ink);
+    background-color: var(--color-contrast);
     color: var(--color-inverse);
   }
 

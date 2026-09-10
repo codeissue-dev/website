@@ -1,12 +1,30 @@
 import { ChevronDownIcon } from "@/components/ui/icon";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Section, SectionSplit } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { FAQ_ENTRIES, FAQ_SECTION } from "@/content/landing";
+import { getSiteUrl } from "@/lib/env";
+
+/** The same entries as structured data, so search engines can index the answers. */
+function faqJsonLd() {
+  const siteUrl = getSiteUrl();
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    url: `${siteUrl}/#faq`,
+    mainEntity: FAQ_ENTRIES.map((entry) => ({
+      "@type": "Question",
+      name: entry.question,
+      acceptedAnswer: { "@type": "Answer", text: entry.answer },
+    })),
+  };
+}
 
 /** Native disclosure elements: they open without JavaScript and stay accessible. */
 export function Faq() {
   return (
     <Section id="faq" labelledBy="faq-heading">
+      <JsonLd data={faqJsonLd()} />
       <SectionSplit
         sticky
         aside={

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { and, asc, desc, eq } from "drizzle-orm";
 
 import { getDb } from "@/lib/db/client";
@@ -8,6 +9,34 @@ import {
   type PortfolioItemRow,
   type TestimonialRow,
 } from "@/lib/db/schema";
+
+/**
+ * Shared select maps: the public reads below all project the same columns, so
+ * the column list is declared once and cannot drift between call sites.
+ */
+const portfolioColumns = {
+  id: portfolioItems.id,
+  slug: portfolioItems.slug,
+  title: portfolioItems.title,
+  summary: portfolioItems.summary,
+  problem: portfolioItems.problem,
+  solution: portfolioItems.solution,
+  techStack: portfolioItems.techStack,
+  industry: portfolioItems.industry,
+  projectUrl: portfolioItems.projectUrl,
+  deliveryWeeks: portfolioItems.deliveryWeeks,
+  publishedAt: portfolioItems.publishedAt,
+  updatedAt: portfolioItems.updatedAt,
+} as const;
+
+const testimonialColumns = {
+  id: testimonials.id,
+  authorName: testimonials.authorName,
+  authorRole: testimonials.authorRole,
+  company: testimonials.company,
+  quote: testimonials.quote,
+  rating: testimonials.rating,
+} as const;
 
 export type PublishedPortfolioItem = {
   id: string;
@@ -20,53 +49,37 @@ export type PublishedPortfolioItem = {
   industry: string | null;
   projectUrl: string | null;
   deliveryWeeks: number | null;
+  publishedAt: Date | null;
+  updatedAt: Date;
 };
 
 /** Public read: published records only. Nothing is hardcoded in the UI. */
-export async function listPublishedPortfolioItems(
-  limit = 6,
-): Promise<PublishedPortfolioItem[]> {
-  return getDb()
-    .select({
-      id: portfolioItems.id,
-      slug: portfolioItems.slug,
-      title: portfolioItems.title,
-      summary: portfolioItems.summary,
-      problem: portfolioItems.problem,
-      solution: portfolioItems.solution,
-      techStack: portfolioItems.techStack,
-      industry: portfolioItems.industry,
-      projectUrl: portfolioItems.projectUrl,
-      deliveryWeeks: portfolioItems.deliveryWeeks,
-    })
-    .from(portfolioItems)
-    .where(eq(portfolioItems.published, true))
-    .orderBy(asc(portfolioItems.sortOrder), desc(portfolioItems.publishedAt))
-    .limit(limit);
-}
+export const listPublishedPortfolioItems = cache(
+  async (limit = 6): Promise<PublishedPortfolioItem[]> => {
+    return getDb()
+      .select(portfolioColumns)
+      .from(portfolioItems)
+      .where(eq(portfolioItems.published, true))
+      .orderBy(asc(portfolioItems.sortOrder), desc(portfolioItems.publishedAt))
+      .limit(limit);
+  },
+);
 
-export async function loadPublishedPortfolioItem(
-  slug: string,
-): Promise<PublishedPortfolioItem | null> {
-  const rows = await getDb()
-    .select({
-      id: portfolioItems.id,
-      slug: portfolioItems.slug,
-      title: portfolioItems.title,
-      summary: portfolioItems.summary,
-      problem: portfolioItems.problem,
-      solution: portfolioItems.solution,
-      techStack: portfolioItems.techStack,
-      industry: portfolioItems.industry,
-      projectUrl: portfolioItems.projectUrl,
-      deliveryWeeks: portfolioItems.deliveryWeeks,
-    })
-    .from(portfolioItems)
-    .where(and(eq(portfolioItems.slug, slug), eq(portfolioItems.published, true)))
-    .limit(1);
+/*
+ * Request-scoped dedup: the case-study page and its metadata both need the
+ * same row, and `cache` makes that one query per request instead of two.
+ */
+export const loadPublishedPortfolioItem = cache(
+  async (slug: string): Promise<PublishedPortfolioItem | null> => {
+    const rows = await getDb()
+      .select(portfolioColumns)
+      .from(portfolioItems)
+      .where(and(eq(portfolioItems.slug, slug), eq(portfolioItems.published, true)))
+      .limit(1);
 
-  return rows[0] ?? null;
-}
+    return rows[0] ?? null;
+  },
+);
 
 export type PublishedTestimonial = {
   id: string;
@@ -77,23 +90,16 @@ export type PublishedTestimonial = {
   rating: number | null;
 };
 
-export async function listPublishedTestimonials(
-  limit = 6,
-): Promise<PublishedTestimonial[]> {
-  return getDb()
-    .select({
-      id: testimonials.id,
-      authorName: testimonials.authorName,
-      authorRole: testimonials.authorRole,
-      company: testimonials.company,
-      quote: testimonials.quote,
-      rating: testimonials.rating,
-    })
-    .from(testimonials)
-    .where(eq(testimonials.published, true))
-    .orderBy(asc(testimonials.sortOrder), desc(testimonials.publishedAt))
-    .limit(limit);
-}
+export const listPublishedTestimonials = cache(
+  async (limit = 6): Promise<PublishedTestimonial[]> => {
+    return getDb()
+      .select(testimonialColumns)
+      .from(testimonials)
+      .where(eq(testimonials.published, true))
+      .orderBy(asc(testimonials.sortOrder), desc(testimonials.publishedAt))
+      .limit(limit);
+  },
+);
 
 /* -------------------------------------------------------------------------- */
 /* Administration reads (published and unpublished)                           */

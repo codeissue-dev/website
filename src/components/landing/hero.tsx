@@ -13,7 +13,7 @@ import { numberLabel } from "@/lib/utils";
  */
 export function Hero() {
   return (
-    <section aria-labelledby="hero-heading">
+    <section aria-labelledby="hero-heading" className="hero-grid">
       <Container className="py-16 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,21rem)] lg:items-start lg:gap-16">
           <div>

@@ -31,6 +31,10 @@ function createDatabaseSingleton(): DatabaseSingleton {
     max: env.DATABASE_POOL_MAX,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 10_000,
+    // A wedged query must fail loudly and quickly instead of pinning a pool
+    // slot until the request itself times out.
+    statement_timeout: 15_000,
+    query_timeout: 15_000,
     // Serverless instances are frozen between requests; releasing idle sockets
     // keeps the Postgres connection count bounded.
     allowExitOnIdle: true,

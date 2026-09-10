@@ -14,7 +14,11 @@ export const metadata: Metadata = {
   },
   description: SITE.description,
   applicationName: SITE.name,
-  alternates: { canonical: "/" },
+  /*
+   * No canonical here on purpose: metadata is inherited, and a root-level
+   * canonical would make every page that forgets its own claim to be "/".
+   * Each public page states its own canonical instead.
+   */
   openGraph: {
     type: "website",
     siteName: SITE.name,
@@ -23,7 +27,7 @@ export const metadata: Metadata = {
     url: "/",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: SITE.title,
     description: SITE.description,
   },
@@ -31,11 +35,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
+  // The palette is OLED dark; the browser chrome follows.
+  colorScheme: "dark",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

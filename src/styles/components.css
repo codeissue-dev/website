@@ -36,7 +36,7 @@
     top: 0;
     z-index: 40;
     border-bottom: 1px solid var(--color-line);
-    background-color: var(--color-surface);
+    background-color: var(--color-canvas);
   }
 
   .wordmark {
@@ -152,9 +152,9 @@
   }
 
   .title-hero {
-    font-size: clamp(2.25rem, 4.6vw, 3.5rem);
-    letter-spacing: -0.02em;
-    line-height: 1.06;
+    font-size: clamp(2.375rem, 5vw, 3.75rem);
+    letter-spacing: -0.032em;
+    line-height: 1.04;
   }
 
   .section-heading {
@@ -341,15 +341,16 @@
     font-size: 0.9375rem;
   }
 
+  /* The primary action is the brightest element on the page: white on black. */
   .btn-primary {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
-    color: var(--color-accent-ink);
+    border-color: var(--color-contrast);
+    background-color: var(--color-contrast);
+    color: var(--color-inverse);
   }
 
   .btn-primary:hover {
-    border-color: var(--color-accent-strong);
-    background-color: var(--color-accent-strong);
+    border-color: var(--color-contrast-hover);
+    background-color: var(--color-contrast-hover);
   }
 
   .btn-secondary {
@@ -505,9 +506,16 @@
 
   .hero-points strong {
     display: block;
-    font-family: var(--font-sans);
     font-weight: 600;
     color: var(--color-ink);
+  }
+
+  /*
+   * A quiet dot field behind the opening screen: texture without imagery, and
+   * at true black most of the pattern keeps the pixels off.
+   */
+  .hero-grid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www%2Ew3%2Eorg/2000/svg' width='28' height='28'%3E%3Ccircle cx='1.5' cy='1.5' r='1' fill='%23ffffff' fill-opacity='0.07'/%3E%3C/svg%3E");
   }
 
   /* What we build: a definition list, not a wall of identical cards. */
@@ -519,8 +527,8 @@
   }
 
   .capability-row dt {
-    font-family: var(--font-display);
     font-size: 1.0625rem;
+    font-weight: 500;
     color: var(--color-ink);
   }
 
@@ -597,11 +605,14 @@
     border-radius: var(--radius-panel);
     background-color: var(--color-surface);
     padding: 1.375rem;
-    transition: border-color 150ms ease;
+    transition:
+      border-color 150ms ease,
+      transform 150ms ease;
   }
 
   .project-card:hover {
     border-color: var(--color-line-strong);
+    transform: translateY(-1px);
   }
 
   .project-card h3 {
@@ -653,7 +664,6 @@
 
   .review-quote {
     flex: 1;
-    font-family: var(--font-display);
     font-size: 1.0625rem;
     line-height: 1.6;
     color: var(--color-ink);

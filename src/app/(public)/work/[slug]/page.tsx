@@ -4,9 +4,13 @@ import { notFound } from "next/navigation";
 
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeftIcon } from "@/components/ui/icon";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Container } from "@/components/ui/section";
-import { SITE } from "@/content/site";
-import { loadPublishedPortfolioItem } from "@/lib/content/queries";
+import {
+  loadPublishedPortfolioItem,
+  type PublishedPortfolioItem,
+} from "@/lib/content/queries";
+import { getSiteUrl } from "@/lib/env";
 import { paragraphs, pluralize } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -16,17 +20,56 @@ type PageProps = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const item = await loadPublishedPortfolioItem(slug);
-  if (item === null) return { title: "Project not found" };
+  if (item === null) return { title: "Project not found", robots: { index: false } };
   return {
     title: item.title,
     description: item.summary,
     alternates: { canonical: `/work/${item.slug}` },
     openGraph: {
-      title: `${item.title} - ${SITE.name}`,
-      description: item.summary,
       type: "article",
+      title: item.title,
+      description: item.summary,
       url: `/work/${item.slug}`,
+      ...(item.publishedAt ? { publishedTime: item.publishedAt.toISOString() } : {}),
+      ...(item.updatedAt ? { modifiedTime: item.updatedAt.toISOString() } : {}),
     },
+    twitter: {
+      card: "summary_large_image",
+      title: item.title,
+      description: item.summary,
+    },
+  };
+}
+
+/** Article and breadcrumb structured data, scoped to what the row actually says. */
+function caseJsonLd(url: string, item: PublishedPortfolioItem) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: item.title,
+        description: item.summary,
+        url,
+        mainEntityOfPage: url,
+        ...(item.publishedAt ? { datePublished: item.publishedAt.toISOString() } : {}),
+        ...(item.updatedAt ? { dateModified: item.updatedAt.toISOString() } : {}),
+        author: { "@id": `${getSiteUrl()}/#organization` },
+        publisher: { "@id": `${getSiteUrl()}/#organization` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Public projects",
+            item: `${getSiteUrl()}/work`,
+          },
+          { "@type": "ListItem", position: 2, name: item.title, item: url },
+        ],
+      },
+    ],
   };
 }
 
@@ -50,8 +93,11 @@ export default async function WorkDetailPage({ params }: PageProps) {
   const item = await loadPublishedPortfolioItem(slug);
   if (item === null) notFound();
 
+  const canonical = `/work/${item.slug}`;
+
   return (
     <Container width="narrow" className="py-16 sm:py-20">
+      <JsonLd data={caseJsonLd(`${getSiteUrl()}${canonical}`, item)} />
       <article>
         <Link href="/work" className="case-back">
           <ArrowLeftIcon />

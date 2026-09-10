@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
  * Design-system guard rails.
  *
  * The visual language is defined once, in `src/styles`, and reused by the
- * public pages and the signed-in workspace. These tests fail when a change
+ * public pages and the signed-in workspace: one OLED-dark palette where depth
+ * comes from hairlines and spacing. These tests fail when a change
  * reintroduces the habits this codebase deliberately dropped: decorative
  * unicode instead of words, shouty labels, gradients, glows, or a class that
  * lives in the stylesheet but is no longer rendered anywhere.
