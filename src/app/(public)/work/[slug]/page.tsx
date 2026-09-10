@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -11,7 +12,7 @@ import {
   type PublishedPortfolioItem,
 } from "@/lib/content/queries";
 import { getSiteUrl } from "@/lib/env";
-import { paragraphs, pluralize } from "@/lib/utils";
+import { paragraphs } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,11 @@ type PageProps = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const item = await loadPublishedPortfolioItem(slug);
-  if (item === null) return { title: "Project not found", robots: { index: false } };
+  const [item, t] = await Promise.all([
+    loadPublishedPortfolioItem(slug),
+    getTranslations("Meta"),
+  ]);
+  if (item === null) return { title: t("workTitle"), robots: { index: false } };
   return {
     title: item.title,
     description: item.summary,
@@ -90,7 +94,10 @@ function CaseSection({ title, body }: { title: string; body: string }) {
 /** A published case study: only rows an administrator marked public reach here. */
 export default async function WorkDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const item = await loadPublishedPortfolioItem(slug);
+  const [item, t] = await Promise.all([
+    loadPublishedPortfolioItem(slug),
+    getTranslations("Case"),
+  ]);
   if (item === null) notFound();
 
   const canonical = `/work/${item.slug}`;
@@ -101,10 +108,13 @@ export default async function WorkDetailPage({ params }: PageProps) {
       <article>
         <Link href="/work" className="case-back">
           <ArrowLeftIcon />
-          All public projects
+          {t("back")}
         </Link>
         <div className="mt-8">
-          <p className="section-eyebrow">Case study</p>
+          <p className="section-eyebrow">
+            <span className="eyebrow-dot text-cyan" />
+            {t("eyebrow")}
+          </p>
           <h1 className="title-hero mt-4">{item.title}</h1>
           <p className="lede mt-5">{item.summary}</p>
         </div>
@@ -112,32 +122,30 @@ export default async function WorkDetailPage({ params }: PageProps) {
         <dl className="case-meta mt-10 grid gap-4 sm:grid-cols-3">
           {item.industry ? (
             <div>
-              <dt>Industry</dt>
+              <dt>{t("industry")}</dt>
               <dd>{item.industry}</dd>
             </div>
           ) : null}
           {item.deliveryWeeks !== null ? (
             <div>
-              <dt>Delivery</dt>
-              <dd>
-                {item.deliveryWeeks} {pluralize(item.deliveryWeeks, "week", "weeks")}
-              </dd>
+              <dt>{t("delivery")}</dt>
+              <dd>{t("weeks", { weeks: item.deliveryWeeks })}</dd>
             </div>
           ) : null}
           {item.techStack.length > 0 ? (
             <div>
-              <dt>Stack</dt>
+              <dt>{t("stack")}</dt>
               <dd>{item.techStack.join(", ")}</dd>
             </div>
           ) : null}
         </dl>
 
-        <CaseSection title="The problem" body={item.problem} />
-        <CaseSection title="What we built" body={item.solution} />
+        <CaseSection title={t("problem")} body={item.problem} />
+        <CaseSection title={t("solution")} body={item.solution} />
 
         <div className="mt-14 flex flex-wrap items-center gap-3 border-t border-line pt-8">
           <ButtonLink href="/register" size="sm">
-            Start a project like this
+            {t("startLikeThis")}
           </ButtonLink>
           {item.projectUrl ? (
             <ButtonLink
@@ -147,7 +155,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
               variant="secondary"
               size="sm"
             >
-              Open live project
+              {t("openLive")}
             </ButtonLink>
           ) : null}
         </div>

@@ -1,8 +1,8 @@
 import { ImageResponse } from "next/og";
 
-import { SITE } from "@/content/site";
+import en from "@/i18n/messages/en.json";
 
-export const alt = `${SITE.name}: ${SITE.description}`;
+export const alt = `codeissue: ${en.Meta.description}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

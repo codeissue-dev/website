@@ -1,18 +1,22 @@
+import { getTranslations } from "next-intl/server";
+
+import { Reveal } from "@/components/motion/reveal";
 import { ChevronDownIcon } from "@/components/ui/icon";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Section, SectionSplit } from "@/components/ui/section";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { FAQ_ENTRIES, FAQ_SECTION } from "@/content/landing";
 import { getSiteUrl } from "@/lib/env";
 
-/** The same entries as structured data, so search engines can index the answers. */
-function faqJsonLd() {
+type FaqEntry = { question: string; answer: string };
+
+/** The same entries as structured data, localized with the page. */
+function faqJsonLd(entries: FaqEntry[]) {
   const siteUrl = getSiteUrl();
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     url: `${siteUrl}/#faq`,
-    mainEntity: FAQ_ENTRIES.map((entry) => ({
+    mainEntity: entries.map((entry) => ({
       "@type": "Question",
       name: entry.question,
       acceptedAnswer: { "@type": "Answer", text: entry.answer },
@@ -21,32 +25,38 @@ function faqJsonLd() {
 }
 
 /** Native disclosure elements: they open without JavaScript and stay accessible. */
-export function Faq() {
+export async function Faq() {
+  const t = await getTranslations("Faq");
+  const entries = t.raw("entries") as FaqEntry[];
+
   return (
     <Section id="faq" labelledBy="faq-heading">
-      <JsonLd data={faqJsonLd()} />
+      <JsonLd data={faqJsonLd(entries)} />
       <SectionSplit
         sticky
         aside={
           <SectionHeading
             id="faq-heading"
-            eyebrow={FAQ_SECTION.eyebrow}
-            title={FAQ_SECTION.title}
-            description={FAQ_SECTION.description}
+            eyebrow={t("eyebrow")}
+            eyebrowTone="pink"
+            title={t("title")}
+            description={t("description")}
           />
         }
       >
-        <div className="faq-panel">
-          {FAQ_ENTRIES.map((entry) => (
-            <details key={entry.question} className="faq-row">
-              <summary className="faq-question">
-                {entry.question}
-                <ChevronDownIcon className="faq-icon" />
-              </summary>
-              <p className="faq-answer">{entry.answer}</p>
-            </details>
-          ))}
-        </div>
+        <Reveal>
+          <div className="faq-panel">
+            {entries.map((entry) => (
+              <details key={entry.question} className="faq-row">
+                <summary className="faq-question">
+                  {entry.question}
+                  <ChevronDownIcon className="faq-icon" />
+                </summary>
+                <p className="faq-answer">{entry.answer}</p>
+              </details>
+            ))}
+          </div>
+        </Reveal>
       </SectionSplit>
     </Section>
   );

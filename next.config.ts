@@ -1,4 +1,7 @@
+import createNextIntlPlugin from "next-intl/plugin";
 import type { NextConfig } from "next";
+
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 /**
  * Headers applied to every response. They are intentionally conservative: the
@@ -38,4 +41,4 @@ const nextConfig: NextConfig = {
     ]),
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

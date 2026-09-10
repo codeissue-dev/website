@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { signInAction } from "@/actions/auth";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -15,6 +16,7 @@ import { FormMessage } from "@/components/ui/form-message";
  * address is registered.
  */
 export function SignInForm({ next }: { next: string }) {
+  const t = useTranslations("SignInForm");
   const [state, formAction] = useActionState(signInAction, idleActionState);
 
   return (
@@ -22,7 +24,7 @@ export function SignInForm({ next }: { next: string }) {
       <input type="hidden" name="next" value={next} />
       <TextField
         name="email"
-        label="Email"
+        label={t("email")}
         type="email"
         required
         autoComplete="email"
@@ -31,7 +33,7 @@ export function SignInForm({ next }: { next: string }) {
       />
       <TextField
         name="password"
-        label="Password"
+        label={t("password")}
         type="password"
         required
         autoComplete="current-password"
@@ -40,7 +42,7 @@ export function SignInForm({ next }: { next: string }) {
 
       <FormMessage state={state} />
 
-      <SubmitButton pendingLabel="Signing in...">Sign in</SubmitButton>
+      <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
     </form>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { registerAction } from "@/actions/auth";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -16,13 +17,14 @@ import { FormMessage } from "@/components/ui/form-message";
  * inserts the row before starting a session.
  */
 export function RegisterForm() {
+  const t = useTranslations("RegisterForm");
   const [state, formAction] = useActionState(registerAction, idleActionState);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <TextField
         name="name"
-        label="Name"
+        label={t("name")}
         required
         minLength={2}
         maxLength={120}
@@ -31,7 +33,7 @@ export function RegisterForm() {
       />
       <TextField
         name="email"
-        label="Email"
+        label={t("email")}
         type="email"
         required
         autoComplete="email"
@@ -40,17 +42,17 @@ export function RegisterForm() {
       />
       <TextField
         name="password"
-        label="Password"
+        label={t("password")}
         type="password"
         required
         minLength={10}
         autoComplete="new-password"
-        hint="At least 10 characters, including a letter and a number."
+        hint={t("passwordHint")}
         error={firstFieldError(state, "password")}
       />
       <TextField
         name="confirmPassword"
-        label="Repeat password"
+        label={t("confirmPassword")}
         type="password"
         required
         autoComplete="new-password"
@@ -59,7 +61,7 @@ export function RegisterForm() {
 
       <FormMessage state={state} />
 
-      <SubmitButton pendingLabel="Creating account...">Create account</SubmitButton>
+      <SubmitButton pendingLabel={t("pending")}>{t("submit")}</SubmitButton>
     </form>
   );
 }

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { signOutAction } from "@/actions/auth";
 import { Wordmark } from "@/components/brand/wordmark";
 import { AppNav } from "@/components/layout/app-nav";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/section";
 import { RoleBadge } from "@/components/ui/status-badge";
@@ -34,6 +35,9 @@ export function AppShell({ actor, children }: { actor: Actor; children: ReactNod
               {displayName(actor.name, actor.email)}
             </span>
             <RoleBadge role={actor.role} />
+            <div className="pref-cluster">
+              <ThemeToggle />
+            </div>
             <form action={signOutAction}>
               <Button type="submit" variant="secondary" size="sm">
                 Sign out

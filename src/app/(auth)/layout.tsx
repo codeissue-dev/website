@@ -2,16 +2,18 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { Wordmark } from "@/components/brand/wordmark";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { Container } from "@/components/ui/section";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col bg-canvas">
       <header className="site-bar">
-        <Container className="flex h-14 items-center">
+        <Container className="flex h-14 items-center justify-between">
           <Link href="/" className="flex items-center" aria-label="codeissue home">
             <Wordmark size="sm" />
           </Link>
+          <ThemeToggle />
         </Container>
       </header>
       <main

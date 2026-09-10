@@ -1,14 +1,29 @@
 import type { UserRole } from "@/lib/auth/roles";
 
-/** One link in any navigation surface: header, footer or workspace nav. */
+/**
+ * One link in any navigation surface: header, footer or workspace nav.
+ *
+ * Labels are message keys resolved through the intl dictionary by the
+ * component that renders the link, so a link's text follows the active locale
+ * while its href stays stable.
+ */
 export type NavLink = {
   readonly href: string;
-  readonly label: string;
+  readonly labelKey: string;
 };
 
 export type FooterColumn = {
-  readonly heading: string;
+  readonly headingKey: string;
   readonly links: readonly NavLink[];
+};
+
+/**
+ * Workspace links keep literal labels: the signed-in area is English-only for
+ * now, so routing them through the dictionary would add nothing.
+ */
+export type WorkspaceLink = {
+  readonly href: string;
+  readonly label: string;
 };
 
 /**
@@ -21,20 +36,20 @@ export type HeaderAction = NavLink & {
 
 /** Anchors on the landing page, in the order the page renders them. */
 export const PUBLIC_SECTION_LINKS: readonly NavLink[] = [
-  { href: "/#capabilities", label: "What we build" },
-  { href: "/#process", label: "How it works" },
-  { href: "/#work", label: "Public projects" },
-  { href: "/#testimonials", label: "Reviews" },
+  { href: "/#capabilities", labelKey: "nav.capabilities" },
+  { href: "/#process", labelKey: "nav.process" },
+  { href: "/#work", labelKey: "nav.work" },
+  { href: "/#testimonials", labelKey: "nav.testimonials" },
 ];
 
 const GUEST_ACTIONS: readonly HeaderAction[] = [
-  { href: "/sign-in", label: "Sign in", emphasis: "quiet" },
-  { href: "/register", label: "Start a project", emphasis: "strong" },
+  { href: "/sign-in", labelKey: "actions.signIn", emphasis: "quiet" },
+  { href: "/register", labelKey: "actions.startProject", emphasis: "strong" },
 ];
 
 const SIGNED_IN_ACTIONS: readonly HeaderAction[] = [
-  { href: "/dashboard", label: "Dashboard", emphasis: "quiet" },
-  { href: "/orders/new", label: "Start a project", emphasis: "strong" },
+  { href: "/dashboard", labelKey: "actions.dashboard", emphasis: "quiet" },
+  { href: "/orders/new", labelKey: "actions.startProject", emphasis: "strong" },
 ];
 
 /** The two header buttons, chosen by whether somebody is signed in. */
@@ -44,32 +59,32 @@ export function headerActions(isSignedIn: boolean): readonly HeaderAction[] {
 
 export const FOOTER_COLUMNS: readonly FooterColumn[] = [
   {
-    heading: "The studio",
+    headingKey: "studio.title",
     links: [
-      { href: "/#capabilities", label: "What we build" },
-      { href: "/#process", label: "How it works" },
-      { href: "/#workflow", label: "Project flow" },
+      { href: "/#capabilities", labelKey: "studio.capabilities" },
+      { href: "/#process", labelKey: "studio.process" },
+      { href: "/#workflow", labelKey: "studio.workflow" },
     ],
   },
   {
-    heading: "In public",
+    headingKey: "public.title",
     links: [
-      { href: "/work", label: "Finished projects" },
-      { href: "/#testimonials", label: "Client reviews" },
-      { href: "/#faq", label: "Questions" },
+      { href: "/work", labelKey: "public.work" },
+      { href: "/#testimonials", labelKey: "public.testimonials" },
+      { href: "/#faq", labelKey: "public.faq" },
     ],
   },
   {
-    heading: "Your account",
+    headingKey: "account.title",
     links: [
-      { href: "/register", label: "Open an account" },
-      { href: "/sign-in", label: "Sign in" },
-      { href: "/orders/new", label: "Start a project" },
+      { href: "/register", labelKey: "account.register" },
+      { href: "/sign-in", labelKey: "account.signIn" },
+      { href: "/orders/new", labelKey: "account.newOrder" },
     ],
   },
 ];
 
-const ACCOUNT_LINK: NavLink = { href: "/account", label: "Account" };
+const ACCOUNT_LINK: WorkspaceLink = { href: "/account", label: "Account" };
 
 /**
  * Workspace navigation per role.
@@ -77,7 +92,7 @@ const ACCOUNT_LINK: NavLink = { href: "/account", label: "Account" };
  * Only the links a role can actually open are listed; server-side guards still
  * re-check permissions on every request.
  */
-export function workspaceNavLinks(role: UserRole): readonly NavLink[] {
+export function workspaceNavLinks(role: UserRole): readonly WorkspaceLink[] {
   switch (role) {
     case "ADMIN":
       return [

@@ -1,50 +1,61 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-import { PortfolioCard } from "@/components/landing/portfolio-section";
+import { PortfolioCard } from "@/components/landing/portfolio-card";
+import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Container } from "@/components/ui/section";
-import { WORK_INDEX } from "@/content/landing";
 import { listPublishedPortfolioItems } from "@/lib/content/queries";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Public projects",
-  description:
-    "Custom software projects delivered by codeissue and shared with the client's permission.",
-  alternates: { canonical: "/work" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Meta");
+  return {
+    title: t("workTitle"),
+    description: t("workDescription"),
+    alternates: { canonical: "/work" },
+  };
+}
 
 export default async function WorkPage() {
-  const items = await listPublishedPortfolioItems(60);
+  const [items, t] = await Promise.all([
+    listPublishedPortfolioItems(60),
+    getTranslations("Work"),
+  ]);
 
   return (
     <Container className="py-16 sm:py-20">
-      <div className="max-w-3xl">
-        <p className="section-eyebrow">{WORK_INDEX.eyebrow}</p>
-        <h1 className="title-hero mt-4">{WORK_INDEX.title}</h1>
-        <p className="lede mt-5">{WORK_INDEX.description}</p>
-      </div>
+      <Reveal className="max-w-3xl">
+        <p className="section-eyebrow">
+          <span className="eyebrow-dot text-accent" />
+          {t("eyebrow")}
+        </p>
+        <h1 className="title-hero mt-4">{t("title")}</h1>
+        <p className="lede mt-5">{t("description")}</p>
+      </Reveal>
       {items.length === 0 ? (
         <EmptyState
           className="mt-12"
-          title={WORK_INDEX.empty.title}
-          description={WORK_INDEX.empty.description}
+          title={t("empty.title")}
+          description={t("empty.description")}
           action={
             <ButtonLink href="/register" size="sm">
-              Start a project
+              {t("empty.action")}
             </ButtonLink>
           }
         />
       ) : (
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2">
-          {items.map((item) => (
-            <li key={item.id}>
-              <PortfolioCard item={item} />
-            </li>
-          ))}
-        </ul>
+        <Reveal className="mt-12">
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {items.map((item) => (
+              <li key={item.id}>
+                <PortfolioCard item={item} />
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       )}
     </Container>
   );

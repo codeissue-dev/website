@@ -38,6 +38,7 @@ export function Wordmark({
     <span className={cn("wordmark", size === "sm" && "text-sm", className)}>
       <span className="font-semibold">code</span>
       <span className="text-ink-muted">issue</span>
+      <span className="wordmark-dot" aria-hidden="true" />
     </span>
   );
 }

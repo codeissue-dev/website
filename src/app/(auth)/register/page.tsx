@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -14,24 +15,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RegisterPage() {
-  const actor = await getActor();
+  const [actor, t] = await Promise.all([getActor(), getTranslations("Auth")]);
   if (actor !== null) redirect("/dashboard");
 
   return (
     <Panel>
-      <PanelHeader
-        title="Create an account"
-        description="An account is all you need to submit a project request and follow the work."
-      />
+      <PanelHeader title={t("registerTitle")} description={t("registerDescription")} />
       <PanelBody>
         <RegisterForm />
         <p className="mt-6 text-sm text-ink-muted">
-          Already registered?{" "}
+          {t("registerPrompt")}{" "}
           <Link
             href="/sign-in"
             className="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink"
           >
-            Sign in
+            {t("signInLink")}
           </Link>
           .
         </p>

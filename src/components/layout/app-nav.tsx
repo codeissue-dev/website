@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import type { NavLink } from "@/content/navigation";
+import type { WorkspaceLink } from "@/content/navigation";
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard" || href === "/admin") return pathname === href;
@@ -12,7 +12,7 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 /** Client-only so the current route can be marked. Uses the site-wide nav link style. */
-export function AppNav({ items }: { items: readonly NavLink[] }) {
+export function AppNav({ items }: { items: readonly WorkspaceLink[] }) {
   const pathname = usePathname();
 
   return (

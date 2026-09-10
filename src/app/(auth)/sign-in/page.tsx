@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -25,26 +26,27 @@ export default async function SignInPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [actor, params] = await Promise.all([getActor(), searchParams]);
+  const [actor, params, t] = await Promise.all([
+    getActor(),
+    searchParams,
+    getTranslations("Auth"),
+  ]);
   const next = safeNext(params.next);
 
   if (actor !== null) redirect(next);
 
   return (
     <Panel>
-      <PanelHeader
-        title="Sign in"
-        description="Access your projects, history and chat."
-      />
+      <PanelHeader title={t("signInTitle")} description={t("signInDescription")} />
       <PanelBody>
         <SignInForm next={next} />
         <p className="mt-6 text-sm text-ink-muted">
-          No account yet?{" "}
+          {t("signInPrompt")}{" "}
           <Link
             href="/register"
             className="font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink"
           >
-            Create one
+            {t("createOne")}
           </Link>
           .
         </p>

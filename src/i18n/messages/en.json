@@ -1,0 +1,262 @@
+{
+  "Meta": {
+    "title": "codeissue: custom software development",
+    "description": "codeissue builds custom software from a written brief: submit your project, follow every status change, and talk to the engineers doing the work.",
+    "workTitle": "Public projects",
+    "workDescription": "Custom software projects delivered by codeissue and shared with the client's permission."
+  },
+  "Header": {
+    "menu": "Menu",
+    "home": "codeissue home",
+    "skip": "Skip to content",
+    "nav": {
+      "capabilities": "What we build",
+      "process": "How it works",
+      "work": "Public projects",
+      "testimonials": "Reviews"
+    },
+    "actions": {
+      "signIn": "Sign in",
+      "startProject": "Start a project",
+      "dashboard": "Dashboard"
+    }
+  },
+  "ThemeToggle": {
+    "toggle": "Switch color theme"
+  },
+  "LocaleSwitch": {
+    "label": "Language"
+  },
+  "Hero": {
+    "eyebrow": "Software for work that is ready to move",
+    "title": "Build the product that keeps work moving.",
+    "body": "Bring the process that needs fixing. We turn it into focused software and keep the project clear from the first brief to the handover.",
+    "primaryAction": "Start a project",
+    "secondaryAction": "Browse public projects",
+    "panelTitle": "codeissue: project log",
+    "prompt": "awaiting your brief",
+    "proof": [
+      {
+        "term": "One written brief",
+        "detail": "A clear place to explain the problem before anyone starts building."
+      },
+      {
+        "term": "Visible progress",
+        "detail": "Every stage and update is part of the same project record."
+      },
+      {
+        "term": "Useful handover",
+        "detail": "The result, source and context remain accessible after delivery."
+      }
+    ]
+  },
+  "Capabilities": {
+    "eyebrow": "What we build",
+    "title": "Software with a job to do, not filler.",
+    "description": "The best projects start with a real bottleneck, a useful question or a task that has outgrown the tools around it.",
+    "items": [
+      {
+        "title": "Internal tools",
+        "body": "Replace the spreadsheet behind a critical process with software your team can use every day."
+      },
+      {
+        "title": "Customer products",
+        "body": "Portals, booking flows and account areas that feel fast and dependable on every screen."
+      },
+      {
+        "title": "Integrations",
+        "body": "Connect the systems you already rely on and keep the data moving without manual copy and paste."
+      },
+      {
+        "title": "Reporting",
+        "body": "Give the team one trustworthy view of the numbers instead of a collection of competing files."
+      },
+      {
+        "title": "Recovery work",
+        "body": "Stabilise a stalled codebase, untangle the risky parts and leave it easier to change."
+      },
+      {
+        "title": "The next release",
+        "body": "Keep improving a product with the same people, context and project history close at hand."
+      }
+    ]
+  },
+  "Process": {
+    "eyebrow": "How it works",
+    "title": "A short path from a note to a useful release.",
+    "description": "No sales maze. The written brief starts the conversation, and the project space keeps it moving.",
+    "action": "Open a project",
+    "steps": [
+      {
+        "title": "Write down the work",
+        "body": "Open an account and add the goal, the people it serves, the parts that matter and anything that should not change."
+      },
+      {
+        "title": "Shape the scope",
+        "body": "We read the brief, ask useful questions in the project thread and agree what belongs in the first release."
+      },
+      {
+        "title": "Build with the thread open",
+        "body": "The status, decisions and updates stay together, so the project is easy to follow without chasing messages."
+      },
+      {
+        "title": "Review and hand over",
+        "body": "You review the result before delivery. The source, instructions and project history stay available in the account."
+      }
+    ]
+  },
+  "Workflow": {
+    "eyebrow": "The project space",
+    "title": "Everyone sees the same next step.",
+    "description": "The stages below are the real states used by the platform. Only the right moves are available, and every change is recorded.",
+    "descriptions": {
+      "SUBMITTED": "The request has been received and is queued for review.",
+      "REVIEWING": "We are scoping the work and preparing questions.",
+      "ACCEPTED": "Scope agreed. The project is queued for an executor.",
+      "IN_PROGRESS": "An executor is actively building the project.",
+      "WAITING_FOR_CUSTOMER": "We need a decision or missing information from you.",
+      "QUALITY_ASSURANCE": "The build is being reviewed and tested before handover.",
+      "COMPLETED": "Delivered and closed.",
+      "CANCELED": "Closed without delivery."
+    }
+  },
+  "Portfolio": {
+    "eyebrow": "Public projects",
+    "title": "Finished work, shared with permission.",
+    "description": "Every project here has an approved public write-up. The work stays private unless the client chooses otherwise.",
+    "action": "View all projects",
+    "readCase": "Read the case study",
+    "liveProject": "Open live project",
+    "weeksToDelivery": "{weeks, plural, one {# week} other {# weeks}} to delivery",
+    "empty": {
+      "title": "Public case studies are on their way",
+      "description": "We only show a finished project after the client approves it for publication.",
+      "action": "Start a project"
+    }
+  },
+  "Testimonials": {
+    "eyebrow": "Client reviews",
+    "title": "Words from people who shipped with us.",
+    "description": "Quotes are published in the client's own words and only after they approve sharing them.",
+    "note": "Feedback belongs next to the finished work, not in a made-up carousel.",
+    "outOfFive": "{rating} out of 5",
+    "empty": {
+      "title": "Reviews will appear here",
+      "description": "We publish client feedback only when it is approved for the public site."
+    }
+  },
+  "Faq": {
+    "eyebrow": "Questions",
+    "title": "A few useful answers.",
+    "description": "If your question is not here, include it in the brief. It will be answered in the project thread.",
+    "entries": [
+      {
+        "question": "What happens after I submit a request?",
+        "answer": "Your brief becomes a project with its own reference and activity record. Someone reads it, replies in the project thread and works with you on the scope."
+      },
+      {
+        "question": "How do you price the work?",
+        "answer": "After reading the brief. An honest estimate depends on the scope, so the conversation and any changes stay visible in the project thread."
+      },
+      {
+        "question": "Who owns the code?",
+        "answer": "You do. Delivery includes the source, migrations and deployment notes, so the product is not tied to a black box."
+      },
+      {
+        "question": "Can you take over an existing project?",
+        "answer": "Yes. Tell us what is working, what is not and what cannot break. We start by making the project safe to build on again."
+      },
+      {
+        "question": "Do you use AI while building?",
+        "answer": "We use tools where they help, but the engineer responsible for the work reviews every change. The outcome is tested software, not unreviewed output."
+      },
+      {
+        "question": "How do I follow progress?",
+        "answer": "The project page keeps the status, history and conversation together. You can check it at any time and updates arrive while it is open."
+      }
+    ]
+  },
+  "Cta": {
+    "eyebrow": "Start with the work you have",
+    "title": "Give the next project a clear place to start.",
+    "description": "Open an account, write the brief and keep the conversation next to the work from day one.",
+    "primaryAction": "Open a project",
+    "secondaryAction": "Sign in"
+  },
+  "Work": {
+    "eyebrow": "Public projects",
+    "title": "Things we finished and can show.",
+    "description": "Every write-up below has been approved by the client. We do not turn private work into portfolio material without permission.",
+    "empty": {
+      "title": "There are no public cases yet",
+      "description": "Finished projects appear here after the client approves a public write-up.",
+      "action": "Start a project"
+    }
+  },
+  "Case": {
+    "back": "All public projects",
+    "eyebrow": "Case study",
+    "industry": "Industry",
+    "delivery": "Delivery",
+    "stack": "Stack",
+    "weeks": "{weeks, plural, one {# week} other {# weeks}}",
+    "problem": "The problem",
+    "solution": "What we built",
+    "startLikeThis": "Start a project like this",
+    "openLive": "Open live project"
+  },
+  "Footer": {
+    "summary": "Software built around a real brief and kept visible from the first note to delivery.",
+    "closing": "Built for people who want the work to stay clear.",
+    "copyright": "© {year} {name}",
+    "studio": {
+      "title": "The studio",
+      "capabilities": "What we build",
+      "process": "How it works",
+      "workflow": "Project flow"
+    },
+    "public": {
+      "title": "In public",
+      "work": "Finished projects",
+      "testimonials": "Client reviews",
+      "faq": "Questions"
+    },
+    "account": {
+      "title": "Your account",
+      "register": "Open an account",
+      "signIn": "Sign in",
+      "newOrder": "Start a project"
+    }
+  },
+  "Errors": {
+    "notFoundTitle": "We could not find that page",
+    "notFoundBody": "The link may be out of date, or the page may belong to a project you do not have access to.",
+    "notFoundHome": "Go to the home page",
+    "notFoundDashboard": "Go to your dashboard"
+  },
+  "Auth": {
+    "signInTitle": "Sign in",
+    "signInDescription": "Access your projects, history and chat.",
+    "signInPrompt": "No account yet?",
+    "createOne": "Create one",
+    "registerTitle": "Create an account",
+    "registerDescription": "An account is all you need to submit a project request and follow the work.",
+    "registerPrompt": "Already registered?",
+    "signInLink": "Sign in"
+  },
+  "SignInForm": {
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "pending": "Signing in..."
+  },
+  "RegisterForm": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 10 characters, including a letter and a number.",
+    "confirmPassword": "Repeat password",
+    "submit": "Create account",
+    "pending": "Creating account..."
+  }
+}

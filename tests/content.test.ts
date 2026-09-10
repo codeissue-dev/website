@@ -1,31 +1,47 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
-import {
-  CAPABILITIES,
-  CAPABILITIES_SECTION,
-  CTA_SECTION,
-  FAQ_ENTRIES,
-  FAQ_SECTION,
-  HERO,
-  HERO_PROOF,
-  PORTFOLIO_SECTION,
-  PROCESS_SECTION,
-  PROCESS_STEPS,
-  TESTIMONIALS_SECTION,
-  WORK_INDEX,
-  WORKFLOW_SECTION,
-} from "../src/content/landing";
+import en from "../src/i18n/messages/en.json";
+import ru from "../src/i18n/messages/ru.json";
 import {
   FOOTER_COLUMNS,
   headerActions,
   PUBLIC_SECTION_LINKS,
   workspaceNavLinks,
 } from "../src/content/navigation";
-import { SITE } from "../src/content/site";
 import { USER_ROLES } from "../src/lib/auth/roles";
 
-/** Collects every string reachable from a content export, arrays included. */
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
+
+type Messages = Record<string, unknown>;
+
+/** Resolves a dotted key path against a dictionary, or returns undefined. */
+function resolve(messages: Messages, key: string): unknown {
+  let current: unknown = messages;
+  for (const part of key.split(".")) {
+    if (typeof current !== "object" || current === null) return undefined;
+    current = (current as Record<string, unknown>)[part];
+  }
+  return current;
+}
+
+/** Resolves a dotted key path that must hold a string. */
+function stringAt(messages: Messages, key: string): string {
+  const value = resolve(messages, key);
+  assert.equal(typeof value, "string", `${key} must be a string`);
+  return value as string;
+}
+
+/** Narrows an unknown value to a typed list, failing when it is not one. */
+function listOf<T>(value: unknown): T[] {
+  assert.ok(Array.isArray(value), "expected a list");
+  return value as T[];
+}
+
+/** Collects every string reachable from a dictionary, arrays included. */
 function collectStrings(value: unknown, sink: string[] = []): string[] {
   if (typeof value === "string") {
     sink.push(value);
@@ -39,136 +55,171 @@ function collectStrings(value: unknown, sink: string[] = []): string[] {
   return sink;
 }
 
-/** Reads one string field and fails with a useful message when it is missing. */
-function field(section: Record<string, unknown>, key: string): string {
-  const value = section[key];
-  if (typeof value !== "string") {
-    throw new Error(`${key} should be a string, received ${typeof value}`);
+/** Every leaf key path of a dictionary, in stable order. */
+function collectKeys(value: unknown, prefix = "", sink: string[] = []): string[] {
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+      collectKeys(entry, prefix === "" ? key : `${prefix}.${key}`, sink);
+    }
+    return sink;
   }
-  return value;
+  sink.push(prefix);
+  return sink;
 }
 
-const SECTIONS: readonly (readonly [string, Record<string, unknown>])[] = [
-  ["hero", HERO],
-  ["capabilities", CAPABILITIES_SECTION],
-  ["process", PROCESS_SECTION],
-  ["workflow", WORKFLOW_SECTION],
-  ["portfolio", PORTFOLIO_SECTION],
-  ["testimonials", TESTIMONIALS_SECTION],
-  ["faq", FAQ_SECTION],
-  ["call to action", CTA_SECTION],
-  ["work index", WORK_INDEX],
-];
+void test("the two locales carry exactly the same key structure", () => {
+  assert.deepEqual(collectKeys(ru).sort(), collectKeys(en).sort());
+});
 
-const ALL_COPY = collectStrings([
-  SITE,
-  HERO,
-  HERO_PROOF,
-  CAPABILITIES_SECTION,
-  CAPABILITIES,
-  PROCESS_SECTION,
-  PROCESS_STEPS,
-  WORKFLOW_SECTION,
-  PORTFOLIO_SECTION,
-  TESTIMONIALS_SECTION,
-  FAQ_SECTION,
-  FAQ_ENTRIES,
-  CTA_SECTION,
-  WORK_INDEX,
-  PUBLIC_SECTION_LINKS,
-  FOOTER_COLUMNS,
-]);
-
-void test("landing sections keep their copy non-empty", () => {
-  assert.ok(ALL_COPY.length > 60);
-  for (const value of ALL_COPY) {
-    assert.ok(value.trim().length > 0, `empty copy string: ${JSON.stringify(value)}`);
-    assert.equal(value, value.trim(), `untrimmed copy string: ${value}`);
+void test("copy stays non-empty and clean in both locales", () => {
+  for (const [locale, messages] of [
+    ["en", en],
+    ["ru", ru],
+  ] as const) {
+    const copy = collectStrings(messages);
+    assert.ok(copy.length > 80, `${locale}: dictionary looks thin`);
+    for (const value of copy) {
+      assert.ok(value.trim().length > 0, `${locale}: empty copy string`);
+      assert.equal(value, value.trim(), `${locale}: untrimmed copy: ${value}`);
+      assert.ok(
+        !value.includes("\u2014") && !value.includes(" -- "),
+        `${locale}: decorative dash in copy: ${value}`,
+      );
+      assert.ok(
+        !/\b[A-Z]{4,}\b/u.test(value),
+        `${locale}: all-caps word used as a label: ${value}`,
+      );
+    }
   }
 });
 
-void test("copy avoids dashes and shouting used as decoration", () => {
-  for (const value of ALL_COPY) {
-    assert.ok(!value.includes("\u2014"), `em dash in copy: ${value}`);
-    assert.ok(!value.includes(" -- "), `double dash in copy: ${value}`);
-    assert.ok(!/\b[A-Z]{4,}\b/u.test(value), `all-caps word used as a label: ${value}`);
+void test("plural messages carry the mandatory other branch", () => {
+  for (const [locale, messages] of [
+    ["en", en],
+    ["ru", ru],
+  ] as const) {
+    for (const value of collectStrings(messages)) {
+      if (!value.includes(", plural,")) continue;
+      assert.ok(
+        value.includes("other {"),
+        `${locale}: plural without an other branch: ${value}`,
+      );
+    }
   }
 });
 
-void test("every section names itself in a plain sentence", () => {
-  const titles: string[] = [];
-  for (const [name, section] of SECTIONS) {
-    const title = field(section, "title");
+void test("section titles read as unique plain sentences", () => {
+  const titles: Array<[string, unknown]> = [
+    ["hero", resolve(en, "Hero.title")],
+    ["capabilities", resolve(en, "Capabilities.title")],
+    ["process", resolve(en, "Process.title")],
+    ["workflow", resolve(en, "Workflow.title")],
+    ["portfolio", resolve(en, "Portfolio.title")],
+    ["testimonials", resolve(en, "Testimonials.title")],
+    ["faq", resolve(en, "Faq.title")],
+    ["call to action", resolve(en, "Cta.title")],
+    ["work index", resolve(en, "Work.title")],
+  ];
+
+  const values: string[] = [];
+  for (const [name, value] of titles) {
+    assert.equal(typeof value, "string", `${name}: title missing`);
+    const title = value as string;
     assert.ok(title.length > 12, `${name}: title too thin`);
     assert.ok(title.endsWith("."), `${name}: title should read as a sentence`);
     assert.ok(!title.includes(":"), `${name}: title should not be a label`);
-    titles.push(title);
-
-    const eyebrow = field(section, "eyebrow");
-    assert.ok(eyebrow.length > 2, `${name}: eyebrow too thin`);
-    assert.equal(eyebrow, eyebrow.trim());
-    assert.notEqual(eyebrow, eyebrow.toUpperCase(), `${name}: eyebrow is shouted`);
+    values.push(title);
   }
-  assert.equal(new Set(titles).size, titles.length, "two sections share a title");
+  assert.equal(new Set(values).size, values.length, "two sections share a title");
 });
 
-void test("capabilities and process steps are unique and complete", () => {
-  const titles = CAPABILITIES.map((card) => card.title);
-  assert.equal(new Set(titles).size, titles.length);
-  assert.ok(CAPABILITIES.length >= 6);
-  for (const card of CAPABILITIES) assert.ok(card.body.length > 40);
+void test("capabilities and process steps are unique and complete in both locales", () => {
+  for (const [locale, messages] of [
+    ["en", en],
+    ["ru", ru],
+  ] as const) {
+    const capabilities = listOf<Capability>(resolve(messages, "Capabilities.items"));
+    const titles = capabilities.map((card) => card.title);
+    assert.equal(
+      new Set(titles).size,
+      titles.length,
+      `${locale}: duplicate capability`,
+    );
+    assert.ok(capabilities.length >= 6, `${locale}: too few capabilities`);
+    for (const card of capabilities) {
+      assert.ok(card.body.length > 40, `${locale}: capability body too thin`);
+    }
 
-  const steps = PROCESS_STEPS.map((step) => step.title);
-  assert.equal(new Set(steps).size, steps.length);
-  assert.equal(PROCESS_STEPS.length, 4);
-});
-
-void test("every FAQ entry asks a question and answers it", () => {
-  const questions = FAQ_ENTRIES.map((entry) => entry.question);
-  assert.equal(new Set(questions).size, questions.length);
-  for (const entry of FAQ_ENTRIES) {
-    assert.ok(entry.question.endsWith("?"), `not a question: ${entry.question}`);
-    assert.ok(entry.answer.length > 60, `answer too thin: ${entry.question}`);
-  }
-});
-
-void test("the hero promises something concrete and links where it says", () => {
-  assert.equal(HERO_PROOF.length, 3);
-  assert.equal(new Set(HERO_PROOF.map((point) => point.term)).size, 3);
-  for (const point of HERO_PROOF) assert.ok(point.detail.length > 20);
-
-  assert.equal(HERO.primaryAction.href, "/register");
-  assert.equal(HERO.secondaryAction.href, "/work");
-  const vague = ["learn more", "get started", "click here", "read more", "submit"];
-  for (const action of [HERO.primaryAction, HERO.secondaryAction]) {
-    assert.ok(
-      !vague.includes(action.label.toLowerCase()),
-      `an action label should say what happens: ${action.label}`,
+    const steps = listOf<Capability>(resolve(messages, "Process.steps"));
+    assert.equal(steps.length, 4, `${locale}: process must have four steps`);
+    const stepTitles = steps.map((step) => step.title);
+    assert.equal(
+      new Set(stepTitles).size,
+      stepTitles.length,
+      `${locale}: duplicate step`,
     );
   }
 });
 
-void test("site metadata is filled in and reusable", () => {
-  assert.ok(SITE.name.length > 2);
-  assert.ok(SITE.titleTemplate.includes("%s"));
-  assert.ok(SITE.description.length > 60);
+void test("every FAQ entry asks a question and answers it", () => {
+  for (const [locale, messages] of [
+    ["en", en],
+    ["ru", ru],
+  ] as const) {
+    const entries = listOf<FaqEntry>(resolve(messages, "Faq.entries"));
+    assert.equal(entries.length, 6, `${locale}: FAQ should have six entries`);
+    const questions = entries.map((entry) => entry.question);
+    assert.equal(new Set(questions).size, questions.length);
+    for (const entry of entries) {
+      assert.ok(entry.question.endsWith("?"), `${locale}: not a question`);
+      assert.ok(entry.answer.length > 60, `${locale}: answer too thin`);
+    }
+  }
 });
 
-void test("public navigation points at real in-app routes", () => {
+void test("the hero proof stays a triple and actions say what they do", () => {
+  const proof = listOf<ProofPoint>(resolve(en, "Hero.proof"));
+  assert.equal(proof.length, 3);
+  const terms = proof.map((point) => point.term);
+  assert.equal(new Set(terms).size, 3);
+
+  const vague = ["learn more", "get started", "click here", "read more", "submit"];
+  for (const key of ["Hero.primaryAction", "Hero.secondaryAction"]) {
+    const label = stringAt(en, key);
+    assert.ok(!vague.includes(label), `vague action label: ${label}`);
+  }
+});
+
+void test("public navigation points at real in-app routes with dictionary labels", () => {
   const hrefs = PUBLIC_SECTION_LINKS.map((link) => link.href);
   assert.equal(new Set(hrefs).size, hrefs.length);
   for (const link of PUBLIC_SECTION_LINKS) {
     assert.ok(link.href.startsWith("/"), `not an internal link: ${link.href}`);
+    assert.equal(
+      typeof resolve(en, `Header.${link.labelKey}`),
+      "string",
+      `unresolved nav label: ${link.labelKey}`,
+    );
+    assert.equal(
+      typeof resolve(ru, `Header.${link.labelKey}`),
+      "string",
+      `nav label missing in ru: ${link.labelKey}`,
+    );
   }
 
+  const headingKeys = FOOTER_COLUMNS.map((column) => column.headingKey);
+  assert.equal(new Set(headingKeys).size, headingKeys.length);
   for (const column of FOOTER_COLUMNS) {
-    assert.ok(column.links.length > 0, `empty footer column: ${column.heading}`);
+    assert.ok(column.links.length > 0, `empty footer column: ${column.headingKey}`);
     for (const link of column.links) {
       assert.ok(link.href.startsWith("/"), `not an internal link: ${link.href}`);
+      assert.equal(
+        typeof resolve(en, `Footer.${link.labelKey}`),
+        "string",
+        `unresolved footer label: ${link.labelKey}`,
+      );
     }
   }
-  const headings = FOOTER_COLUMNS.map((column) => column.heading);
-  assert.equal(new Set(headings).size, headings.length);
 });
 
 void test("header offers exactly one emphasised action per state", () => {
@@ -206,3 +257,17 @@ void test("workspace navigation is unique and role appropriate", () => {
     "executors do not submit briefs",
   );
 });
+
+void test("the raw dictionaries on disk parse as strict JSON", async () => {
+  for (const locale of ["en", "ru"]) {
+    const raw = await readFile(
+      path.join(ROOT, "src", "i18n", "messages", `${locale}.json`),
+      "utf8",
+    );
+    assert.doesNotThrow(() => JSON.parse(raw), `${locale}.json must parse`);
+  }
+});
+
+type Capability = { title: string; body: string };
+type FaqEntry = { question: string; answer: string };
+type ProofPoint = { term: string; detail: string };

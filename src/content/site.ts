@@ -1,19 +1,10 @@
 /**
  * Site-wide facts.
  *
- * Metadata, the footer note and the browser title all read from here, so the
- * studio's own wording lives in one file instead of being retyped per page.
+ * The brand name is shared by metadata, JSON-LD, the footer and the social
+ * cards. Everything a visitor reads as copy lives in the intl dictionaries
+ * under `src/i18n/messages`, so wording follows the active locale.
  */
 export const SITE = {
   name: "codeissue",
-  title: "codeissue: custom software development",
-  titleTemplate: "%s - codeissue",
-  description:
-    "codeissue builds custom software from a written brief: submit your project, follow every status change, and talk to the engineers doing the work.",
-  summary:
-    "Software built around a real brief and kept visible from the first note to delivery.",
-  closingNote: "Built for people who want the work to stay clear.",
 } as const;
-
-/** Fallback description used by public pages that do not set their own. */
-export const PUBLIC_PAGE_DESCRIPTION = SITE.description;

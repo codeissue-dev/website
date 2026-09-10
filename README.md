@@ -26,6 +26,7 @@ so adding an AI API would have been decoration rather than a feature.
 - **WebSockets** (`ws`) with PostgreSQL `LISTEN/NOTIFY` fan-out
 - **Zod 4** for every untrusted input
 - **Tailwind CSS 4**
+- **next-intl** for English and Russian: the locale rides in the `NEXT_LOCALE` cookie, dictionaries live in `src/i18n/messages`
 - **ESLint 9** flat config with **typescript-eslint** (type-checked rules), **Prettier**
 - **pnpm**, deployable to **Vercel** (Fluid compute, Hobby-plan compatible)
 
