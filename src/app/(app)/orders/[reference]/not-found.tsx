@@ -4,7 +4,6 @@ import { ButtonLink } from "@/components/ui/button";
 export default function OrderNotFound() {
   return (
     <div className="page-enter mx-auto flex max-w-lg flex-col items-center gap-4 py-16 text-center">
-      <p className="section-eyebrow">Not available</p>
       <h1 className="section-title">This project is not available</h1>
       <p className="text-sm leading-relaxed text-ink-muted">
         Either the reference does not exist or it belongs to someone else. Check the

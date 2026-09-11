@@ -82,7 +82,7 @@ void test("copy stays non-empty and clean in both locales", () => {
       assert.ok(value.trim().length > 0, `${locale}: empty copy string`);
       assert.equal(value, value.trim(), `${locale}: untrimmed copy: ${value}`);
       assert.ok(
-        !value.includes("\u2014") && !value.includes(" -- "),
+        !value.includes("\u2014") && !value.includes(" -- ") && !value.includes(" - "),
         `${locale}: decorative dash in copy: ${value}`,
       );
       assert.ok(

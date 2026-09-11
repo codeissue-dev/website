@@ -20,8 +20,6 @@ export async function Process() {
           <>
             <SectionHeading
               id="process-heading"
-              eyebrow={t("eyebrow")}
-              eyebrowTone="violet"
               title={t("title")}
               description={t("description")}
             />

@@ -154,23 +154,6 @@
 
   /* --------------------------------------------------------------- headings */
 
-  .section-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    letter-spacing: -0.01em;
-    color: var(--color-ink-subtle);
-  }
-
-  /* Spectral marker in front of a section label; colour comes from the span. */
-  .eyebrow-dot {
-    display: inline-block;
-    width: 0.375rem;
-    height: 0.375rem;
-    margin-right: 0.5rem;
-    border-radius: var(--radius-pill);
-    background-color: currentColor;
-  }
-
   .title-hero {
     font-size: clamp(2.375rem, 5vw, 3.75rem);
     letter-spacing: -0.032em;
@@ -811,6 +794,8 @@
   }
 
   .terminal-title {
+    display: inline-flex;
+    align-items: center;
     overflow: hidden;
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -831,101 +816,130 @@
 
   .terminal-line {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 0.625rem;
     min-width: 0;
   }
 
-  .terminal-marker {
-    flex: none;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: var(--radius-pill);
+  /*
+   * The console: a fixed-height output log with the command line pinned to
+   * the bottom, so adding lines never shifts the layout around it.
+   */
+  .console-body {
+    height: 17rem;
+    padding: 0.875rem;
   }
 
-  .terminal-marker-0 {
-    background-color: oklch(70% 0.14 250);
-  }
-
-  .terminal-marker-1 {
-    background-color: oklch(78% 0.11 205);
-  }
-
-  .terminal-marker-2 {
-    background-color: oklch(74% 0.13 300);
-  }
-
-  .terminal-marker-3 {
-    background-color: oklch(75% 0.14 152);
-  }
-
-  .terminal-step {
-    flex: 1;
-    overflow: hidden;
-    color: oklch(88% 0 0);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .terminal-time {
-    flex: none;
-    font-size: 0.6875rem;
-    color: oklch(52% 0 0);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .terminal-prompt {
+  .console-log {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.375rem;
-    border-top: 1px dashed oklch(100% 0 0 / 12%);
-    padding-top: 0.625rem;
-    color: oklch(60% 0 0);
+    flex-direction: column;
+    gap: 0.125rem;
+    height: calc(100% - 2.25rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
-  .terminal-gt {
+  .console-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: oklch(78% 0 0);
+  }
+
+  .console-gt {
     flex: none;
     color: oklch(75% 0.15 152);
   }
 
-  .term-cursor {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.9375rem;
-    background-color: oklch(75% 0.15 152);
+  .console-cmd .console-text {
+    color: oklch(93% 0 0);
   }
 
-  /* A schematic trace: a base hairline with a light pulse travelling it. */
+  .console-ok .console-text {
+    color: oklch(75% 0.14 152);
+  }
+
+  .console-err .console-text {
+    color: oklch(70% 0.17 25);
+  }
+
+  .console-boot .console-text {
+    color: oklch(58% 0 0);
+  }
+
+  .console-title-icon {
+    margin-right: 0.375rem;
+    color: oklch(60% 0 0);
+  }
+
+  .console-form {
+    align-items: center;
+    height: 2.25rem;
+    border-top: 1px dashed oklch(100% 0 0 / 12%);
+  }
+
+  .console-input {
+    width: 100%;
+    min-width: 0;
+    flex: 1;
+    border: none;
+    background-color: transparent;
+    font-family: var(--font-mono);
+    /* 16px on touch layouts: smaller inputs make iOS zoom the page on focus. */
+    font-size: 1rem;
+    color: oklch(93% 0 0);
+    caret-color: oklch(75% 0.15 152);
+  }
+
+  @media (min-width: 48rem) {
+    .console-input {
+      font-size: 0.8125rem;
+    }
+  }
+
+  .console-input:focus {
+    outline: none;
+  }
+
+  .console-input::placeholder {
+    color: oklch(45% 0 0);
+  }
+
+  /*
+   * A schematic trace: two solder points with a dot track between them. The
+   * track is a repeating tile inside a flex row, so it fits any width exactly
+   * and never spills past its endpoints.
+   */
   .circuit {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     width: 100%;
     height: 1.5rem;
   }
 
-  .circuit-base {
-    stroke: var(--color-line-strong);
-    stroke-width: 1;
-  }
-
-  .circuit-flow {
-    stroke: var(--color-accent);
-    stroke-width: 1.5;
-    stroke-dasharray: 2 14;
+  .circuit-track {
+    flex: 1;
+    height: 2px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www%2Ew3%2Eorg/2000/svg' width='12' height='2'%3E%3Ccircle cx='6' cy='1' r='1' fill='%23808080' fill-opacity='0.6'/%3E%3C/svg%3E");
+    background-size: 12px 2px;
+    background-repeat: repeat-x;
   }
 
   .circuit-node {
-    fill: var(--color-canvas);
-    stroke: var(--color-line-strong);
-    stroke-width: 1;
+    flex: none;
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-canvas);
   }
 
   .circuit-node-cyan {
-    stroke: var(--color-cyan);
+    border-color: var(--color-cyan);
   }
 
   .circuit-node-violet {
-    stroke: var(--color-violet);
+    border-color: var(--color-violet);
   }
 
   .project-card {

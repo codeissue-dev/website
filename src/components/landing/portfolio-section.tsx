@@ -17,8 +17,6 @@ export async function PortfolioSection({ items }: { items: PublishedPortfolioIte
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
           id="work-heading"
-          eyebrow={t("eyebrow")}
-          eyebrowTone="accent"
           title={t("title")}
           description={t("description")}
         />

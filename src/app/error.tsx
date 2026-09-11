@@ -17,7 +17,6 @@ export default function GlobalError({
 }) {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center gap-4 px-4 text-center">
-      <p className="section-eyebrow">Error</p>
       <h1 className="section-title">Something went wrong on our side</h1>
       <p className="text-sm leading-relaxed text-ink-muted">
         The page could not be rendered. Nothing you submitted was lost if it was already

@@ -7,10 +7,7 @@ export default async function NotFound() {
 
   return (
     <div className="page-enter mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center gap-4 px-4 text-center">
-      <p className="section-eyebrow">
-        <span className="eyebrow-dot text-critical" />
-        404
-      </p>
+      <p className="font-mono text-sm text-ink-subtle">404</p>
       <h1 className="section-title">{t("notFoundTitle")}</h1>
       <p className="max-w-lg text-sm leading-relaxed text-ink-muted">
         {t("notFoundBody")}

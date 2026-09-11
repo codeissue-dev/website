@@ -51,8 +51,6 @@ export async function TestimonialsSection({
           <>
             <SectionHeading
               id="testimonials-heading"
-              eyebrow={t("eyebrow")}
-              eyebrowTone="positive"
               title={t("title")}
               description={t("description")}
             />

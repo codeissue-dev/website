@@ -1,5 +1,7 @@
+import { useTranslations } from "next-intl";
+
 import type { UserRole } from "@/lib/auth/roles";
-import { ORDER_STATUS_LABELS, type OrderStatus } from "@/lib/orders/status";
+import { type OrderStatus } from "@/lib/orders/status";
 import { cn } from "@/lib/utils";
 
 /**
@@ -26,10 +28,10 @@ export function StatusBadge({
   status: OrderStatus;
   className?: string;
 }) {
+  const t = useTranslations("Statuses");
+
   return (
-    <span className={cn("badge", STATUS_TONES[status], className)}>
-      {ORDER_STATUS_LABELS[status]}
-    </span>
+    <span className={cn("badge", STATUS_TONES[status], className)}>{t(status)}</span>
   );
 }
 

@@ -37,8 +37,6 @@ export async function Faq() {
         aside={
           <SectionHeading
             id="faq-heading"
-            eyebrow={t("eyebrow")}
-            eyebrowTone="pink"
             title={t("title")}
             description={t("description")}
           />

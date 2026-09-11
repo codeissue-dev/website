@@ -111,11 +111,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
           {t("back")}
         </Link>
         <div className="mt-8">
-          <p className="section-eyebrow">
-            <span className="eyebrow-dot text-cyan" />
-            {t("eyebrow")}
-          </p>
-          <h1 className="title-hero mt-4">{item.title}</h1>
+          <h1 className="title-hero">{item.title}</h1>
           <p className="lede mt-5">{item.summary}</p>
         </div>
 

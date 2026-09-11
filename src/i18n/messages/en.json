@@ -27,14 +27,48 @@
   "LocaleSwitch": {
     "label": "Language"
   },
+  "Statuses": {
+    "SUBMITTED": "Submitted",
+    "REVIEWING": "In review",
+    "ACCEPTED": "Accepted",
+    "IN_PROGRESS": "In progress",
+    "WAITING_FOR_CUSTOMER": "Waiting for you",
+    "QUALITY_ASSURANCE": "Quality assurance",
+    "COMPLETED": "Completed",
+    "CANCELED": "Canceled"
+  },
+  "Console": {
+    "title": "codeissue console",
+    "inputLabel": "Console command",
+    "boot": [
+      "codeissue console. Type help to see what it can do.",
+      "Everything you can reach on this site works here too."
+    ],
+    "hint": "Unknown command. Type help.",
+    "jump": "Moving to the section.",
+    "opening": "Opening the brief form.",
+    "themeLight": "Theme: light.",
+    "themeDark": "Theme: dark.",
+    "langEn": "Language: English.",
+    "langRu": "Language: Russian.",
+    "commands": {
+      "help": "list the commands",
+      "about": "what the studio does",
+      "services": "scroll to what we build",
+      "process": "scroll to how the work runs",
+      "work": "scroll to public projects",
+      "faq": "scroll to the questions",
+      "start": "open the brief form",
+      "theme": "switch the color theme",
+      "lang": "switch the language",
+      "clear": "wipe the screen"
+    }
+  },
   "Hero": {
-    "eyebrow": "Software for work that is ready to move",
     "title": "Build the product that keeps work moving.",
     "body": "Bring the process that needs fixing. We turn it into focused software and keep the project clear from the first brief to the handover.",
     "primaryAction": "Start a project",
     "secondaryAction": "Browse public projects",
-    "panelTitle": "codeissue: project log",
-    "prompt": "awaiting your brief",
     "proof": [
       {
         "term": "One written brief",
@@ -51,7 +85,6 @@
     ]
   },
   "Capabilities": {
-    "eyebrow": "What we build",
     "title": "Software with a job to do, not filler.",
     "description": "The best projects start with a real bottleneck, a useful question or a task that has outgrown the tools around it.",
     "items": [
@@ -82,7 +115,6 @@
     ]
   },
   "Process": {
-    "eyebrow": "How it works",
     "title": "A short path from a note to a useful release.",
     "description": "No sales maze. The written brief starts the conversation, and the project space keeps it moving.",
     "action": "Open a project",
@@ -106,7 +138,6 @@
     ]
   },
   "Workflow": {
-    "eyebrow": "The project space",
     "title": "Everyone sees the same next step.",
     "description": "The stages below are the real states used by the platform. Only the right moves are available, and every change is recorded.",
     "descriptions": {
@@ -121,7 +152,6 @@
     }
   },
   "Portfolio": {
-    "eyebrow": "Public projects",
     "title": "Finished work, shared with permission.",
     "description": "Every project here has an approved public write-up. The work stays private unless the client chooses otherwise.",
     "action": "View all projects",
@@ -135,7 +165,6 @@
     }
   },
   "Testimonials": {
-    "eyebrow": "Client reviews",
     "title": "Words from people who shipped with us.",
     "description": "Quotes are published in the client's own words and only after they approve sharing them.",
     "note": "Feedback belongs next to the finished work, not in a made-up carousel.",
@@ -146,7 +175,6 @@
     }
   },
   "Faq": {
-    "eyebrow": "Questions",
     "title": "A few useful answers.",
     "description": "If your question is not here, include it in the brief. It will be answered in the project thread.",
     "entries": [
@@ -177,14 +205,12 @@
     ]
   },
   "Cta": {
-    "eyebrow": "Start with the work you have",
     "title": "Give the next project a clear place to start.",
     "description": "Open an account, write the brief and keep the conversation next to the work from day one.",
     "primaryAction": "Open a project",
     "secondaryAction": "Sign in"
   },
   "Work": {
-    "eyebrow": "Public projects",
     "title": "Things we finished and can show.",
     "description": "Every write-up below has been approved by the client. We do not turn private work into portfolio material without permission.",
     "empty": {
@@ -195,7 +221,6 @@
   },
   "Case": {
     "back": "All public projects",
-    "eyebrow": "Case study",
     "industry": "Industry",
     "delivery": "Delivery",
     "stack": "Stack",

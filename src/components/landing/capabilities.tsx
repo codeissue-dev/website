@@ -35,8 +35,6 @@ export async function Capabilities() {
     <Section id="capabilities" labelledBy="capabilities-heading">
       <SectionHeading
         id="capabilities-heading"
-        eyebrow={t("eyebrow")}
-        eyebrowTone="cyan"
         title={t("title")}
         description={t("description")}
       />

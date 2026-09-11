@@ -28,11 +28,7 @@ export default async function WorkPage() {
   return (
     <Container className="py-16 sm:py-20">
       <Reveal className="max-w-3xl">
-        <p className="section-eyebrow">
-          <span className="eyebrow-dot text-accent" />
-          {t("eyebrow")}
-        </p>
-        <h1 className="title-hero mt-4">{t("title")}</h1>
+        <h1 className="title-hero">{t("title")}</h1>
         <p className="lede mt-5">{t("description")}</p>
       </Reveal>
       {items.length === 0 ? (

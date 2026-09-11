@@ -39,8 +39,6 @@ export async function Workflow() {
         aside={
           <SectionHeading
             id="workflow-heading"
-            eyebrow={t("eyebrow")}
-            eyebrowTone="amber"
             title={t("title")}
             description={t("description")}
           />
