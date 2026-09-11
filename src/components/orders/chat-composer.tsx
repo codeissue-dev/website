@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { sendOrderMessageAction } from "@/actions/chat";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -17,6 +18,7 @@ import { MAX_MESSAGE_LENGTH } from "@/lib/validation/orders";
  * copy that could disagree with the database.
  */
 export function ChatComposer({ orderId }: { orderId: string }) {
+  const t = useTranslations("Order");
   const [state, formAction] = useActionState(sendOrderMessageAction, idleActionState);
   const formRef = useRef<HTMLFormElement | null>(null);
   const bodyError = firstFieldError(state, "body") ?? state.message;
@@ -33,7 +35,7 @@ export function ChatComposer({ orderId }: { orderId: string }) {
     >
       <input type="hidden" name="orderId" value={orderId} />
       <label htmlFor="chat-body" className="sr-only">
-        Message
+        {t("chatMessage")}
       </label>
       <textarea
         id="chat-body"
@@ -41,7 +43,7 @@ export function ChatComposer({ orderId }: { orderId: string }) {
         rows={3}
         required
         maxLength={MAX_MESSAGE_LENGTH}
-        placeholder="Write a message about this project..."
+        placeholder={t("chatPlaceholder")}
         className={`${CONTROL_CLASS} resize-y`}
         aria-invalid={state.status === "error" ? true : undefined}
         aria-describedby={state.status === "error" ? "chat-body-error" : undefined}
@@ -57,12 +59,10 @@ export function ChatComposer({ orderId }: { orderId: string }) {
           className="text-xs text-ink-muted"
           role={state.status === "error" ? "alert" : undefined}
         >
-          {state.status === "error" && bodyError
-            ? bodyError
-            : "Enter sends, Shift + Enter adds a line."}
+          {state.status === "error" && bodyError ? bodyError : t("chatHint")}
         </p>
-        <SubmitButton size="sm" pendingLabel="Sending...">
-          Send
+        <SubmitButton size="sm" pendingLabel={t("chatSending")}>
+          {t("chatSend")}
         </SubmitButton>
       </div>
     </form>

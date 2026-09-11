@@ -23,15 +23,6 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <TextField
-        name="name"
-        label={t("name")}
-        required
-        minLength={2}
-        maxLength={120}
-        autoComplete="name"
-        error={firstFieldError(state, "name")}
-      />
-      <TextField
         name="email"
         label={t("email")}
         type="email"

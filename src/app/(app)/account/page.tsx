@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { PasswordForm, ProfileForm } from "@/components/forms/account-forms";
 import { PageHeading } from "@/components/ui/page-heading";
@@ -7,62 +8,55 @@ import { RoleBadge } from "@/components/ui/status-badge";
 import { requireActorForPage } from "@/lib/auth/actor";
 import { formatDate } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Account",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Account");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 export default async function AccountPage() {
-  const actor = await requireActorForPage("/account");
+  const [actor, t] = await Promise.all([
+    requireActorForPage("/account"),
+    getTranslations("Account"),
+  ]);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
-      <PageHeading
-        title="Account"
-        description="Your sign-in details and how you appear to the project team."
-      />
+      <PageHeading title={t("title")} description={t("description")} />
 
       <Panel>
-        <PanelHeader title="Details" />
+        <PanelHeader title={t("details")} />
         <PanelBody>
           <dl className="grid gap-4 sm:grid-cols-2">
             <div>
-              <dt className="label-quiet">Email</dt>
+              <dt className="label-quiet">{t("email")}</dt>
               <dd className="mt-1 text-sm text-ink">{actor.email}</dd>
             </div>
             <div>
-              <dt className="label-quiet">Role</dt>
+              <dt className="label-quiet">{t("role")}</dt>
               <dd className="mt-1">
                 <RoleBadge role={actor.role} />
               </dd>
             </div>
             <div>
-              <dt className="label-quiet">Member since</dt>
+              <dt className="label-quiet">{t("memberSince")}</dt>
               <dd className="mt-1 text-sm text-ink">{formatDate(actor.createdAt)}</dd>
             </div>
           </dl>
           <p className="mt-4 text-xs leading-relaxed text-ink-subtle">
-            Email addresses and roles are changed by an administrator, so that the
-            history of a project always points at a stable account.
+            {t("adminNote")}
           </p>
         </PanelBody>
       </Panel>
 
       <Panel>
-        <PanelHeader
-          title="Display name"
-          description="Shown on your messages and on any status change you make."
-        />
+        <PanelHeader title={t("displayName")} description={t("displayNameHint")} />
         <PanelBody>
           <ProfileForm name={actor.name ?? ""} />
         </PanelBody>
       </Panel>
 
       <Panel>
-        <PanelHeader
-          title="Password"
-          description="Changing your password does not sign you out of this browser."
-        />
+        <PanelHeader title={t("password")} description={t("passwordHint")} />
         <PanelBody>
           <PasswordForm />
         </PanelBody>

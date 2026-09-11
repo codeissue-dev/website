@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { OrderListItem } from "@/lib/orders/queries";
-import { displayName, formatDate, pluralize, toIsoString } from "@/lib/utils";
+import { displayName, formatDate, toIsoString } from "@/lib/utils";
 
 /**
  * Order list.
@@ -19,6 +20,8 @@ export function OrderList({
   showCustomer: boolean;
   showExecutor: boolean;
 }) {
+  const t = useTranslations("Orders");
+
   return (
     <ul className="divide-y divide-line">
       {orders.map((order) => (
@@ -34,11 +37,7 @@ export function OrderList({
               <StatusBadge status={order.status} />
               {order.unreadCount > 0 ? (
                 <span className="badge badge-count">
-                  {order.unreadCount} new
-                  <span className="sr-only">
-                    {" "}
-                    {pluralize(order.unreadCount, "message", "messages")}
-                  </span>
+                  {t("newMessages", { count: order.unreadCount })}
                 </span>
               ) : null}
             </div>
@@ -47,7 +46,7 @@ export function OrderList({
 
             <dl className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-muted">
               <div className="flex gap-1.5">
-                <dt>Submitted</dt>
+                <dt>{t("submitted")}</dt>
                 <dd>
                   <time dateTime={toIsoString(order.createdAt)}>
                     {formatDate(order.createdAt)}
@@ -55,7 +54,7 @@ export function OrderList({
                 </dd>
               </div>
               <div className="flex gap-1.5">
-                <dt>Updated</dt>
+                <dt>{t("updated")}</dt>
                 <dd>
                   <time dateTime={toIsoString(order.updatedAt)}>
                     {formatDate(order.updatedAt)}
@@ -64,7 +63,7 @@ export function OrderList({
               </div>
               {order.desiredDeadline ? (
                 <div className="flex gap-1.5">
-                  <dt>Requested by</dt>
+                  <dt>{t("requestedBy")}</dt>
                   <dd>
                     <time dateTime={order.desiredDeadline}>
                       {formatDate(order.desiredDeadline)}
@@ -74,7 +73,7 @@ export function OrderList({
               ) : null}
               {showCustomer ? (
                 <div className="flex gap-1.5">
-                  <dt>Customer</dt>
+                  <dt>{t("customer")}</dt>
                   <dd className="text-ink">
                     {displayName(order.customerName, order.customerEmail)}
                   </dd>
@@ -82,11 +81,11 @@ export function OrderList({
               ) : null}
               {showExecutor ? (
                 <div className="flex gap-1.5">
-                  <dt>Executor</dt>
+                  <dt>{t("executor")}</dt>
                   <dd className={order.executorEmail ? "text-ink" : undefined}>
                     {order.executorEmail
                       ? displayName(order.executorName, order.executorEmail)
-                      : "Unassigned"}
+                      : t("unassigned")}
                   </dd>
                 </div>
               ) : null}

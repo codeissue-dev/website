@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -15,7 +16,6 @@ import {
 } from "@/lib/auth/rbac";
 import { listOrderMessages } from "@/lib/chat/queries";
 import { listStatusEvents, loadOrderForActor } from "@/lib/orders/queries";
-import { ORDER_STATUS_DESCRIPTIONS } from "@/lib/orders/status";
 import { toChatMessagePayload, toStatusEventPayload } from "@/lib/realtime/payloads";
 import { listExecutors } from "@/lib/users/queries";
 import { displayName, formatDate, formatDateTime, paragraphs } from "@/lib/utils";
@@ -54,7 +54,11 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
   // Set by the redirect after a successful submission; the banner is the only
   // success feedback, and it reflects a row that already exists.
   const justSubmitted = (await searchParams).submitted === "1";
-  const actor = await requireActorForPage(`/orders/${reference}`);
+  const [actor, t, tStatuses] = await Promise.all([
+    requireActorForPage(`/orders/${reference}`),
+    getTranslations("Order"),
+    getTranslations("Statuses"),
+  ]);
 
   // Authorization happens inside the lookup: an unrelated reference is
   // indistinguishable from one that does not exist.
@@ -79,9 +83,8 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
           role="status"
           className="rounded-control border border-line bg-surface-muted px-4 py-3 text-sm text-ink"
         >
-          <span className="font-medium text-positive">Request received.</span> We review
-          new briefs in the order they arrive and reply in the project chat below. Every
-          status change is recorded on the timeline.
+          <span className="font-medium text-positive">{t("justSubmittedTitle")}</span>{" "}
+          {t("justSubmittedBody")}
         </div>
       ) : null}
 
@@ -90,7 +93,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
           href={actor.role === "ADMIN" ? "/admin/orders" : "/orders"}
           className="font-mono text-xs text-ink-muted transition-colors hover:text-ink"
         >
-          &larr; All projects
+          &larr; {t("allProjects")}
         </Link>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -102,7 +105,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
             </div>
             <h1 className="page-title mt-2">{order.title}</h1>
             <p className="mt-1 max-w-2xl text-sm text-ink-muted">
-              {ORDER_STATUS_DESCRIPTIONS[order.status]}
+              {tStatuses(order.status)}
             </p>
           </div>
         </div>
@@ -112,21 +115,20 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
         <div className="flex min-w-0 flex-col gap-5">
           <Panel>
             <PanelHeader
-              title="The brief"
-              description={`Submitted ${formatDateTime(order.createdAt)}`}
+              title={t("brief")}
+              description={t("submittedAt", {
+                datetime: formatDateTime(order.createdAt),
+              })}
             />
             <PanelBody className="flex flex-col gap-5">
-              <Field label="The idea" value={order.detailedDescription} />
-              <Field label="Problem and goals" value={order.problemStatement} />
-              <Field label="Important features" value={order.keyFeatures} />
+              <Field label={t("idea")} value={order.detailedDescription} />
+              <Field label={t("problemGoals")} value={order.problemStatement} />
+              <Field label={t("keyFeatures")} value={order.keyFeatures} />
               {order.technicalPreferences ? (
-                <Field
-                  label="Technical preferences"
-                  value={order.technicalPreferences}
-                />
+                <Field label={t("technicalPrefs")} value={order.technicalPreferences} />
               ) : null}
               {order.referenceLinks ? (
-                <Field label="References" value={order.referenceLinks} />
+                <Field label={t("references")} value={order.referenceLinks} />
               ) : null}
             </PanelBody>
           </Panel>
@@ -144,26 +146,26 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
 
         <div className="flex flex-col gap-5">
           <Panel>
-            <PanelHeader title="Details" />
+            <PanelHeader title={t("details")} />
             <PanelBody>
               <dl className="flex flex-col gap-3.5">
                 <div>
-                  <dt className="label-quiet">Requested deadline</dt>
+                  <dt className="label-quiet">{t("deadline")}</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {order.desiredDeadline === null
-                      ? "Not specified"
+                      ? t("notSpecified")
                       : formatDate(order.desiredDeadline)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="label-quiet">Last update</dt>
+                  <dt className="label-quiet">{t("lastUpdate")}</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {formatDateTime(order.updatedAt)}
                   </dd>
                 </div>
                 {order.completedAt !== null ? (
                   <div>
-                    <dt className="label-quiet">Completed</dt>
+                    <dt className="label-quiet">{t("completedAt")}</dt>
                     <dd className="mt-1 text-sm text-ink">
                       {formatDateTime(order.completedAt)}
                     </dd>
@@ -171,17 +173,17 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
                 ) : null}
                 {actor.role === "CUSTOMER" ? null : (
                   <div>
-                    <dt className="label-quiet">Customer</dt>
+                    <dt className="label-quiet">{t("customer")}</dt>
                     <dd className="mt-1 text-sm text-ink">
                       {displayName(order.customerName, order.customerEmail)}
                     </dd>
                   </div>
                 )}
                 <div>
-                  <dt className="label-quiet">Assigned to</dt>
+                  <dt className="label-quiet">{t("assignedTo")}</dt>
                   <dd className="mt-1 text-sm text-ink">
                     {order.assignedExecutorId === null
-                      ? "Not assigned yet"
+                      ? t("notAssigned")
                       : displayName(order.executorName, order.executorEmail ?? "")}
                   </dd>
                 </div>
@@ -190,10 +192,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
           </Panel>
 
           <Panel>
-            <PanelHeader
-              title="Status"
-              description="Only transitions your role is allowed to make are offered, and the server checks again."
-            />
+            <PanelHeader title={t("statusPanel")} description={t("statusHint")} />
             <PanelBody>
               <OrderStatusForm
                 orderId={order.id}
@@ -205,10 +204,7 @@ export default async function OrderDetailPage({ params, searchParams }: PageProp
 
           {mayAssign ? (
             <Panel>
-              <PanelHeader
-                title="Assignment"
-                description="The assigned executor gains access to this project only."
-              />
+              <PanelHeader title={t("assignment")} description={t("assignmentHint")} />
               <PanelBody>
                 <AssignExecutorForm
                   orderId={order.id}

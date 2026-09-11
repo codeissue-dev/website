@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { assignExecutorAction } from "@/actions/orders";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -28,15 +29,11 @@ export function AssignExecutorForm({
   executors: ExecutorOption[];
   currentExecutorId: string | null;
 }) {
+  const t = useTranslations("OrderForms");
   const [state, formAction] = useActionState(assignExecutorAction, idleActionState);
 
   if (executors.length === 0) {
-    return (
-      <p className="text-sm text-ink-muted">
-        No accounts hold the executor role yet. Grant the role in People, then assign
-        the project here.
-      </p>
-    );
+    return <p className="text-sm text-ink-muted">{t("noExecutors")}</p>;
   }
 
   return (
@@ -45,11 +42,11 @@ export function AssignExecutorForm({
 
       <SelectField
         name="executorId"
-        label="Executor"
+        label={t("executor")}
         defaultValue={currentExecutorId ?? ""}
         error={firstFieldError(state, "executorId")}
         options={[
-          { value: "", label: "Unassigned" },
+          { value: "", label: t("executor") },
           ...executors.map((executor) => ({
             value: executor.id,
             label: displayName(executor.name, executor.email),
@@ -59,18 +56,18 @@ export function AssignExecutorForm({
 
       <TextAreaField
         name="note"
-        label="Note (optional)"
+        label={t("noteOptional")}
         rows={2}
         maxLength={1000}
-        hint="Recorded in the project history alongside the assignment."
+        hint={t("assignmentNoteHint")}
         error={firstFieldError(state, "note")}
       />
 
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving...">
-          Save assignment
+        <SubmitButton size="sm" pendingLabel={t("saving")}>
+          {t("saveAssignment")}
         </SubmitButton>
       </div>
     </form>

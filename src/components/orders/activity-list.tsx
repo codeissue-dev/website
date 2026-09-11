@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { ActivityEntry } from "@/lib/stats/queries";
@@ -9,11 +10,11 @@ import { displayName, formatRelativeTime } from "@/lib/utils";
  * Nothing here is derived from the interface: each row is a persisted event.
  */
 export function ActivityList({ entries }: { entries: ActivityEntry[] }) {
+  const t = useTranslations("Dashboard");
+
   if (entries.length === 0) {
     return (
-      <p className="px-4 py-6 text-sm text-ink-muted sm:px-5">
-        No status changes have been recorded yet.
-      </p>
+      <p className="px-4 py-6 text-sm text-ink-muted sm:px-5">{t("nothingToCount")}</p>
     );
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { changePasswordAction, updateProfileAction } from "@/actions/auth";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -9,27 +10,28 @@ import { SubmitButton } from "@/components/ui/form-controls";
 import { FormMessage } from "@/components/ui/form-message";
 
 export function ProfileForm({ name }: { name: string }) {
+  const t = useTranslations("AccountForm");
   const [state, formAction] = useActionState(updateProfileAction, idleActionState);
 
   return (
     <form action={formAction} className="flex flex-col gap-4">
       <TextField
         name="name"
-        label="Name"
+        label={t("name")}
         required
         minLength={2}
         maxLength={120}
         autoComplete="name"
         defaultValue={name}
-        hint="Used in the project chat and in the history of every status change you make."
+        hint={t("nameHint")}
         error={firstFieldError(state, "name")}
       />
 
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving...">
-          Save name
+        <SubmitButton size="sm" pendingLabel={t("saving")}>
+          {t("saveName")}
         </SubmitButton>
       </div>
     </form>
@@ -37,6 +39,7 @@ export function ProfileForm({ name }: { name: string }) {
 }
 
 export function PasswordForm() {
+  const t = useTranslations("AccountForm");
   const [state, formAction] = useActionState(changePasswordAction, idleActionState);
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -48,7 +51,7 @@ export function PasswordForm() {
     <form ref={formRef} action={formAction} className="flex flex-col gap-4">
       <TextField
         name="currentPassword"
-        label="Current password"
+        label={t("currentPassword")}
         type="password"
         required
         autoComplete="current-password"
@@ -56,17 +59,17 @@ export function PasswordForm() {
       />
       <TextField
         name="password"
-        label="New password"
+        label={t("newPassword")}
         type="password"
         required
         minLength={10}
         autoComplete="new-password"
-        hint="At least 10 characters, including a letter and a number."
+        hint={t("newPasswordHint")}
         error={firstFieldError(state, "password")}
       />
       <TextField
         name="confirmPassword"
-        label="Repeat new password"
+        label={t("repeatNewPassword")}
         type="password"
         required
         autoComplete="new-password"
@@ -76,8 +79,8 @@ export function PasswordForm() {
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving...">
-          Change password
+        <SubmitButton size="sm" pendingLabel={t("saving")}>
+          {t("changePassword")}
         </SubmitButton>
       </div>
     </form>

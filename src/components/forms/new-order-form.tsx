@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { createOrderAction } from "@/actions/orders";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -16,88 +17,89 @@ function todayIsoDate(): string {
 }
 
 export function NewOrderForm() {
+  const t = useTranslations("NewOrder");
   const [state, formAction] = useActionState(createOrderAction, idleActionState);
 
   return (
     <form action={formAction} className="flex flex-col gap-5">
       <TextField
         name="title"
-        label="Project title"
+        label={t("titleLabel")}
         required
         minLength={6}
         maxLength={140}
-        placeholder="Warehouse picking assistant"
-        hint="A short name we can use when we talk about this project."
+        placeholder={t("titlePlaceholder")}
+        hint={t("titleHint")}
         error={firstFieldError(state, "title")}
       />
 
       <TextAreaField
         name="detailedDescription"
-        label="Describe the idea"
+        label={t("ideaLabel")}
         required
         minLength={80}
         maxLength={8000}
         rows={8}
-        placeholder="What should exist when this is finished? Who uses it, and how?"
-        hint="The more concrete this is, the more accurate our estimate will be."
+        placeholder={t("ideaPlaceholder")}
+        hint={t("ideaHint")}
         error={firstFieldError(state, "detailedDescription")}
       />
 
       <TextAreaField
         name="problemStatement"
-        label="Problem and goals"
+        label={t("problemLabel")}
         required
         minLength={30}
         maxLength={2000}
         rows={4}
-        placeholder="What is broken or missing today, and what should improve?"
+        placeholder={t("problemPlaceholder")}
         error={firstFieldError(state, "problemStatement")}
       />
 
       <TextAreaField
         name="keyFeatures"
-        label="Important features"
+        label={t("featuresLabel")}
         required
         minLength={20}
         maxLength={4000}
         rows={4}
-        placeholder="List the parts that matter most. One per line is fine."
+        placeholder={t("featuresPlaceholder")}
         error={firstFieldError(state, "keyFeatures")}
       />
 
       <TextAreaField
         name="technicalPreferences"
-        label="Technical preferences"
+        label={t("techLabel")}
         maxLength={2000}
         rows={3}
-        placeholder="Existing systems, hosting, languages you must stay with."
-        hint="Optional. Leave empty if you have no constraints."
+        placeholder={t("techPlaceholder")}
+        hint={t("techHint")}
         error={firstFieldError(state, "technicalPreferences")}
       />
 
       <TextAreaField
         name="referenceLinks"
-        label="References and examples"
+        label={t("linksLabel")}
         maxLength={2000}
         rows={3}
-        placeholder="Links to products, screenshots or documents we should look at."
-        hint="Optional."
+        placeholder={t("linksPlaceholder")}
+        hint={t("linksHint")}
         error={firstFieldError(state, "referenceLinks")}
       />
 
       <TextField
         name="desiredDeadline"
-        label="Requested deadline"
+        label={t("deadlineLabel")}
         type="date"
         min={todayIsoDate()}
-        hint="Optional. We will tell you honestly whether it is realistic."
+        hint={t("deadlineHint")}
         error={firstFieldError(state, "desiredDeadline")}
       />
 
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton pendingLabel="Submitting...">Submit request</SubmitButton>
+        <SubmitButton pendingLabel={t("submitting")}>{t("submit")}</SubmitButton>
       </div>
     </form>
   );

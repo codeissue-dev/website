@@ -18,8 +18,10 @@ const COMMANDS = [
   "work",
   "faq",
   "start",
+  "signin",
   "theme",
   "lang",
+  "top",
   "clear",
 ] as const;
 
@@ -31,6 +33,16 @@ const SCROLL_TARGETS: Partial<Record<Command, string>> = {
   work: "work",
   faq: "faq",
 };
+
+/** Commands are written with a leading slash; the bare word also works. */
+function parseCommand(raw: string): { name: string; echoed: string } {
+  const trimmed = raw.trim();
+  const slashed = trimmed.startsWith("/");
+  return {
+    name: (slashed ? trimmed.slice(1) : trimmed).trim().toLowerCase(),
+    echoed: slashed ? trimmed : `/${trimmed}`,
+  };
+}
 
 /**
  * A working console for the opening screen.
@@ -67,19 +79,19 @@ export function Console() {
   }
 
   function run(raw: string) {
-    const command = raw.trim().toLowerCase();
-    push({ tone: "cmd", text: raw.trim() });
+    const { name: command, echoed } = parseCommand(raw);
+    push({ tone: "cmd", text: echoed });
 
     if (command === "") return;
 
-    setHistory((current) => [...current, command]);
+    setHistory((current) => [...current, echoed]);
     setHistoryIndex(null);
 
     if (command === "help") {
       for (const name of COMMANDS) {
         push({
           tone: "out",
-          text: `${name} ${t(`commands.${name}`)}`,
+          text: `/${name} ${t(`commands.${name}`)}`,
         });
       }
       return;
@@ -95,9 +107,15 @@ export function Console() {
       return;
     }
 
-    if (command === "start") {
+    if (command === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      push({ tone: "ok", text: t("jump") });
+      return;
+    }
+
+    if (command === "start" || command === "signin") {
       push({ tone: "ok", text: t("opening") });
-      router.push("/register");
+      router.push(command === "start" ? "/register" : "/sign-in");
       return;
     }
 

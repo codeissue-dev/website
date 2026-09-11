@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
-import { roleLabel } from "@/components/ui/status-badge";
 import type { ChatMessagePayload } from "@/lib/realtime/events";
 import { cn, formatDateTime, toIsoString } from "@/lib/utils";
 
@@ -19,6 +19,8 @@ export function ChatThread({
   viewerId: string;
   historyComplete: boolean;
 }) {
+  const t = useTranslations("Order");
+  const tRoles = useTranslations("Roles");
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const lastCountRef = useRef(0);
 
@@ -35,22 +37,18 @@ export function ChatThread({
     <div
       ref={scrollRef}
       className="flex max-h-[28rem] min-h-[12rem] flex-col gap-3 overflow-y-auto px-4 py-4 sm:px-5"
-      aria-label="Project conversation"
+      aria-label={t("conversation")}
       // A log region announces new messages without stealing focus.
       role="log"
       aria-live="polite"
       tabIndex={0}
     >
       {!historyComplete && messages.length > 0 ? (
-        <p className="text-center text-xs text-ink-subtle">
-          Showing the most recent part of this conversation.
-        </p>
+        <p className="text-center text-xs text-ink-subtle">{t("chatPartial")}</p>
       ) : null}
 
       {messages.length === 0 ? (
-        <p className="my-auto text-center text-sm text-ink-muted">
-          No messages yet. Anything you write here stays attached to this project.
-        </p>
+        <p className="my-auto text-center text-sm text-ink-muted">{t("chatEmpty")}</p>
       ) : (
         messages.map((message) => {
           const own = message.sender.id === viewerId;
@@ -67,12 +65,12 @@ export function ChatThread({
               <header className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
                 <span className="text-xs font-semibold text-ink">
                   {own
-                    ? "You"
-                    : (message.sender.name ?? roleLabel(message.sender.role))}
+                    ? t("you")
+                    : (message.sender.name ?? tRoles(message.sender.role))}
                 </span>
                 {!own ? (
                   <span className="text-xs text-ink-subtle">
-                    {roleLabel(message.sender.role)}
+                    {tRoles(message.sender.role)}
                   </span>
                 ) : null}
                 <time

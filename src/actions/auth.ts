@@ -46,7 +46,6 @@ export async function registerAction(
   formData: FormData,
 ): Promise<ActionState> {
   const parsed = registerSchema.safeParse({
-    name: formText(formData, "name"),
     email: formText(formData, "email"),
     password: formText(formData, "password"),
     confirmPassword: formText(formData, "confirmPassword"),
@@ -55,7 +54,6 @@ export async function registerAction(
 
   try {
     await createUserWithPassword({
-      name: parsed.data.name,
       email: parsed.data.email,
       password: parsed.data.password,
     });

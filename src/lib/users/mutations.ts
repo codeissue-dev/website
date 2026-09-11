@@ -20,7 +20,7 @@ export type CreatedUser = {
  * race between check and insert is resolved by handling `23505`.
  */
 export async function createUserWithPassword(input: {
-  name: string;
+  name?: string;
   email: string;
   password: string;
   role?: UserRole;
@@ -32,7 +32,7 @@ export async function createUserWithPassword(input: {
     const inserted = await getDb()
       .insert(users)
       .values({
-        name: input.name,
+        name: input.name ?? null,
         email,
         passwordHash,
         role: input.role ?? "CUSTOMER",

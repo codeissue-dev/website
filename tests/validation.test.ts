@@ -253,17 +253,15 @@ void test("testimonials require a substantial quote and a sane rating", () => {
 
 void test("registration normalizes the email and reports mismatched passwords", () => {
   const parsed = registerSchema.parse({
-    name: "  Marta Feld ",
     email: "  Marta@Example.COM ",
     password: "picking-app-2026",
     confirmPassword: "picking-app-2026",
   });
 
-  assert.equal(parsed.name, "Marta Feld");
+  assert.ok(!("name" in parsed));
   assert.equal(parsed.email, "marta@example.com");
 
   const mismatch = registerSchema.safeParse({
-    name: "Marta Feld",
     email: "marta@example.com",
     password: "picking-app-2026",
     confirmPassword: "picking-app-2025",
@@ -278,7 +276,6 @@ void test("registration normalizes the email and reports mismatched passwords", 
 void test("weak passwords are rejected before any hashing happens", () => {
   for (const password of ["short", "alllettersnodigits", "1234567890123456"]) {
     const result = registerSchema.safeParse({
-      name: "Marta Feld",
       email: "marta@example.com",
       password,
       confirmPassword: password,

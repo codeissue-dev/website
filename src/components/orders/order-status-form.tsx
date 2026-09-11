@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { changeOrderStatusAction } from "@/actions/orders";
 import { firstFieldError, idleActionState } from "@/actions/state";
@@ -9,7 +10,6 @@ import { ConfirmSubmitButton, SubmitButton } from "@/components/ui/form-controls
 import { FormMessage } from "@/components/ui/form-message";
 import {
   isOrderStatus,
-  ORDER_STATUS_LABELS,
   type OrderStatus,
   type OrderTransition,
 } from "@/lib/orders/status";
@@ -30,6 +30,8 @@ export function OrderStatusForm({
   transitions: OrderTransition[];
   hasAssignedExecutor: boolean;
 }) {
+  const t = useTranslations("OrderForms");
+  const tStatuses = useTranslations("Statuses");
   const [state, formAction] = useActionState(changeOrderStatusAction, idleActionState);
 
   const available = transitions.filter(
@@ -46,9 +48,7 @@ export function OrderStatusForm({
   if (active === null) {
     return (
       <p className="text-sm text-ink-muted">
-        {blockedByAssignment
-          ? "Assign an executor to unlock the next step for this project."
-          : "There is no status change available to you for this project right now."}
+        {blockedByAssignment ? t("needAssignment") : t("noTransitions")}
       </p>
     );
   }
@@ -59,7 +59,7 @@ export function OrderStatusForm({
 
       <SelectField
         name="toStatus"
-        label="Move project to"
+        label={t("moveTo")}
         value={active.to}
         onChange={(event) => {
           const next = event.target.value;
@@ -68,28 +68,25 @@ export function OrderStatusForm({
         error={firstFieldError(state, "toStatus")}
         options={available.map((transition) => ({
           value: transition.to,
-          label: `${transition.actionLabel} to ${ORDER_STATUS_LABELS[transition.to]}`,
+          label: t("toStatus", {
+            action: transition.actionLabel,
+            status: tStatuses(transition.to),
+          }),
         }))}
       />
 
       <TextAreaField
         name="note"
-        label={active.requiresNote === true ? "Note" : "Note (optional)"}
+        label={active.requiresNote === true ? t("note") : t("noteOptional")}
         rows={3}
         required={active.requiresNote === true}
         maxLength={1000}
-        hint={
-          active.requiresNote === true
-            ? "This step needs an explanation. It is stored with the history entry and visible to the customer."
-            : "Stored with the history entry and visible to everyone on the project."
-        }
+        hint={active.requiresNote === true ? t("noteRequiredHint") : t("noteHint")}
         error={firstFieldError(state, "note")}
       />
 
       {blockedByAssignment ? (
-        <p className="text-xs text-ink-muted">
-          Some later steps stay hidden until an executor is assigned.
-        </p>
+        <p className="text-xs text-ink-muted">{t("assignmentBlocked")}</p>
       ) : null}
 
       <FormMessage state={state} />
@@ -98,13 +95,13 @@ export function OrderStatusForm({
         {active.destructive === true ? (
           <ConfirmSubmitButton
             size="sm"
-            confirmMessage={`${active.actionLabel}: this is visible to the customer and recorded in the project history. Continue?`}
-            pendingLabel="Saving..."
+            confirmMessage={t("confirm", { action: active.actionLabel })}
+            pendingLabel={t("saving")}
           >
             {active.actionLabel}
           </ConfirmSubmitButton>
         ) : (
-          <SubmitButton size="sm" pendingLabel="Saving...">
+          <SubmitButton size="sm" pendingLabel={t("saving")}>
             {active.actionLabel}
           </SubmitButton>
         )}

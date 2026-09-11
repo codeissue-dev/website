@@ -8,6 +8,7 @@ import { PortfolioSection } from "@/components/landing/portfolio-section";
 import { Process } from "@/components/landing/process";
 import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { Workflow } from "@/components/landing/workflow";
+import { ScrollTopOnMount } from "@/components/motion/scroll-top-on-mount";
 import { readWithFallback } from "@/lib/db/resilient";
 import {
   listPublishedPortfolioItems,
@@ -46,6 +47,7 @@ export default async function LandingPage() {
 
   return (
     <>
+      <ScrollTopOnMount />
       <Hero />
       <Capabilities />
       <Process />

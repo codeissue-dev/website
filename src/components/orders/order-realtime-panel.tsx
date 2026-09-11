@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { markOrderReadAction } from "@/actions/chat";
 import { ChatComposer } from "@/components/orders/chat-composer";
@@ -36,6 +37,7 @@ export function OrderRealtimePanel({
   initialEvents: StatusEventPayload[];
   initialHistoryComplete: boolean;
 }) {
+  const t = useTranslations("Realtime");
   const stream = useOrderStream({
     orderId,
     initialStatus,
@@ -58,8 +60,8 @@ export function OrderRealtimePanel({
     <div className="grid gap-5 lg:grid-cols-3">
       <Panel className="flex flex-col lg:col-span-2">
         <PanelHeader
-          title="Project conversation"
-          description="Shared with the codeissue team working on this project."
+          title={t("conversation")}
+          description={t("conversationHint")}
           actions={<ConnectionIndicator state={stream.connection} />}
         />
         {stream.notice ? (
@@ -79,14 +81,14 @@ export function OrderRealtimePanel({
           <ChatComposer orderId={orderId} />
         ) : (
           <p className="border-t border-line px-4 py-3 text-xs text-ink-muted sm:px-5">
-            This conversation is read-only for your role.
+            {t("readOnly")}
           </p>
         )}
       </Panel>
 
       <Panel>
         <PanelHeader
-          title="Status history"
+          title={t("history")}
           actions={<StatusBadge status={stream.status} />}
         />
         <PanelBody>

@@ -9,16 +9,62 @@
     "menu": "Menu",
     "home": "codeissue home",
     "skip": "Skip to content",
-    "nav": {
-      "capabilities": "What we build",
-      "process": "How it works",
-      "work": "Public projects",
-      "testimonials": "Reviews"
-    },
-    "actions": {
-      "signIn": "Sign in",
-      "startProject": "Start a project",
-      "dashboard": "Dashboard"
+    "signIn": "Sign in",
+    "startProject": "Start a project",
+    "signOut": "Sign out",
+    "panels": {
+      "capabilities": {
+        "label": "What we build",
+        "description": "Internal tools, customer products, integrations, reporting, recovery work and the next release.",
+        "list": "See all six",
+        "process": "How the work runs"
+      },
+      "process": {
+        "label": "How it works",
+        "description": "A written brief becomes a project with its own reference, status timeline and chat.",
+        "steps": "The four steps",
+        "start": "Open a project"
+      },
+      "work": {
+        "label": "Public projects",
+        "description": "Finished work we may show, each with the client's permission.",
+        "all": "Browse all projects",
+        "start": "Start yours"
+      },
+      "testimonials": {
+        "label": "Reviews",
+        "description": "Words from people who shipped with us, published with their approval.",
+        "read": "Read the reviews"
+      },
+      "dashboard": {
+        "label": "Dashboard",
+        "description": "Your summary: counts, the latest projects and the latest status changes."
+      },
+      "projects": {
+        "label": "Projects",
+        "description": "Everything you submit lives here with its full history and chat.",
+        "all": "All projects",
+        "new": "New request"
+      },
+      "assigned": {
+        "label": "Assigned work",
+        "description": "Projects assigned to you, nothing else.",
+        "all": "Open the list"
+      },
+      "studio": {
+        "label": "Studio",
+        "description": "Administration: projects, people and the public content pipeline.",
+        "overview": "Overview",
+        "all": "All projects",
+        "people": "People",
+        "portfolio": "Portfolio",
+        "testimonials": "Testimonials"
+      },
+      "account": {
+        "label": "Account",
+        "description": "Your sign-in details, display name and password.",
+        "settings": "Account settings"
+      }
     }
   },
   "ThemeToggle": {
@@ -39,29 +85,31 @@
   },
   "Console": {
     "title": "codeissue console",
-    "inputLabel": "Console command",
+    "inputLabel": "Command for the console",
     "boot": [
       "codeissue console. Type help to see what it can do.",
       "Everything you can reach on this site works here too."
     ],
-    "hint": "Unknown command. Type help.",
+    "hint": "Unknown command. Type /help for the list.",
     "jump": "Moving to the section.",
-    "opening": "Opening the brief form.",
+    "opening": "Opening the brief form...",
     "themeLight": "Theme: light.",
     "themeDark": "Theme: dark.",
     "langEn": "Language: English.",
     "langRu": "Language: Russian.",
     "commands": {
       "help": "list the commands",
-      "about": "what the studio does",
-      "services": "scroll to what we build",
-      "process": "scroll to how the work runs",
-      "work": "scroll to public projects",
-      "faq": "scroll to the questions",
+      "about": "what this studio is",
+      "services": "go to what we build",
+      "process": "go to how the work runs",
+      "work": "go to public projects",
+      "faq": "go to the questions",
       "start": "open the brief form",
       "theme": "switch the color theme",
       "lang": "switch the language",
-      "clear": "wipe the screen"
+      "clear": "clear the screen",
+      "top": "scroll back to the top",
+      "signin": "open the sign-in page"
     }
   },
   "Hero": {
@@ -283,5 +331,188 @@
     "confirmPassword": "Repeat password",
     "submit": "Create account",
     "pending": "Creating account..."
+  },
+  "Roles": {
+    "CUSTOMER": "Customer",
+    "EXECUTOR": "Executor",
+    "ADMIN": "Administrator"
+  },
+  "Dashboard": {
+    "titleCustomer": "Your projects",
+    "titleExecutor": "Your work",
+    "descriptionCustomer": "A summary of your requests and where each one stands.",
+    "descriptionExecutor": "Everything assigned to you, with the latest status changes.",
+    "newRequest": "New request",
+    "projects": "Projects",
+    "assignedProjects": "Assigned projects",
+    "inProgress": "In progress",
+    "notYetClosed": "Not yet closed",
+    "completed": "Completed",
+    "latest": "Latest projects",
+    "viewAll": "View all projects",
+    "emptyCustomerTitle": "No requests yet",
+    "emptyCustomerBody": "Describe what you need built and we will reply in the project chat.",
+    "emptyExecutorTitle": "Nothing assigned yet",
+    "emptyExecutorBody": "When an administrator assigns you a project it appears here with its full history and chat.",
+    "submitRequest": "Submit a request",
+    "byStatus": "By status",
+    "nothingToCount": "Nothing to count yet.",
+    "recentActivity": "Recent activity"
+  },
+  "Orders": {
+    "titleCustomer": "Your projects",
+    "titleExecutor": "Assigned work",
+    "titleAdmin": "All projects",
+    "descriptionCustomer": "Every request you have submitted, newest first.",
+    "descriptionExecutor": "Projects assigned to you. Nothing else is visible here.",
+    "descriptionAdmin": "Every project in the workspace.",
+    "newRequest": "New request",
+    "count": "{count, plural, one {# project} other {# projects}}",
+    "page": "Page {page} of {pageCount}",
+    "emptyTitle": "Nothing to show",
+    "emptyCustomer": "You have not submitted a project request yet, or no request matches these filters.",
+    "emptyOther": "No project matches these filters.",
+    "submitFirst": "Submit your first request",
+    "submitted": "Submitted",
+    "updated": "Updated",
+    "requestedBy": "Requested by",
+    "customer": "Customer",
+    "executor": "Executor",
+    "unassigned": "Unassigned",
+    "newMessages": "{count, plural, one {# new message} other {# new messages}}"
+  },
+  "Filters": {
+    "search": "Search",
+    "searchPlaceholder": "Reference, title or description",
+    "status": "Status",
+    "allStatuses": "All statuses",
+    "assignment": "Assignment",
+    "any": "Any",
+    "unassigned": "Unassigned",
+    "assigned": "Assigned",
+    "perPage": "Per page",
+    "apply": "Apply",
+    "clear": "Clear"
+  },
+  "Order": {
+    "notFoundTitle": "This project is not available",
+    "notFoundBody": "Either the reference does not exist or it belongs to someone else. Check the reference from your project list and try again.",
+    "backToProjects": "Back to your projects",
+    "allProjects": "All projects",
+    "justSubmittedTitle": "Request received.",
+    "justSubmittedBody": "We review new briefs in the order they arrive and reply in the project chat below. Every status change is recorded on the timeline.",
+    "brief": "The brief",
+    "submittedAt": "Submitted {datetime}",
+    "idea": "The idea",
+    "problemGoals": "Problem and goals",
+    "keyFeatures": "Important features",
+    "technicalPrefs": "Technical preferences",
+    "references": "References",
+    "details": "Details",
+    "deadline": "Requested deadline",
+    "notSpecified": "Not specified",
+    "lastUpdate": "Last update",
+    "completedAt": "Completed",
+    "customer": "Customer",
+    "assignedTo": "Assigned to",
+    "notAssigned": "Not assigned yet",
+    "statusPanel": "Status",
+    "statusHint": "Only transitions your role is allowed to make are offered, and the server checks again.",
+    "assignment": "Assignment",
+    "assignmentHint": "The assigned executor gains access to this project only.",
+    "conversation": "Project conversation",
+    "chatEmpty": "No messages yet. Anything you write here stays attached to this project.",
+    "chatPartial": "Showing the most recent part of this conversation.",
+    "chatPlaceholder": "Write a message about this project...",
+    "chatHint": "Enter sends, Shift + Enter adds a line.",
+    "chatSend": "Send",
+    "chatSending": "Sending...",
+    "chatMessage": "Message",
+    "you": "You",
+    "fromStatus": "from {status}",
+    "created": "request created",
+    "historyEmpty": "The history will list every status change with its author and time."
+  },
+  "OrderForms": {
+    "moveTo": "Move project to",
+    "toStatus": "{action} to {status}",
+    "note": "Note",
+    "noteOptional": "Note (optional)",
+    "noteRequiredHint": "This step needs an explanation. It is stored with the history entry and visible to the customer.",
+    "noteHint": "Stored with the history entry and visible to everyone on the project.",
+    "assignmentBlocked": "Some later steps stay hidden until an executor is assigned.",
+    "needAssignment": "Assign an executor to unlock the next step for this project.",
+    "noTransitions": "There is no status change available to you for this project right now.",
+    "confirm": "{action}: this is visible to the customer and recorded in the project history. Continue?",
+    "saving": "Saving...",
+    "noExecutors": "No accounts hold the executor role yet. Grant the role in People, then assign the project here.",
+    "executor": "Executor",
+    "saveAssignment": "Save assignment",
+    "assignmentNoteHint": "Recorded in the project history alongside the assignment.",
+    "unassigned": "Unassigned"
+  },
+  "NewOrder": {
+    "title": "New project request",
+    "description": "The more concrete this brief is, the faster we can answer with real scope. Everything here is saved to your project and can be discussed in the project chat afterwards.",
+    "panel": "Project brief",
+    "panelHint": "Fields marked as optional can be left empty.",
+    "titleLabel": "Project title",
+    "titlePlaceholder": "Warehouse picking assistant",
+    "titleHint": "A short name we can use when we talk about this project.",
+    "ideaLabel": "Describe the idea",
+    "ideaPlaceholder": "What should exist when this is finished? Who uses it, and how?",
+    "ideaHint": "The more concrete this is, the more accurate our estimate will be.",
+    "problemLabel": "Problem and goals",
+    "problemPlaceholder": "What is broken or missing today, and what should improve?",
+    "featuresLabel": "Important features",
+    "featuresPlaceholder": "List the parts that matter most. One per line is fine.",
+    "techLabel": "Technical preferences",
+    "techPlaceholder": "Existing systems, hosting, languages you must stay with.",
+    "techHint": "Optional. Leave empty if you have no constraints.",
+    "linksLabel": "References and examples",
+    "linksPlaceholder": "Links to products, screenshots or documents we should look at.",
+    "linksHint": "Optional.",
+    "deadlineLabel": "Requested deadline",
+    "deadlineHint": "Optional. We will tell you honestly whether it is realistic.",
+    "submit": "Submit request",
+    "submitting": "Submitting..."
+  },
+  "Account": {
+    "title": "Account",
+    "description": "Your sign-in details and how you appear to the project team.",
+    "details": "Details",
+    "email": "Email",
+    "role": "Role",
+    "memberSince": "Member since",
+    "adminNote": "Email addresses and roles are changed by an administrator, so that the history of a project always points at a stable account.",
+    "displayName": "Display name",
+    "displayNameHint": "Shown on your messages and on any status change you make.",
+    "password": "Password",
+    "passwordHint": "Changing your password does not sign you out of this browser."
+  },
+  "AccountForm": {
+    "name": "Name",
+    "nameHint": "Used in the project chat and in the history of every status change you make.",
+    "saveName": "Save name",
+    "saving": "Saving...",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "newPasswordHint": "At least 10 characters, including a letter and a number.",
+    "repeatNewPassword": "Repeat new password",
+    "changePassword": "Change password"
+  },
+  "Realtime": {
+    "connecting": "Connecting",
+    "open": "Live",
+    "reconnecting": "Reconnecting",
+    "offline": "Offline",
+    "connectingHint": "Opening the live connection.",
+    "openHint": "Messages and status changes arrive as they happen.",
+    "reconnectingHint": "The live connection dropped. Retrying, and missed messages will be requested on reconnect.",
+    "offlineHint": "No live connection. Messages you send are still saved, and the page shows them after a refresh.",
+    "readOnly": "This conversation is read-only for your role.",
+    "conversation": "Project conversation",
+    "conversationHint": "Shared with the codeissue team working on this project.",
+    "history": "Status history"
   }
 }

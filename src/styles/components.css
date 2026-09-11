@@ -124,6 +124,65 @@
     color: var(--color-ink);
   }
 
+  /* ---------------------------------------------------------------- nav menu */
+
+  /*
+   * The sliding navigation menu. One viewport serves every panel: hovering
+   * another trigger moves the same box sideways and resizes it to the new
+   * content, so the menu never blinks between items.
+   */
+  .navmenu-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    background-color: var(--color-contrast);
+    opacity: 0;
+    transition:
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 180ms ease;
+  }
+
+  .navmenu-indicator[data-open="true"] {
+    opacity: 1;
+  }
+
+  .navmenu-viewport {
+    position: fixed;
+    top: 3.5rem;
+    z-index: 50;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    background-color: var(--color-surface);
+    transition:
+      left 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      width 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      height 240ms ease;
+  }
+
+  .navmenu-content {
+    padding: 1rem 1.125rem 1.125rem;
+    animation: navmenu-in 200ms ease;
+  }
+
+  .navmenu-link {
+    display: block;
+    border-radius: var(--radius-control);
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-muted);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .navmenu-link:hover {
+    background-color: var(--color-surface-muted);
+    color: var(--color-ink);
+  }
+
   .footer-heading {
     font-family: var(--font-sans);
     font-size: 0.8125rem;
@@ -609,6 +668,7 @@
   .pref-option[aria-pressed="true"] {
     background-color: var(--color-surface-muted);
     color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
   }
 
   /* What we build: a definition list, not a wall of identical cards. */

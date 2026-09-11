@@ -35,18 +35,8 @@ export function StatusBadge({
   );
 }
 
-const ROLE_LABELS: Record<UserRole, string> = {
-  CUSTOMER: "Customer",
-  EXECUTOR: "Executor",
-  ADMIN: "Administrator",
-};
-
-export function roleLabel(role: UserRole): string {
-  return ROLE_LABELS[role];
-}
-
 export function RoleBadge({ role, className }: { role: UserRole; className?: string }) {
-  return (
-    <span className={cn("badge badge-neutral", className)}>{ROLE_LABELS[role]}</span>
-  );
+  const t = useTranslations("Roles");
+
+  return <span className={cn("badge badge-neutral", className)}>{t(role)}</span>;
 }

@@ -1,6 +1,8 @@
+import { useTranslations } from "next-intl";
+
 import { Button, ButtonLink } from "@/components/ui/button";
 import { CONTROL_CLASS } from "@/components/ui/fields";
-import { ORDER_STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders/status";
+import { ORDER_STATUSES } from "@/lib/orders/status";
 import { ORDER_STATUS_FILTER_ALL, type OrderListParams } from "@/lib/validation/orders";
 
 /** Search, filter and page size as a plain GET form. */
@@ -13,6 +15,8 @@ export function OrderFilters({
   params: OrderListParams;
   showAssignment: boolean;
 }) {
+  const t = useTranslations("Filters");
+  const tStatuses = useTranslations("Statuses");
   const isFiltered =
     params.q.length > 0 ||
     params.status !== ORDER_STATUS_FILTER_ALL ||
@@ -28,7 +32,7 @@ export function OrderFilters({
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-1.5 lg:col-span-2">
           <label htmlFor="orders-q" className="text-xs font-medium text-ink-muted">
-            Search
+            {t("search")}
           </label>
           <input
             id="orders-q"
@@ -36,13 +40,13 @@ export function OrderFilters({
             type="search"
             defaultValue={params.q}
             maxLength={120}
-            placeholder="Reference, title or description"
+            placeholder={t("searchPlaceholder")}
             className={CONTROL_CLASS}
           />
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="orders-status" className="text-xs font-medium text-ink-muted">
-            Status
+            {t("status")}
           </label>
           <select
             id="orders-status"
@@ -50,10 +54,10 @@ export function OrderFilters({
             defaultValue={params.status}
             className={CONTROL_CLASS}
           >
-            <option value={ORDER_STATUS_FILTER_ALL}>All statuses</option>
+            <option value={ORDER_STATUS_FILTER_ALL}>{t("allStatuses")}</option>
             {ORDER_STATUSES.map((status) => (
               <option key={status} value={status}>
-                {ORDER_STATUS_LABELS[status]}
+                {tStatuses(status)}
               </option>
             ))}
           </select>
@@ -64,7 +68,7 @@ export function OrderFilters({
               htmlFor="orders-assignment"
               className="text-xs font-medium text-ink-muted"
             >
-              Assignment
+              {t("assignment")}
             </label>
             <select
               id="orders-assignment"
@@ -72,9 +76,9 @@ export function OrderFilters({
               defaultValue={params.assignment}
               className={CONTROL_CLASS}
             >
-              <option value="any">Any</option>
-              <option value="unassigned">Unassigned</option>
-              <option value="assigned">Assigned</option>
+              <option value="any">{t("any")}</option>
+              <option value="unassigned">{t("unassigned")}</option>
+              <option value="assigned">{t("assigned")}</option>
             </select>
           </div>
         ) : null}
@@ -83,7 +87,7 @@ export function OrderFilters({
             htmlFor="orders-per-page"
             className="text-xs font-medium text-ink-muted"
           >
-            Per page
+            {t("perPage")}
           </label>
           <select
             id="orders-per-page"
@@ -101,11 +105,11 @@ export function OrderFilters({
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Button type="submit" size="sm">
-          Apply
+          {t("apply")}
         </Button>
         {isFiltered ? (
           <ButtonLink href={action} variant="ghost" size="sm">
-            Clear
+            {t("clear")}
           </ButtonLink>
         ) : null}
       </div>

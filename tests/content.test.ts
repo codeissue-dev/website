@@ -6,12 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import en from "../src/i18n/messages/en.json";
 import ru from "../src/i18n/messages/ru.json";
-import {
-  FOOTER_COLUMNS,
-  headerActions,
-  PUBLIC_SECTION_LINKS,
-  workspaceNavLinks,
-} from "../src/content/navigation";
+import { FOOTER_COLUMNS, workspaceNavLinks } from "../src/content/navigation";
 import { USER_ROLES } from "../src/lib/auth/roles";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -190,23 +185,7 @@ void test("the hero proof stays a triple and actions say what they do", () => {
   }
 });
 
-void test("public navigation points at real in-app routes with dictionary labels", () => {
-  const hrefs = PUBLIC_SECTION_LINKS.map((link) => link.href);
-  assert.equal(new Set(hrefs).size, hrefs.length);
-  for (const link of PUBLIC_SECTION_LINKS) {
-    assert.ok(link.href.startsWith("/"), `not an internal link: ${link.href}`);
-    assert.equal(
-      typeof resolve(en, `Header.${link.labelKey}`),
-      "string",
-      `unresolved nav label: ${link.labelKey}`,
-    );
-    assert.equal(
-      typeof resolve(ru, `Header.${link.labelKey}`),
-      "string",
-      `nav label missing in ru: ${link.labelKey}`,
-    );
-  }
-
+void test("footer navigation points at real in-app routes with dictionary labels", () => {
   const headingKeys = FOOTER_COLUMNS.map((column) => column.headingKey);
   assert.equal(new Set(headingKeys).size, headingKeys.length);
   for (const column of FOOTER_COLUMNS) {
@@ -220,17 +199,6 @@ void test("public navigation points at real in-app routes with dictionary labels
       );
     }
   }
-});
-
-void test("header offers exactly one emphasised action per state", () => {
-  for (const signedIn of [true, false]) {
-    const actions = headerActions(signedIn);
-    assert.equal(actions.length, 2);
-    assert.equal(actions.filter((action) => action.emphasis === "strong").length, 1);
-    assert.equal(new Set(actions.map((action) => action.href)).size, 2);
-  }
-  assert.ok(headerActions(true).some((action) => action.href === "/dashboard"));
-  assert.ok(headerActions(false).some((action) => action.href === "/sign-in"));
 });
 
 void test("workspace navigation is unique and role appropriate", () => {

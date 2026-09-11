@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 
 import { ActivityList } from "@/components/orders/activity-list";
@@ -10,17 +11,21 @@ import { PageHeading } from "@/components/ui/page-heading";
 import { Panel, PanelHeader, Stat } from "@/components/ui/panel";
 import { requireActorForPage } from "@/lib/auth/actor";
 import { listOrdersForActor } from "@/lib/orders/queries";
-import { ORDER_STATUS_LABELS, ORDER_STATUSES } from "@/lib/orders/status";
+import { ORDER_STATUSES } from "@/lib/orders/status";
 import { loadCustomerStats, loadExecutorStats } from "@/lib/stats/queries";
 import { ORDER_STATUS_FILTER_ALL } from "@/lib/validation/orders";
 
-export const metadata: Metadata = {
-  title: "Dashboard",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Dashboard");
+  return { title: t("titleCustomer"), robots: { index: false, follow: false } };
+}
 
 export default async function DashboardPage() {
-  const actor = await requireActorForPage("/dashboard");
+  const [actor, t, tStatuses] = await Promise.all([
+    requireActorForPage("/dashboard"),
+    getTranslations("Dashboard"),
+    getTranslations("Statuses"),
+  ]);
   if (actor.role === "ADMIN") redirect("/admin");
 
   const isExecutor = actor.role === "EXECUTOR";
@@ -37,58 +42,54 @@ export default async function DashboardPage() {
   const statusRows = ORDER_STATUSES.filter(
     (status) => stats.statusCounts[status] > 0,
   ).map((status) => ({
-    label: ORDER_STATUS_LABELS[status],
+    label: tStatuses(status),
     value: stats.statusCounts[status],
   }));
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeading
-        title={isExecutor ? "Your work" : "Your projects"}
-        description={
-          isExecutor
-            ? "Everything assigned to you, with the latest status changes."
-            : "A summary of your requests and where each one stands."
-        }
+        title={isExecutor ? t("titleExecutor") : t("titleCustomer")}
+        description={isExecutor ? t("descriptionExecutor") : t("descriptionCustomer")}
         action={
           isExecutor ? undefined : (
             <ButtonLink href="/orders/new" size="sm">
-              New request
+              {t("newRequest")}
             </ButtonLink>
           )
         }
       />
       <dl className="grid gap-4 sm:grid-cols-3">
         <Stat
-          label={isExecutor ? "Assigned projects" : "Projects"}
+          label={isExecutor ? t("assignedProjects") : t("projects")}
           value={stats.totalOrders}
         />
-        <Stat label="In progress" value={stats.openOrders} detail="Not yet closed" />
-        <Stat label="Completed" value={stats.completedOrders} />
+        <Stat
+          label={t("inProgress")}
+          value={stats.openOrders}
+          detail={t("notYetClosed")}
+        />
+        <Stat label={t("completed")} value={stats.completedOrders} />
       </dl>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
-        <Panel>
+        <Panel className="h-fit">
           <PanelHeader
-            title="Latest projects"
+            title={t("latest")}
             actions={
               <ButtonLink href="/orders" variant="ghost" size="sm">
-                View all projects
+                {t("viewAll")}
               </ButtonLink>
             }
           />
           {recentOrders.rows.length === 0 ? (
             <EmptyState
               className="m-4"
-              title={isExecutor ? "Nothing assigned yet" : "No requests yet"}
-              description={
-                isExecutor
-                  ? "When an administrator assigns you a project it appears here with its full history and chat."
-                  : "Describe what you need built and we will reply in the project chat."
-              }
+              title={isExecutor ? t("emptyExecutorTitle") : t("emptyCustomerTitle")}
+              description={isExecutor ? t("emptyExecutorBody") : t("emptyCustomerBody")}
               action={
                 isExecutor ? undefined : (
                   <ButtonLink href="/orders/new" size="sm">
-                    Submit a request
+                    {t("submitRequest")}
                   </ButtonLink>
                 )
               }
@@ -102,16 +103,16 @@ export default async function DashboardPage() {
           )}
         </Panel>
         <div className="flex flex-col gap-6">
-          <Panel>
-            <PanelHeader title="By status" />
+          <Panel className="flex-1">
+            <PanelHeader title={t("byStatus")} />
             {statusRows.length === 0 ? (
-              <p className="px-4 py-5 text-sm text-ink-muted">Nothing to count yet.</p>
+              <p className="px-4 py-5 text-sm text-ink-muted">{t("nothingToCount")}</p>
             ) : (
               <CountList rows={statusRows} />
             )}
           </Panel>
-          <Panel>
-            <PanelHeader title="Recent activity" />
+          <Panel className="flex-1">
+            <PanelHeader title={t("recentActivity")} />
             <ActivityList entries={stats.recentActivity} />
           </Panel>
         </div>

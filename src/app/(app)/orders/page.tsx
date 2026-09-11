@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { OrderFilters } from "@/components/orders/order-filters";
 import { OrderList } from "@/components/orders/order-list";
@@ -14,40 +15,29 @@ import {
   parseOrderListParams,
 } from "@/lib/validation/orders";
 
-export const metadata: Metadata = {
-  title: "Projects",
-  robots: { index: false, follow: false },
-};
-
-const CUSTOMER_COPY = {
-  title: "Your projects",
-  description: "Every request you have submitted, newest first.",
-};
-
-const TITLES: Record<string, typeof CUSTOMER_COPY> = {
-  CUSTOMER: CUSTOMER_COPY,
-  EXECUTOR: {
-    title: "Assigned work",
-    description: "Projects assigned to you. Nothing else is visible here.",
-  },
-  ADMIN: {
-    title: "All projects",
-    description: "Every project in the workspace.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Orders");
+  return { title: t("titleCustomer"), robots: { index: false, follow: false } };
+}
 
 export default async function OrdersPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [actor, rawParams] = await Promise.all([
+  const [actor, rawParams, t] = await Promise.all([
     requireActorForPage("/orders"),
     searchParams,
+    getTranslations("Orders"),
   ]);
   const params = parseOrderListParams(rawParams);
   const result = await listOrdersForActor(actor, params);
-  const copy = TITLES[actor.role] ?? CUSTOMER_COPY;
+
+  const copy = {
+    CUSTOMER: { title: t("titleCustomer"), description: t("descriptionCustomer") },
+    EXECUTOR: { title: t("titleExecutor"), description: t("descriptionExecutor") },
+    ADMIN: { title: t("titleAdmin"), description: t("descriptionAdmin") },
+  }[actor.role];
 
   return (
     <div className="flex flex-col gap-5">
@@ -57,7 +47,7 @@ export default async function OrdersPage({
         action={
           actor.role === "CUSTOMER" ? (
             <ButtonLink href="/orders/new" size="sm">
-              New request
+              {t("newRequest")}
             </ButtonLink>
           ) : undefined
         }
@@ -69,23 +59,23 @@ export default async function OrdersPage({
       />
       <Panel>
         <PanelHeader
-          title={`${result.total} ${result.total === 1 ? "project" : "projects"}`}
+          title={t("count", { count: result.total })}
           description={
-            result.total > 0 ? `Page ${result.page} of ${result.pageCount}` : undefined
+            result.total > 0
+              ? t("page", { page: result.page, pageCount: result.pageCount })
+              : undefined
           }
         />
         {result.rows.length === 0 ? (
           <EmptyState
-            title="Nothing to show"
+            title={t("emptyTitle")}
             description={
-              actor.role === "CUSTOMER"
-                ? "You have not submitted a project request yet, or no request matches these filters."
-                : "No project matches these filters."
+              actor.role === "CUSTOMER" ? t("emptyCustomer") : t("emptyOther")
             }
             action={
               actor.role === "CUSTOMER" ? (
                 <ButtonLink href="/orders/new" size="sm">
-                  Submit your first request
+                  {t("submitFirst")}
                 </ButtonLink>
               ) : undefined
             }

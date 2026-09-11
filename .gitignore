@@ -39,3 +39,5 @@ Thumbs.db
 *.zip
 .package-backups/
 artifacts/
+
+.review
