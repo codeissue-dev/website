@@ -41,8 +41,12 @@ async function organizationJsonLd() {
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
   // Only used to decide which header actions to show; every protected page and
-  // action re-checks the session itself.
-  const [actor, jsonLd] = await Promise.all([getActor(), organizationJsonLd()]);
+  // action re-checks the session itself. A database blip must not take the
+  // marketing site down, so a failed lookup degrades to the guest header.
+  const [actor, jsonLd] = await Promise.all([
+    getActor().catch(() => null),
+    organizationJsonLd(),
+  ]);
 
   return (
     <div className="flex min-h-dvh flex-col bg-canvas">

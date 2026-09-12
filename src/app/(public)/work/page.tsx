@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Container } from "@/components/ui/section";
+import { readWithFallback } from "@/lib/db/resilient";
 import { listPublishedPortfolioItems } from "@/lib/content/queries";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function WorkPage() {
   const [items, t] = await Promise.all([
-    listPublishedPortfolioItems(60),
+    readWithFallback("work index", () => listPublishedPortfolioItems(60), []),
     getTranslations("Work"),
   ]);
 

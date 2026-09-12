@@ -7,6 +7,7 @@ import {
   ExternalLink,
   Moon,
   Package,
+  Settings,
   Share2,
   ShieldCheck,
   SlidersHorizontal,
@@ -56,6 +57,10 @@ export function MoonIcon(props: LucideProps) {
 
 export function TerminalIcon(props: LucideProps) {
   return <Terminal {...withDefaults(props)} />;
+}
+
+export function SettingsIcon(props: LucideProps) {
+  return <Settings {...withDefaults(props)} />;
 }
 
 /* Capability glyphs: one per kind of work on the landing page. */

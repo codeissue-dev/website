@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { signOutAction } from "@/actions/auth";
 import { Wordmark } from "@/components/brand/wordmark";
@@ -10,23 +11,25 @@ import {
   type NavMenuItem,
 } from "@/components/layout/nav-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { ChevronDownIcon } from "@/components/ui/icon";
+import { ButtonLink } from "@/components/ui/button";
+import { ChevronDownIcon, SettingsIcon } from "@/components/ui/icon";
 import { RoleBadge } from "@/components/ui/status-badge";
 import { Container } from "@/components/ui/section";
 import type { Actor } from "@/lib/auth/actor";
 import { displayName } from "@/lib/utils";
 
-/**
- * Panel copy is read as `panel("id")("key")`: next-intl returns raw records,
- * and the accessor keeps the string type without per-key assertions.
- */
+type PanelReader = (id: string) => (key: string) => string;
+
+function panelReader(t: { raw: (id: string) => unknown }): PanelReader {
+  return (id) => {
+    const raw = t.raw(id) as Record<string, string>;
+    return (key) => raw[key] ?? "";
+  };
+}
+
 async function publicItems(): Promise<NavMenuItem[]> {
   const t = await getTranslations("Header.panels");
-  const panel = (id: string) => {
-    const raw = t.raw(id) as Record<string, string>;
-    return (key: string) => raw[key] ?? "";
-  };
+  const panel = panelReader(t);
 
   const capabilities = panel("capabilities");
   const process = panel("process");
@@ -84,10 +87,7 @@ async function publicItems(): Promise<NavMenuItem[]> {
 
 async function workspaceItems(actor: Actor): Promise<NavMenuItem[]> {
   const t = await getTranslations("Header.panels");
-  const panel = (id: string) => {
-    const raw = t.raw(id) as Record<string, string>;
-    return (key: string) => raw[key] ?? "";
-  };
+  const panel = panelReader(t);
 
   const dashboard = panel("dashboard");
   const projects = panel("projects");
@@ -186,10 +186,9 @@ async function workspaceItems(actor: Actor): Promise<NavMenuItem[]> {
 /**
  * The one header for the public site, the auth screens and the workspace.
  *
- * Desktop gets the sliding navigation menu; mobile gets a disclosure that
- * works before any JavaScript loads. Language, theme and, once signed in,
- * the profile are present in every variant, so the product reads as one
- * ecosystem everywhere.
+ * Desktop gets two sliding menus: site navigation on the left and, on the
+ * right, the profile and the site settings (language, theme) as the same kind
+ * of panels. Mobile gets a disclosure that works before any JavaScript.
  */
 export async function SiteHeader({
   actor,
@@ -199,12 +198,117 @@ export async function SiteHeader({
   variant?: "public" | "workspace";
 }) {
   const t = await getTranslations("Header");
+  const tPanels = await getTranslations("Header.panels");
+  const panel = panelReader(tPanels);
+  const signedIn = actor !== undefined && actor !== null;
+
   const items =
-    variant === "workspace" && actor !== undefined && actor !== null
+    variant === "workspace" && signedIn
       ? await workspaceItems(actor)
       : await publicItems();
 
-  const mobileLinks = items.map((item) => ({ href: item.href, label: item.label }));
+  const settingsControls: ReactNode = (
+    <div className="flex flex-col gap-1.5">
+      <div className="navmenu-controls-row">
+        <span>{panel("settings")("language")}</span>
+        <LocaleSwitch />
+      </div>
+      <div className="navmenu-controls-row">
+        <span>{panel("settings")("theme")}</span>
+        <ThemeToggle />
+      </div>
+    </div>
+  );
+
+  const signOutControl: ReactNode = (
+    <form action={signOutAction}>
+      <button type="submit" className="navmenu-link navmenu-link-danger">
+        {t("signOut")}
+      </button>
+    </form>
+  );
+
+  const settingsItem: NavMenuItem = {
+    id: "settings",
+    label: t("settings"),
+    icon: <SettingsIcon />,
+    panel: {
+      description: panel("settings")("description"),
+      content: settingsControls,
+    },
+  };
+
+  const account = signedIn ? actor : null;
+
+  const rightItems: NavMenuItem[] =
+    account !== null
+      ? [
+          settingsItem,
+          {
+            id: "profile",
+            label: displayName(account.name, account.email),
+            href: "/account",
+            panel: {
+              description: tPanels("profile.description", { email: account.email }),
+              links: [{ label: panel("profile")("settings"), href: "/account" }],
+              content: signOutControl,
+            },
+          },
+        ]
+      : [settingsItem];
+
+  const guestActions: ReactNode = (
+    <div className="hidden items-center gap-2 md:flex">
+      <ButtonLink href="/sign-in" variant="ghost" size="sm">
+        {t("signIn")}
+      </ButtonLink>
+      <ButtonLink href="/register" size="sm">
+        {t("startProject")}
+      </ButtonLink>
+    </div>
+  );
+
+  const signedInCluster: ReactNode =
+    account !== null ? (
+      <div className="hidden items-center gap-2 lg:flex">
+        <RoleBadge role={account.role} />
+      </div>
+    ) : null;
+
+  const mobileProfileLinks = signedIn
+    ? actor.role === "CUSTOMER"
+      ? [
+          { href: "/dashboard", label: panel("dashboard")("label") },
+          { href: "/orders", label: panel("projects")("all") },
+          { href: "/orders/new", label: panel("projects")("new") },
+          { href: "/account", label: panel("account")("settings") },
+        ]
+      : actor.role === "EXECUTOR"
+        ? [
+            { href: "/dashboard", label: panel("dashboard")("label") },
+            { href: "/orders", label: panel("assigned")("all") },
+            { href: "/account", label: panel("account")("settings") },
+          ]
+        : [
+            { href: "/admin", label: panel("studio")("overview") },
+            { href: "/admin/orders", label: panel("studio")("all") },
+            { href: "/admin/users", label: panel("studio")("people") },
+            { href: "/admin/portfolio", label: panel("studio")("portfolio") },
+            {
+              href: "/admin/testimonials",
+              label: panel("studio")("testimonials"),
+            },
+            { href: "/account", label: panel("account")("settings") },
+          ]
+    : [
+        { href: "/sign-in", label: t("signIn") },
+        { href: "/register", label: t("startProject") },
+      ];
+
+  const mobileLinks = items.map((item) => ({
+    href: item.href ?? "#",
+    label: item.label,
+  }));
 
   return (
     <header className="site-bar">
@@ -213,35 +317,11 @@ export async function SiteHeader({
           <Wordmark size="sm" />
         </Link>
 
-        <NavMenu items={items} />
+        <NavMenu items={items} ariaLabel="Main" />
 
-        <div className="ml-auto hidden items-center gap-2 md:flex">
-          <div className="pref-cluster">
-            <LocaleSwitch />
-            <ThemeToggle />
-          </div>
-          {actor !== undefined && actor !== null ? (
-            <>
-              <span className="hidden text-sm text-ink-muted lg:inline">
-                {displayName(actor.name, actor.email)}
-              </span>
-              <RoleBadge role={actor.role} />
-              <form action={signOutAction}>
-                <Button type="submit" variant="secondary" size="sm">
-                  {t("signOut")}
-                </Button>
-              </form>
-            </>
-          ) : (
-            <>
-              <ButtonLink href="/sign-in" variant="ghost" size="sm">
-                {t("signIn")}
-              </ButtonLink>
-              <ButtonLink href="/register" size="sm">
-                {t("startProject")}
-              </ButtonLink>
-            </>
-          )}
+        <div className="ml-auto flex items-center gap-2">
+          <NavMenu items={rightItems} ariaLabel={t("rightNav")} className="ml-auto" />
+          {signedIn ? signedInCluster : guestActions}
         </div>
 
         <details className="relative ml-auto md:hidden">
@@ -254,7 +334,9 @@ export async function SiteHeader({
             className="menu-panel absolute right-0 z-50 mt-2 w-60 p-1.5"
           >
             <MobileNavLinks links={mobileLinks} />
-            {actor !== undefined && actor !== null ? (
+            <div className="my-1.5 border-t border-line" />
+            <MobileNavLinks links={mobileProfileLinks} />
+            {signedIn ? (
               <form
                 action={signOutAction}
                 className="mt-1.5 border-t border-line pt-1.5"

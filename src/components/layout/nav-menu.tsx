@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -9,9 +10,17 @@ export type NavMenuLink = { href: string; label: string };
 
 export type NavMenuItem = {
   id: string;
+  /** Accessible name; doubles as the visible label for text triggers. */
   label: string;
-  href: string;
-  panel?: { description: string; links: NavMenuLink[] };
+  /** Navigation target for a plain click; icon triggers may omit it. */
+  href?: string;
+  icon?: ReactNode;
+  panel?: {
+    description?: string;
+    links?: NavMenuLink[];
+    /** Fully custom body (controls, forms) rendered after the links. */
+    content?: ReactNode;
+  };
 };
 
 const PANEL_WIDTH = 304;
@@ -29,14 +38,22 @@ function panelLeft(trigger: HTMLElement): { left: number } {
 }
 
 /**
- * The desktop navigation.
+ * The sliding navigation.
  *
  * Hovering a trigger opens its panel; moving to another trigger slides the
  * same viewport sideways and resizes it to the new content instead of closing
  * and reopening. The viewport is measured after every render, so the height
  * always matches the panel that is actually shown.
  */
-export function NavMenu({ items }: { items: NavMenuItem[] }) {
+export function NavMenu({
+  items,
+  ariaLabel,
+  className,
+}: {
+  items: NavMenuItem[];
+  ariaLabel: string;
+  className?: string;
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [box, setBox] = useState({ left: 0, width: PANEL_WIDTH, height: 0 });
   const [indicator, setIndicator] = useState({ x: 0, width: 0 });
@@ -104,8 +121,8 @@ export function NavMenu({ items }: { items: NavMenuItem[] }) {
   return (
     <nav
       ref={navRef}
-      aria-label="Main"
-      className="relative hidden h-14 items-center md:flex"
+      aria-label={ariaLabel}
+      className={cn("relative hidden h-14 items-center md:flex", className)}
       onMouseLeave={scheduleClose}
       onKeyDown={(event) => {
         if (event.key === "Escape") setOpenId(null);
@@ -120,14 +137,27 @@ export function NavMenu({ items }: { items: NavMenuItem[] }) {
             }}
             onMouseEnter={() => open(item.id)}
           >
-            <Link
-              href={item.href}
-              className="nav-link"
-              aria-expanded={item.panel ? openId === item.id : undefined}
-              onFocus={() => open(item.id)}
-            >
-              {item.label}
-            </Link>
+            {item.icon !== undefined && item.href === undefined ? (
+              <button
+                type="button"
+                className="nav-link"
+                aria-label={item.label}
+                aria-expanded={item.panel ? openId === item.id : undefined}
+                onFocus={() => open(item.id)}
+              >
+                {item.icon}
+              </button>
+            ) : (
+              <Link
+                href={item.href ?? "#"}
+                className="nav-link"
+                aria-label={item.icon !== undefined ? item.label : undefined}
+                aria-expanded={item.panel ? openId === item.id : undefined}
+                onFocus={() => open(item.id)}
+              >
+                {item.icon ?? item.label}
+              </Link>
+            )}
           </li>
         ))}
       </ul>
@@ -145,11 +175,13 @@ export function NavMenu({ items }: { items: NavMenuItem[] }) {
           style={{ left: box.left, width: box.width, height: box.height }}
         >
           <div ref={contentRef} key={openItem.id} className="navmenu-content">
-            <p className="max-w-xs text-sm leading-relaxed text-ink-muted">
-              {openItem.panel.description}
-            </p>
-            {openItem.panel.links.length > 0 ? (
-              <ul className="mt-3 flex flex-col gap-0.5">
+            {openItem.panel.description ? (
+              <p className="mb-3 max-w-xs text-sm leading-relaxed text-ink-muted">
+                {openItem.panel.description}
+              </p>
+            ) : null}
+            {openItem.panel.links !== undefined && openItem.panel.links.length > 0 ? (
+              <ul className="flex flex-col gap-1.5">
                 {openItem.panel.links.map((link) => (
                   <li key={link.href + link.label}>
                     <Link
@@ -158,10 +190,16 @@ export function NavMenu({ items }: { items: NavMenuItem[] }) {
                       onClick={() => setOpenId(null)}
                     >
                       {link.label}
+                      <ChevronRight size={14} strokeWidth={1.5} aria-hidden />
                     </Link>
                   </li>
                 ))}
               </ul>
+            ) : null}
+            {openItem.panel.content !== undefined ? (
+              <div className={openItem.panel.links?.length ? "mt-1.5" : undefined}>
+                {openItem.panel.content}
+              </div>
             ) : null}
           </div>
         </div>

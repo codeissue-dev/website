@@ -64,8 +64,19 @@
         "label": "Account",
         "description": "Your sign-in details, display name and password.",
         "settings": "Account settings"
+      },
+      "settings": {
+        "description": "Language and color theme of the interface.",
+        "language": "Language",
+        "theme": "Theme"
+      },
+      "profile": {
+        "description": "Signed in as {email}.",
+        "settings": "Account settings"
       }
-    }
+    },
+    "rightNav": "Profile and settings",
+    "settings": "Site settings"
   },
   "ThemeToggle": {
     "toggle": "Switch color theme"
