@@ -107,13 +107,30 @@ export function NavMenu({
 
   useEffect(() => {
     if (openId === null) return;
-    function onResize() {
+    const content = contentRef.current;
+    if (content === null) return;
+
+    function update() {
       const trigger = triggerRefs.current[openIndex];
-      if (trigger === undefined || trigger === null) return;
-      setBox((current) => ({ ...current, ...panelLeft(trigger) }));
+      const panel = contentRef.current;
+      if (trigger === undefined || trigger === null || panel === null) return;
+      setBox((current) => ({
+        ...current,
+        ...panelLeft(trigger),
+        height: panel.scrollHeight,
+      }));
     }
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+
+    // The first measurement can land before fonts and children have settled;
+    // the observer keeps the viewport glued to the real content size after that.
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(content);
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
   }, [openId, openIndex]);
 
   useEffect(() => () => cancelClose(), []);

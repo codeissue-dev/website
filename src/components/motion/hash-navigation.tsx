@@ -32,10 +32,14 @@ export function HashNavigation() {
       // Take over before next/link sees the click: no router navigation, no
       // scroll reset - just the jump the visitor asked for. Instant rather
       // than smooth: programmatic smooth scrolling is dropped by some
-      // browsers' reduced-motion and emulation modes.
+      // browsers' reduced-motion and emulation modes. The extra frame keeps
+      // the scroll if the panel that hosted the link unmounts right away.
       event.preventDefault();
       event.stopPropagation();
       section.scrollIntoView({ behavior: "instant" });
+      requestAnimationFrame(() => {
+        section.scrollIntoView({ behavior: "instant" });
+      });
       history.replaceState(null, "", url.hash);
     }
 
