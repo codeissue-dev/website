@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { OrderFilters } from "@/components/orders/order-filters";
 import { OrderList } from "@/components/orders/order-list";
@@ -13,19 +14,21 @@ import {
 } from "@/lib/validation/orders";
 import { PageHeading } from "@/components/ui/page-heading";
 
-export const metadata: Metadata = {
-  title: "Projects",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Admin.orders");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 export default async function AdminOrdersPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [actor, rawParams] = await Promise.all([
+  const [actor, rawParams, t, tOrders] = await Promise.all([
     requireRoleForPage(["ADMIN"], "/admin/orders"),
     searchParams,
+    getTranslations("Admin.orders"),
+    getTranslations("Orders"),
   ]);
 
   const params = parseOrderListParams(rawParams);
@@ -33,25 +36,21 @@ export default async function AdminOrdersPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeading
-        title="Projects"
-        description="Search by reference, title or customer. Open a project to assign it, move its status or reply in the chat."
-      />
+      <PageHeading title={t("title")} description={t("description")} />
 
       <OrderFilters action="/admin/orders" params={params} showAssignment />
 
       <Panel>
         <PanelHeader
-          title={`${result.total} ${result.total === 1 ? "project" : "projects"}`}
+          title={tOrders("count", { count: result.total })}
           description={
-            result.total > 0 ? `Page ${result.page} of ${result.pageCount}` : undefined
+            result.total > 0
+              ? tOrders("page", { page: result.page, pageCount: result.pageCount })
+              : undefined
           }
         />
         {result.rows.length === 0 ? (
-          <EmptyState
-            title="No matching projects"
-            description="Adjust the filters, or wait for the next request to arrive: new requests appear here as soon as they are submitted."
-          />
+          <EmptyState title={t("emptyTitle")} description={t("emptyBody")} />
         ) : (
           <OrderList orders={result.rows} showCustomer showExecutor />
         )}
@@ -61,7 +60,7 @@ export default async function AdminOrdersPage({
         page={result.page}
         pageCount={result.pageCount}
         total={result.total}
-        itemLabel="project"
+        itemLabel={t("title")}
         hrefForPage={(page) =>
           `/admin/orders${buildOrderListQueryString({ ...params, page })}`
         }

@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 
 import { toActionFailure } from "@/actions/error-mapping";
-import { actionSuccess, invalidInput, type ActionState } from "@/actions/state";
+import { actionSuccess, type ActionState } from "@/actions/state";
+import { invalidInput } from "@/actions/invalid-input";
+import { getTranslations } from "next-intl/server";
 import { requireActor } from "@/lib/auth/actor";
 import {
   createPortfolioItem,
@@ -62,6 +64,7 @@ export async function createPortfolioItemAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = portfolioItemSchema.safeParse(portfolioPayload(formData));
   if (!parsed.success) return invalidInput(parsed.error);
 
@@ -70,7 +73,7 @@ export async function createPortfolioItemAction(
     await createPortfolioItem({ actor, data: parsed.data });
     revalidatePath("/admin/portfolio");
     revalidatePublicContent();
-    return actionSuccess("The portfolio item has been created.");
+    return actionSuccess(t("portfolioCreated"));
   } catch (error) {
     return toActionFailure(error, "createPortfolioItemAction failed");
   }
@@ -80,6 +83,7 @@ export async function updatePortfolioItemAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const identifier = contentIdSchema.safeParse({ id: formText(formData, "id") });
   if (!identifier.success) return invalidInput(identifier.error);
 
@@ -91,7 +95,7 @@ export async function updatePortfolioItemAction(
     await updatePortfolioItem({ actor, id: identifier.data.id, data: parsed.data });
     revalidatePath("/admin/portfolio");
     revalidatePublicContent();
-    return actionSuccess("The portfolio item has been updated.");
+    return actionSuccess(t("portfolioUpdated"));
   } catch (error) {
     return toActionFailure(error, "updatePortfolioItemAction failed");
   }
@@ -101,6 +105,7 @@ export async function setPortfolioItemPublishedAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = togglePublishedSchema.safeParse({
     id: formText(formData, "id"),
     published: formBooleanValue(formData, "published"),
@@ -117,9 +122,7 @@ export async function setPortfolioItemPublishedAction(
     revalidatePath("/admin/portfolio");
     revalidatePublicContent();
     return actionSuccess(
-      parsed.data.published
-        ? "The item is now public."
-        : "The item is no longer public.",
+      parsed.data.published ? t("itemPublished") : t("itemUnpublished"),
     );
   } catch (error) {
     return toActionFailure(error, "setPortfolioItemPublishedAction failed");
@@ -130,6 +133,7 @@ export async function deletePortfolioItemAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = contentIdSchema.safeParse({ id: formText(formData, "id") });
   if (!parsed.success) return invalidInput(parsed.error);
 
@@ -138,7 +142,7 @@ export async function deletePortfolioItemAction(
     await deletePortfolioItem({ actor, id: parsed.data.id });
     revalidatePath("/admin/portfolio");
     revalidatePublicContent();
-    return actionSuccess("The portfolio item has been deleted.");
+    return actionSuccess(t("portfolioDeleted"));
   } catch (error) {
     return toActionFailure(error, "deletePortfolioItemAction failed");
   }
@@ -148,6 +152,7 @@ export async function createTestimonialAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = testimonialSchema.safeParse(testimonialPayload(formData));
   if (!parsed.success) return invalidInput(parsed.error);
 
@@ -156,7 +161,7 @@ export async function createTestimonialAction(
     await createTestimonial({ actor, data: parsed.data });
     revalidatePath("/admin/testimonials");
     revalidatePublicContent();
-    return actionSuccess("The testimonial has been saved.");
+    return actionSuccess(t("testimonialSaved"));
   } catch (error) {
     return toActionFailure(error, "createTestimonialAction failed");
   }
@@ -166,6 +171,7 @@ export async function updateTestimonialAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const identifier = contentIdSchema.safeParse({ id: formText(formData, "id") });
   if (!identifier.success) return invalidInput(identifier.error);
 
@@ -177,7 +183,7 @@ export async function updateTestimonialAction(
     await updateTestimonial({ actor, id: identifier.data.id, data: parsed.data });
     revalidatePath("/admin/testimonials");
     revalidatePublicContent();
-    return actionSuccess("The testimonial has been updated.");
+    return actionSuccess(t("testimonialUpdated"));
   } catch (error) {
     return toActionFailure(error, "updateTestimonialAction failed");
   }
@@ -187,6 +193,7 @@ export async function setTestimonialPublishedAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = togglePublishedSchema.safeParse({
     id: formText(formData, "id"),
     published: formBooleanValue(formData, "published"),
@@ -203,9 +210,7 @@ export async function setTestimonialPublishedAction(
     revalidatePath("/admin/testimonials");
     revalidatePublicContent();
     return actionSuccess(
-      parsed.data.published
-        ? "The testimonial is now public."
-        : "The testimonial is no longer public.",
+      parsed.data.published ? t("testimonialPublished") : t("testimonialUnpublished"),
     );
   } catch (error) {
     return toActionFailure(error, "setTestimonialPublishedAction failed");
@@ -216,6 +221,7 @@ export async function deleteTestimonialAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = contentIdSchema.safeParse({ id: formText(formData, "id") });
   if (!parsed.success) return invalidInput(parsed.error);
 
@@ -224,7 +230,7 @@ export async function deleteTestimonialAction(
     await deleteTestimonial({ actor, id: parsed.data.id });
     revalidatePath("/admin/testimonials");
     revalidatePublicContent();
-    return actionSuccess("The testimonial has been deleted.");
+    return actionSuccess(t("testimonialDeleted"));
   } catch (error) {
     return toActionFailure(error, "deleteTestimonialAction failed");
   }

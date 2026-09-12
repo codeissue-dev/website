@@ -1,11 +1,11 @@
-import type { ZodError } from "zod";
-
 /**
  * Shared result shape for every form action.
  *
  * Client-safe on purpose: form components import this module, so it must not
  * pull in database or logging code.
  */
+import type { ZodError } from "zod";
+
 export type ActionState = {
   status: "idle" | "error" | "success";
   message: string | null;
@@ -39,13 +39,6 @@ export function fieldErrorsFromZod(error: ZodError): Record<string, string[]> {
     else result[key] = [issue.message];
   }
   return result;
-}
-
-export function invalidInput(error: ZodError): ActionState {
-  return actionFailure(
-    "Please correct the highlighted fields.",
-    fieldErrorsFromZod(error),
-  );
 }
 
 export function firstFieldError(state: ActionState, field: string): string | undefined {

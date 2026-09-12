@@ -66,12 +66,27 @@ export function isTerminalStatus(status: OrderStatus): boolean {
   return TERMINAL_ORDER_STATUSES.includes(status);
 }
 
+/** Stable key into the `Transitions` dictionary; the UI resolves the label. */
+export type TransitionLabelKey =
+  | "startReview"
+  | "cancelRequest"
+  | "cancelProject"
+  | "acceptProject"
+  | "askCustomer"
+  | "startDevelopment"
+  | "requestInput"
+  | "sendToQa"
+  | "resumeDevelopment"
+  | "sendBack"
+  | "markDelivered"
+  | "reopenReview";
+
 export type OrderTransition = {
   to: OrderStatus;
   /** Roles allowed to perform the transition, evaluated against the order. */
   roles: readonly UserRole[];
-  /** Label used on the action control. */
-  actionLabel: string;
+  /** Dictionary key for the action control label. */
+  labelKey: TransitionLabelKey;
   /** The transition is rejected unless an executor is assigned. */
   requiresAssignedExecutor?: boolean;
   /** The transition is rejected unless the actor supplies a note. */
@@ -88,27 +103,27 @@ export type OrderTransition = {
  */
 export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderTransition[]> = {
   SUBMITTED: [
-    { to: "REVIEWING", roles: ["ADMIN"], actionLabel: "Start review" },
+    { to: "REVIEWING", roles: ["ADMIN"], labelKey: "startReview" },
     {
       to: "CANCELED",
       roles: ["ADMIN", "CUSTOMER"],
-      actionLabel: "Cancel request",
+      labelKey: "cancelRequest",
       requiresNote: true,
       destructive: true,
     },
   ],
   REVIEWING: [
-    { to: "ACCEPTED", roles: ["ADMIN"], actionLabel: "Accept project" },
+    { to: "ACCEPTED", roles: ["ADMIN"], labelKey: "acceptProject" },
     {
       to: "WAITING_FOR_CUSTOMER",
       roles: ["ADMIN"],
-      actionLabel: "Ask the customer",
+      labelKey: "askCustomer",
       requiresNote: true,
     },
     {
       to: "CANCELED",
       roles: ["ADMIN", "CUSTOMER"],
-      actionLabel: "Cancel request",
+      labelKey: "cancelRequest",
       requiresNote: true,
       destructive: true,
     },
@@ -117,13 +132,13 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderTransition[]> 
     {
       to: "IN_PROGRESS",
       roles: ["ADMIN", "EXECUTOR"],
-      actionLabel: "Start development",
+      labelKey: "startDevelopment",
       requiresAssignedExecutor: true,
     },
     {
       to: "CANCELED",
       roles: ["ADMIN"],
-      actionLabel: "Cancel project",
+      labelKey: "cancelProject",
       requiresNote: true,
       destructive: true,
     },
@@ -132,18 +147,18 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderTransition[]> 
     {
       to: "WAITING_FOR_CUSTOMER",
       roles: ["ADMIN", "EXECUTOR"],
-      actionLabel: "Request customer input",
+      labelKey: "requestInput",
       requiresNote: true,
     },
     {
       to: "QUALITY_ASSURANCE",
       roles: ["ADMIN", "EXECUTOR"],
-      actionLabel: "Send to QA",
+      labelKey: "sendToQa",
     },
     {
       to: "CANCELED",
       roles: ["ADMIN"],
-      actionLabel: "Cancel project",
+      labelKey: "cancelProject",
       requiresNote: true,
       destructive: true,
     },
@@ -152,13 +167,13 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderTransition[]> 
     {
       to: "IN_PROGRESS",
       roles: ["ADMIN", "EXECUTOR", "CUSTOMER"],
-      actionLabel: "Resume development",
+      labelKey: "resumeDevelopment",
       requiresAssignedExecutor: true,
     },
     {
       to: "CANCELED",
       roles: ["ADMIN"],
-      actionLabel: "Cancel project",
+      labelKey: "cancelProject",
       requiresNote: true,
       destructive: true,
     },
@@ -167,18 +182,18 @@ export const ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderTransition[]> 
     {
       to: "IN_PROGRESS",
       roles: ["ADMIN", "EXECUTOR"],
-      actionLabel: "Send back to development",
+      labelKey: "sendBack",
       requiresNote: true,
       requiresAssignedExecutor: true,
     },
-    { to: "COMPLETED", roles: ["ADMIN"], actionLabel: "Mark as delivered" },
+    { to: "COMPLETED", roles: ["ADMIN"], labelKey: "markDelivered" },
   ],
   COMPLETED: [],
   CANCELED: [
     {
       to: "REVIEWING",
       roles: ["ADMIN"],
-      actionLabel: "Reopen for review",
+      labelKey: "reopenReview",
       requiresNote: true,
     },
   ],
@@ -215,8 +230,16 @@ export function findAllowedTransition(
   );
 }
 
+/** Rejection reasons are dictionary keys, translated at the action boundary. */
+export type TransitionRejectionReason =
+  "sameStatus" | "forbiddenMove" | "roleNotAllowed" | "needExecutor" | "needNote";
+
 export type TransitionRejection =
-  { ok: true; transition: OrderTransition } | { ok: false; reason: string };
+  | { ok: true; transition: OrderTransition }
+  | {
+      ok: false;
+      reason: TransitionRejectionReason;
+    };
 
 /**
  * Pure validation of a status change. The database mutation layer calls this
@@ -229,32 +252,26 @@ export function validateTransition(input: {
   note: string | null;
 }): TransitionRejection {
   if (input.order.status === input.toStatus) {
-    return { ok: false, reason: "This project already has that status." };
+    return { ok: false, reason: "sameStatus" };
   }
 
   const candidate = ORDER_TRANSITIONS[input.order.status].find(
     (transition) => transition.to === input.toStatus,
   );
   if (!candidate) {
-    return {
-      ok: false,
-      reason: `${ORDER_STATUS_LABELS[input.order.status]} cannot move to ${ORDER_STATUS_LABELS[input.toStatus]}.`,
-    };
+    return { ok: false, reason: "forbiddenMove" };
   }
 
   if (!candidate.roles.includes(input.orderRole)) {
-    return { ok: false, reason: "Your role cannot perform this transition." };
+    return { ok: false, reason: "roleNotAllowed" };
   }
 
   if (candidate.requiresAssignedExecutor && input.order.assignedExecutorId === null) {
-    return {
-      ok: false,
-      reason: "Assign an executor before moving the project into development.",
-    };
+    return { ok: false, reason: "needExecutor" };
   }
 
   if (candidate.requiresNote && (input.note === null || input.note.length === 0)) {
-    return { ok: false, reason: "A short note is required for this transition." };
+    return { ok: false, reason: "needNote" };
   }
 
   return { ok: true, transition: candidate };

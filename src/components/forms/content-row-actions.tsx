@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { idleActionState } from "@/actions/state";
 import type { ActionState } from "@/actions/state";
@@ -28,6 +29,7 @@ export function ContentRowActions({
   deleteAction: ContentAction;
   deleteConfirmMessage: string;
 }) {
+  const t = useTranslations("RowActions");
   const [publishState, publishFormAction] = useActionState(
     setPublishedAction,
     idleActionState,
@@ -43,9 +45,9 @@ export function ContentRowActions({
           <SubmitButton
             size="sm"
             variant="secondary"
-            pendingLabel={published ? "Unpublishing..." : "Publishing..."}
+            pendingLabel={published ? t("unpublishing") : t("publishing")}
           >
-            {published ? "Unpublish" : "Publish"}
+            {published ? t("unpublish") : t("publish")}
           </SubmitButton>
         </form>
 
@@ -54,9 +56,9 @@ export function ContentRowActions({
           <ConfirmSubmitButton
             size="sm"
             confirmMessage={deleteConfirmMessage}
-            pendingLabel="Deleting..."
+            pendingLabel={t("deleting")}
           >
-            Delete
+            {t("delete")}
           </ConfirmSubmitButton>
         </form>
       </div>

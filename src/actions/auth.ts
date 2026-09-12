@@ -5,12 +5,9 @@ import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
 
 import { toActionFailure } from "@/actions/error-mapping";
-import {
-  actionFailure,
-  actionSuccess,
-  invalidInput,
-  type ActionState,
-} from "@/actions/state";
+import { getTranslations } from "next-intl/server";
+import { actionFailure, actionSuccess, type ActionState } from "@/actions/state";
+import { invalidInput } from "@/actions/invalid-input";
 import { signIn, signOut } from "@/auth";
 import { requireActor } from "@/lib/auth/actor";
 import {
@@ -45,6 +42,7 @@ export async function registerAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = registerSchema.safeParse({
     email: formText(formData, "email"),
     password: formText(formData, "password"),
@@ -66,7 +64,7 @@ export async function registerAction(
   } catch (error) {
     if (error instanceof AuthError) {
       // The account exists; only the automatic sign-in failed.
-      return actionFailure("Your account was created. Please sign in to continue.");
+      return actionFailure(t("accountCreatedSignin"));
     }
     return toActionFailure(error, "registerAction failed");
   }
@@ -83,12 +81,13 @@ export async function signInAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = credentialsSchema.safeParse({
     email: formText(formData, "email"),
     password: formText(formData, "password"),
   });
   if (!parsed.success) {
-    return actionFailure("Enter your email address and password.");
+    return actionFailure(t("needCredentials"));
   }
 
   try {
@@ -99,7 +98,7 @@ export async function signInAction(
     });
   } catch (error) {
     if (error instanceof AuthError) {
-      return actionFailure("Those sign-in details are not correct.");
+      return actionFailure(t("wrongCredentials"));
     }
     return toActionFailure(error, "signInAction failed");
   }
@@ -115,6 +114,7 @@ export async function updateProfileAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = profileSchema.safeParse({ name: formText(formData, "name") });
   if (!parsed.success) return invalidInput(parsed.error);
 
@@ -122,7 +122,7 @@ export async function updateProfileAction(
     const actor = await requireActor();
     await updateUserName({ userId: actor.id, name: parsed.data.name });
     revalidatePath("/account");
-    return actionSuccess("Your profile has been updated.");
+    return actionSuccess(t("profileUpdated"));
   } catch (error) {
     return toActionFailure(error, "updateProfileAction failed");
   }
@@ -132,6 +132,7 @@ export async function changePasswordAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = changePasswordSchema.safeParse({
     currentPassword: formText(formData, "currentPassword"),
     password: formText(formData, "password"),
@@ -146,7 +147,7 @@ export async function changePasswordAction(
       currentPassword: parsed.data.currentPassword,
       newPassword: parsed.data.password,
     });
-    return actionSuccess("Your password has been changed.");
+    return actionSuccess(t("passwordChanged"));
   } catch (error) {
     return toActionFailure(error, "changePasswordAction failed");
   }

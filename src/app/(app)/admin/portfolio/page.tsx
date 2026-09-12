@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import {
   createPortfolioItemAction,
@@ -20,10 +21,10 @@ import type { PortfolioItemRow } from "@/lib/db/schema";
 import { formatDate } from "@/lib/utils";
 import { PageHeading } from "@/components/ui/page-heading";
 
-export const metadata: Metadata = {
-  title: "Portfolio",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Admin.portfolio");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 /** Database row to plain form strings, so the client form holds no DB types. */
 function toDefaults(item: PortfolioItemRow): PortfolioFormDefaults {
@@ -43,7 +44,10 @@ function toDefaults(item: PortfolioItemRow): PortfolioFormDefaults {
 }
 
 export default async function AdminPortfolioPage() {
-  await requireRoleForPage(["ADMIN"], "/admin/portfolio");
+  const [t] = await Promise.all([
+    getTranslations("Admin.portfolio"),
+    requireRoleForPage(["ADMIN"], "/admin/portfolio"),
+  ]);
   const items = await listAllPortfolioItems();
 
   const published = items.filter((item) => item.published).length;
@@ -51,31 +55,22 @@ export default async function AdminPortfolioPage() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeading
-        title="Portfolio"
-        description={
-          <>
-            Case studies for the public site. {published} of {items.length}{" "}
-            {items.length === 1 ? "item is" : "items are"} published. Nothing appears
-            publicly until you publish it.
-          </>
-        }
+        title={t("title")}
+        description={t("description", { published, total: items.length })}
       />
 
       <Panel>
-        <PanelHeader
-          title="New case study"
-          description="Write it now, publish it when the customer has approved the wording."
-        />
+        <PanelHeader title={t("newTitle")} description={t("newHint")} />
         <PanelBody>
           <details className="group">
             <summary className="cursor-pointer text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
-              Open the form
+              {t("openForm")}
             </summary>
             <div className="mt-4">
               <PortfolioForm
                 action={createPortfolioItemAction}
                 defaults={emptyPortfolioDefaults}
-                submitLabel="Create case study"
+                submitLabel={t("create")}
               />
             </div>
           </details>
@@ -84,10 +79,7 @@ export default async function AdminPortfolioPage() {
 
       {items.length === 0 ? (
         <Panel>
-          <EmptyState
-            title="No case studies yet"
-            description="The public portfolio section stays in its empty state until a real delivered project is documented here."
-          />
+          <EmptyState title={t("emptyTitle")} description={t("emptyBody")} />
         </Panel>
       ) : (
         <div className="flex flex-col gap-4">
@@ -97,30 +89,33 @@ export default async function AdminPortfolioPage() {
                 title={item.title}
                 description={`/work/${item.slug} \u00b7 ${
                   item.published
-                    ? `published ${item.publishedAt === null ? "" : formatDate(item.publishedAt)}`.trim()
-                    : "draft"
-                } \u00b7 sort ${item.sortOrder}`}
+                    ? t("publishedAt", {
+                        date:
+                          item.publishedAt === null ? "" : formatDate(item.publishedAt),
+                      }).trim()
+                    : t("draft")
+                } \u00b7 ${t("sort", { value: item.sortOrder })}`}
                 actions={
                   <ContentRowActions
                     id={item.id}
                     published={item.published}
                     setPublishedAction={setPortfolioItemPublishedAction}
                     deleteAction={deletePortfolioItemAction}
-                    deleteConfirmMessage={`Delete "${item.title}"? This cannot be undone.`}
+                    deleteConfirmMessage={t("deleteConfirm", { title: item.title })}
                   />
                 }
               />
               <PanelBody>
                 <details>
                   <summary className="cursor-pointer text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
-                    Edit
+                    {t("edit")}
                   </summary>
                   <div className="mt-4">
                     <PortfolioForm
                       action={updatePortfolioItemAction}
                       defaults={toDefaults(item)}
                       itemId={item.id}
-                      submitLabel="Save changes"
+                      submitLabel={t("save")}
                     />
                   </div>
                 </details>

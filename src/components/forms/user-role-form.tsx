@@ -1,18 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { firstFieldError, idleActionState } from "@/actions/state";
 import { setUserRoleAction } from "@/actions/users";
 import { SelectField } from "@/components/ui/fields";
 import { SubmitButton } from "@/components/ui/form-controls";
 import { FormMessage } from "@/components/ui/form-message";
-import { ROLE_LABELS, USER_ROLES, type UserRole } from "@/lib/auth/roles";
-
-const ROLE_OPTIONS = USER_ROLES.map((role) => ({
-  value: role,
-  label: ROLE_LABELS[role],
-}));
+import { USER_ROLES, type UserRole } from "@/lib/auth/roles";
 
 export function UserRoleForm({
   userId,
@@ -23,15 +19,16 @@ export function UserRoleForm({
   role: UserRole;
   isSelf: boolean;
 }) {
+  const t = useTranslations("UserRoleForm");
+  const tRoles = useTranslations("Roles");
   const [state, formAction] = useActionState(setUserRoleAction, idleActionState);
+  const roleOptions = USER_ROLES.map((userRole) => ({
+    value: userRole,
+    label: tRoles(userRole),
+  }));
 
   if (isSelf) {
-    return (
-      <p className="text-xs text-ink-subtle">
-        You cannot change your own role. Ask another administrator if you need it
-        changed.
-      </p>
-    );
+    return <p className="text-xs text-ink-subtle">{t("selfNote")}</p>;
   }
 
   return (
@@ -40,15 +37,15 @@ export function UserRoleForm({
       <SelectField
         id={`role-${userId}`}
         name="role"
-        label="Role"
+        label={t("role")}
         defaultValue={role}
-        options={ROLE_OPTIONS}
+        options={roleOptions}
         error={firstFieldError(state, "role")}
       />
       <FormMessage state={state} />
       <div className="flex justify-end">
-        <SubmitButton size="sm" variant="secondary" pendingLabel="Saving...">
-          Update role
+        <SubmitButton size="sm" variant="secondary" pendingLabel={t("saving")}>
+          {t("update")}
         </SubmitButton>
       </div>
     </form>

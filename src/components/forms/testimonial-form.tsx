@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { firstFieldError, idleActionState } from "@/actions/state";
 import type { ActionState } from "@/actions/state";
@@ -46,15 +47,6 @@ export const emptyTestimonialDefaults: TestimonialFormDefaults = {
   published: false,
 };
 
-const RATING_OPTIONS: SelectOption[] = [
-  { value: "", label: "No rating" },
-  { value: "5", label: "5 of 5" },
-  { value: "4", label: "4 of 5" },
-  { value: "3", label: "3 of 5" },
-  { value: "2", label: "2 of 5" },
-  { value: "1", label: "1 of 5" },
-];
-
 /**
  * Create/edit form for one testimonial.
  *
@@ -75,10 +67,18 @@ export function TestimonialForm({
   submitLabel: string;
   deliveredOrders: readonly DeliveredOrderChoice[];
 }) {
+  const t = useTranslations("TestimonialForm");
   const [state, formAction] = useActionState(action, idleActionState);
   const prefix = testimonialId ?? "new";
+  const ratingOptions: SelectOption[] = [
+    { value: "", label: t("noRating") },
+    ...[5, 4, 3, 2, 1].map((rating) => ({
+      value: String(rating),
+      label: t("of5", { rating }),
+    })),
+  ];
   const orderOptions: SelectOption[] = [
-    { value: "", label: "Not linked to an order" },
+    { value: "", label: t("notLinked") },
     ...deliveredOrders.map((order) => ({
       value: order.id,
       label: `${order.reference} \u00b7 ${order.title}`,
@@ -93,7 +93,7 @@ export function TestimonialForm({
         <TextField
           id={`${prefix}-authorName`}
           name="authorName"
-          label="Author name"
+          label={t("author")}
           required
           minLength={2}
           maxLength={120}
@@ -103,10 +103,10 @@ export function TestimonialForm({
         <TextField
           id={`${prefix}-authorRole`}
           name="authorRole"
-          label="Role"
+          label={t("role")}
           maxLength={120}
           defaultValue={defaults.authorRole}
-          hint="Optional, for example: Head of Operations"
+          hint={t("roleHint")}
           error={firstFieldError(state, "authorRole")}
         />
       </div>
@@ -114,23 +114,23 @@ export function TestimonialForm({
       <TextField
         id={`${prefix}-company`}
         name="company"
-        label="Company"
+        label={t("company")}
         maxLength={120}
         defaultValue={defaults.company}
-        hint="Optional."
+        hint={t("optional")}
         error={firstFieldError(state, "company")}
       />
 
       <TextAreaField
         id={`${prefix}-quote`}
         name="quote"
-        label="Quote"
+        label={t("quote")}
         required
         minLength={40}
         maxLength={1200}
         rows={4}
         defaultValue={defaults.quote}
-        hint="Publish only wording the customer actually gave you, with their consent."
+        hint={t("quoteHint")}
         error={firstFieldError(state, "quote")}
       />
 
@@ -138,30 +138,30 @@ export function TestimonialForm({
         <SelectField
           id={`${prefix}-rating`}
           name="rating"
-          label="Rating"
-          options={RATING_OPTIONS}
+          label={t("rating")}
+          options={ratingOptions}
           defaultValue={defaults.rating}
           error={firstFieldError(state, "rating")}
         />
         <SelectField
           id={`${prefix}-orderId`}
           name="orderId"
-          label="Related project"
+          label={t("relatedProject")}
           options={orderOptions}
           defaultValue={defaults.orderId}
-          hint="Completed projects only."
+          hint={t("relatedHint")}
           error={firstFieldError(state, "orderId")}
         />
         <TextField
           id={`${prefix}-sortOrder`}
           name="sortOrder"
-          label="Sort order"
+          label={t("sortOrder")}
           type="number"
           min={-1000}
           max={1000}
           step={1}
           defaultValue={defaults.sortOrder}
-          hint="Lower values appear first."
+          hint={t("sortOrderHint")}
           error={firstFieldError(state, "sortOrder")}
         />
       </div>
@@ -169,15 +169,15 @@ export function TestimonialForm({
       <CheckboxField
         id={`${prefix}-published`}
         name="published"
-        label="Published"
+        label={t("published")}
         defaultChecked={defaults.published}
-        hint="Only published testimonials appear on the public site."
+        hint={t("publishedHint")}
       />
 
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving\u2026">
+        <SubmitButton size="sm" pendingLabel={t("saving")}>
           {submitLabel}
         </SubmitButton>
       </div>

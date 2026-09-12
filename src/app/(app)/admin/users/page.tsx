@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
 import { UserRoleForm } from "@/components/forms/user-role-form";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -8,24 +10,26 @@ import { Pagination } from "@/components/ui/pagination";
 import { Panel, PanelHeader } from "@/components/ui/panel";
 import { RoleBadge } from "@/components/ui/status-badge";
 import { requireRoleForPage } from "@/lib/auth/actor";
-import { ROLE_LABELS, USER_ROLES } from "@/lib/auth/roles";
+import { USER_ROLES } from "@/lib/auth/roles";
 import { countAdmins, listUsers } from "@/lib/users/queries";
 import { formatDate } from "@/lib/utils";
 import { buildUserListQueryString, parseUserListParams } from "@/lib/validation/users";
 
-export const metadata: Metadata = {
-  title: "People",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Admin.users");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 export default async function AdminUsersPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [actor, rawParams] = await Promise.all([
+  const [actor, rawParams, t, tRoles] = await Promise.all([
     requireRoleForPage(["ADMIN"], "/admin/users"),
     searchParams,
+    getTranslations("Admin.users"),
+    getTranslations("Roles"),
   ]);
 
   const params = parseUserListParams(rawParams);
@@ -34,10 +38,7 @@ export default async function AdminUsersPage({
 
   return (
     <div className="flex flex-col gap-5">
-      <PageHeading
-        title="People"
-        description="Roles decide what an account can reach. Granting the executor role lets you assign projects to that person; it never grants access to unrelated projects."
-      />
+      <PageHeading title={t("title")} description={t("description")} />
 
       <Panel>
         <form
@@ -49,7 +50,7 @@ export default async function AdminUsersPage({
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-1.5 lg:col-span-2">
               <label htmlFor="users-q" className="text-xs font-medium text-ink-muted">
-                Search
+                {t("search")}
               </label>
               <input
                 id="users-q"
@@ -57,7 +58,7 @@ export default async function AdminUsersPage({
                 type="search"
                 defaultValue={params.q}
                 maxLength={120}
-                placeholder="Name or email"
+                placeholder={t("searchPlaceholder")}
                 className={CONTROL_CLASS}
               />
             </div>
@@ -66,7 +67,7 @@ export default async function AdminUsersPage({
                 htmlFor="users-role"
                 className="text-xs font-medium text-ink-muted"
               >
-                Role
+                {t("role")}
               </label>
               <select
                 id="users-role"
@@ -74,10 +75,10 @@ export default async function AdminUsersPage({
                 defaultValue={params.role}
                 className={CONTROL_CLASS}
               >
-                <option value="ALL">All roles</option>
+                <option value="ALL">{t("allRoles")}</option>
                 {USER_ROLES.map((role) => (
                   <option key={role} value={role}>
-                    {ROLE_LABELS[role]}
+                    {tRoles(role)}
                   </option>
                 ))}
               </select>
@@ -87,7 +88,7 @@ export default async function AdminUsersPage({
                 htmlFor="users-per-page"
                 className="text-xs font-medium text-ink-muted"
               >
-                Per page
+                {t("perPage")}
               </label>
               <select
                 id="users-per-page"
@@ -105,26 +106,23 @@ export default async function AdminUsersPage({
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button type="submit" size="sm">
-              Apply
+              {t("apply")}
             </Button>
             {isFiltered ? (
               <ButtonLink href="/admin/users" variant="ghost" size="sm">
-                Clear
+                {t("clear")}
               </ButtonLink>
             ) : null}
           </div>
         </form>
 
         <PanelHeader
-          title={`${result.total} ${result.total === 1 ? "account" : "accounts"}`}
-          description={`${adminCount} ${adminCount === 1 ? "administrator" : "administrators"}. The last administrator cannot be demoted.`}
+          title={t("count", { count: result.total })}
+          description={t("adminCount", { count: adminCount })}
         />
 
         {result.rows.length === 0 ? (
-          <EmptyState
-            title="No accounts match"
-            description="Try a different search term or role filter."
-          />
+          <EmptyState title={t("emptyTitle")} description={t("emptyBody")} />
         ) : (
           <ul className="divide-y divide-line">
             {result.rows.map((user) => (
@@ -139,14 +137,14 @@ export default async function AdminUsersPage({
                     </p>
                     <RoleBadge role={user.role} />
                     {user.id === actor.id ? (
-                      <span className="text-xs text-ink-subtle">You</span>
+                      <span className="text-xs text-ink-subtle">{t("you")}</span>
                     ) : null}
                   </div>
                   <p className="mt-1 truncate text-sm text-ink-muted">{user.email}</p>
                   <p className="mt-1 text-xs text-ink-subtle">
-                    Joined {formatDate(user.createdAt)} &middot; {user.orderCount}{" "}
-                    {user.orderCount === 1 ? "request" : "requests"} &middot;{" "}
-                    {user.assignedCount} assigned
+                    {t("joined", { date: formatDate(user.createdAt) })} &middot;{" "}
+                    {t("requests", { count: user.orderCount })} &middot;{" "}
+                    {t("assigned", { count: user.assignedCount })}
                   </p>
                 </div>
                 <div className="lg:w-72 lg:shrink-0">
@@ -166,7 +164,7 @@ export default async function AdminUsersPage({
         page={result.page}
         pageCount={result.pageCount}
         total={result.total}
-        itemLabel="account"
+        itemLabel={t("title")}
         hrefForPage={(page) =>
           `/admin/users${buildUserListQueryString({ ...params, page })}`
         }

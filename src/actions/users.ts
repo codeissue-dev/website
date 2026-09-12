@@ -3,12 +3,9 @@
 import { revalidatePath } from "next/cache";
 
 import { toActionFailure } from "@/actions/error-mapping";
-import {
-  actionFailure,
-  actionSuccess,
-  invalidInput,
-  type ActionState,
-} from "@/actions/state";
+import { actionFailure, actionSuccess, type ActionState } from "@/actions/state";
+import { invalidInput } from "@/actions/invalid-input";
+import { getTranslations } from "next-intl/server";
 import { requireActor } from "@/lib/auth/actor";
 import { assertCanManageUsers } from "@/lib/auth/rbac";
 import { setUserRole } from "@/lib/users/mutations";
@@ -26,6 +23,7 @@ export async function setUserRoleAction(
   _state: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const t = await getTranslations("Actions");
   const parsed = setUserRoleSchema.safeParse({
     userId: formText(formData, "userId"),
     role: formText(formData, "role"),
@@ -37,13 +35,13 @@ export async function setUserRoleAction(
     assertCanManageUsers(actor);
 
     if (actor.id === parsed.data.userId) {
-      return actionFailure("Ask another administrator to change your own role.");
+      return actionFailure(t("ownRole"));
     }
 
     await setUserRole({ userId: parsed.data.userId, role: parsed.data.role });
     revalidatePath("/admin/users");
     revalidatePath("/admin");
-    return actionSuccess("The role has been updated.");
+    return actionSuccess(t("roleUpdated"));
   } catch (error) {
     return toActionFailure(error, "setUserRoleAction failed");
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslations } from "next-intl";
 
 import { firstFieldError, idleActionState } from "@/actions/state";
 import type { ActionState } from "@/actions/state";
@@ -54,6 +55,7 @@ export function PortfolioForm({
   itemId?: string;
   submitLabel: string;
 }) {
+  const t = useTranslations("PortfolioForm");
   const [state, formAction] = useActionState(action, idleActionState);
   const prefix = itemId ?? "new";
 
@@ -65,7 +67,7 @@ export function PortfolioForm({
         <TextField
           id={`${prefix}-title`}
           name="title"
-          label="Project title"
+          label={t("title")}
           required
           minLength={3}
           maxLength={140}
@@ -75,12 +77,12 @@ export function PortfolioForm({
         <TextField
           id={`${prefix}-slug`}
           name="slug"
-          label="URL slug"
+          label={t("slug")}
           required
           minLength={3}
           maxLength={80}
           defaultValue={defaults.slug}
-          hint="Lowercase words separated by single hyphens."
+          hint={t("slugHint")}
           error={firstFieldError(state, "slug")}
         />
       </div>
@@ -88,20 +90,20 @@ export function PortfolioForm({
       <TextAreaField
         id={`${prefix}-summary`}
         name="summary"
-        label="Summary"
+        label={t("summary")}
         required
         minLength={20}
         maxLength={300}
         rows={2}
         defaultValue={defaults.summary}
-        hint="One or two sentences, shown on the landing page and the portfolio index."
+        hint={t("summaryHint")}
         error={firstFieldError(state, "summary")}
       />
 
       <TextAreaField
         id={`${prefix}-problem`}
         name="problem"
-        label="The problem"
+        label={t("problem")}
         required
         minLength={20}
         maxLength={2000}
@@ -113,7 +115,7 @@ export function PortfolioForm({
       <TextAreaField
         id={`${prefix}-solution`}
         name="solution"
-        label="What we built"
+        label={t("solution")}
         required
         minLength={20}
         maxLength={2000}
@@ -126,19 +128,19 @@ export function PortfolioForm({
         <TextField
           id={`${prefix}-techStack`}
           name="techStack"
-          label="Technology"
+          label={t("tech")}
           maxLength={1000}
           defaultValue={defaults.techStack}
-          hint="Comma separated, for example: Next.js, PostgreSQL, Stripe"
+          hint={t("techHint")}
           error={firstFieldError(state, "techStack")}
         />
         <TextField
           id={`${prefix}-industry`}
           name="industry"
-          label="Industry"
+          label={t("industry")}
           maxLength={80}
           defaultValue={defaults.industry}
-          hint="Optional."
+          hint={t("optional")}
           error={firstFieldError(state, "industry")}
         />
       </div>
@@ -147,36 +149,36 @@ export function PortfolioForm({
         <TextField
           id={`${prefix}-projectUrl`}
           name="projectUrl"
-          label="Live URL"
+          label={t("liveUrl")}
           type="url"
           inputMode="url"
           placeholder="https://"
           defaultValue={defaults.projectUrl}
-          hint="Optional."
+          hint={t("optional")}
           error={firstFieldError(state, "projectUrl")}
         />
         <TextField
           id={`${prefix}-deliveryWeeks`}
           name="deliveryWeeks"
-          label="Delivered in (weeks)"
+          label={t("weeks")}
           type="number"
           min={1}
           max={260}
           step={1}
           defaultValue={defaults.deliveryWeeks}
-          hint="Optional."
+          hint={t("optional")}
           error={firstFieldError(state, "deliveryWeeks")}
         />
         <TextField
           id={`${prefix}-sortOrder`}
           name="sortOrder"
-          label="Sort order"
+          label={t("sortOrder")}
           type="number"
           min={-1000}
           max={1000}
           step={1}
           defaultValue={defaults.sortOrder}
-          hint="Lower values appear first."
+          hint={t("sortOrderHint")}
           error={firstFieldError(state, "sortOrder")}
         />
       </div>
@@ -184,15 +186,15 @@ export function PortfolioForm({
       <CheckboxField
         id={`${prefix}-published`}
         name="published"
-        label="Published"
+        label={t("published")}
         defaultChecked={defaults.published}
-        hint="Only published case studies appear on the public site."
+        hint={t("publishedHint")}
       />
 
       <FormMessage state={state} />
 
       <div className="flex justify-end">
-        <SubmitButton size="sm" pendingLabel="Saving...">
+        <SubmitButton size="sm" pendingLabel={t("saving")}>
           {submitLabel}
         </SubmitButton>
       </div>

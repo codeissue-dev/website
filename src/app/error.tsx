@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
 
 /**
@@ -15,15 +17,16 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("Errors");
+
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center gap-4 px-4 text-center">
-      <h1 className="section-title">Something went wrong on our side</h1>
-      <p className="text-sm leading-relaxed text-ink-muted">
-        The page could not be rendered. Nothing you submitted was lost if it was already
-        saved, and trying again is safe.
-      </p>
+      <h1 className="section-title">{t("errorTitle")}</h1>
+      <p className="text-sm leading-relaxed text-ink-muted">{t("errorBody")}</p>
       {error.digest ? (
-        <p className="font-mono text-xs text-ink-subtle">Reference: {error.digest}</p>
+        <p className="font-mono text-xs text-ink-subtle">
+          {t("errorReference", { digest: error.digest })}
+        </p>
       ) : null}
       <Button
         onClick={() => {
@@ -32,7 +35,7 @@ export default function GlobalError({
         size="sm"
         className="mt-2"
       >
-        Try again
+        {t("tryAgain")}
       </Button>
     </div>
   );

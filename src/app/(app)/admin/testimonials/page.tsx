@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import {
   createTestimonialAction,
@@ -20,10 +21,10 @@ import type { TestimonialRow } from "@/lib/db/schema";
 import { formatDate } from "@/lib/utils";
 import { PageHeading } from "@/components/ui/page-heading";
 
-export const metadata: Metadata = {
-  title: "Testimonials",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Admin.testimonials");
+  return { title: t("title"), robots: { index: false, follow: false } };
+}
 
 function toDefaults(testimonial: TestimonialRow): TestimonialFormDefaults {
   return {
@@ -39,7 +40,10 @@ function toDefaults(testimonial: TestimonialRow): TestimonialFormDefaults {
 }
 
 export default async function AdminTestimonialsPage() {
-  await requireRoleForPage(["ADMIN"], "/admin/testimonials");
+  const [t] = await Promise.all([
+    getTranslations("Admin.testimonials"),
+    requireRoleForPage(["ADMIN"], "/admin/testimonials"),
+  ]);
 
   const [testimonials, deliveredOrders] = await Promise.all([
     listAllTestimonials(),
@@ -51,32 +55,25 @@ export default async function AdminTestimonialsPage() {
   return (
     <div className="flex flex-col gap-5">
       <PageHeading
-        title="Testimonials"
-        description={
-          <>
-            Real quotes, entered here and stored in the database. {published} of{" "}
-            {testimonials.length}{" "}
-            {testimonials.length === 1 ? "quote is" : "quotes are"} published. Publish
-            only what the author has approved.
-          </>
-        }
+        title={t("title")}
+        description={t("description", {
+          published,
+          total: testimonials.length,
+        })}
       />
 
       <Panel>
-        <PanelHeader
-          title="New testimonial"
-          description="Optionally link the quote to the completed project it refers to."
-        />
+        <PanelHeader title={t("newTitle")} description={t("newHint")} />
         <PanelBody>
           <details>
             <summary className="cursor-pointer text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
-              Open the form
+              {t("openForm")}
             </summary>
             <div className="mt-4">
               <TestimonialForm
                 action={createTestimonialAction}
                 defaults={emptyTestimonialDefaults}
-                submitLabel="Create testimonial"
+                submitLabel={t("create")}
                 deliveredOrders={deliveredOrders}
               />
             </div>
@@ -86,10 +83,7 @@ export default async function AdminTestimonialsPage() {
 
       {testimonials.length === 0 ? (
         <Panel>
-          <EmptyState
-            title="No testimonials yet"
-            description="The public site shows a deliberate empty state rather than invented praise until a real quote is published here."
-          />
+          <EmptyState title={t("emptyTitle")} description={t("emptyBody")} />
         </Panel>
       ) : (
         <div className="flex flex-col gap-4">
@@ -99,10 +93,17 @@ export default async function AdminTestimonialsPage() {
                 title={testimonial.authorName}
                 description={`${
                   testimonial.published
-                    ? `Published ${testimonial.publishedAt === null ? "" : formatDate(testimonial.publishedAt)}`.trim()
-                    : "Draft"
-                } \u00b7 sort ${testimonial.sortOrder}${
-                  testimonial.rating === null ? "" : ` \u00b7 ${testimonial.rating}/5`
+                    ? t("publishedAt", {
+                        date:
+                          testimonial.publishedAt === null
+                            ? ""
+                            : formatDate(testimonial.publishedAt),
+                      }).trim()
+                    : t("draft")
+                } \u00b7 ${t("sort", { value: testimonial.sortOrder })}${
+                  testimonial.rating === null
+                    ? ""
+                    : ` \u00b7 ${t("rating", { rating: testimonial.rating })}`
                 }`}
                 actions={
                   <ContentRowActions
@@ -110,7 +111,9 @@ export default async function AdminTestimonialsPage() {
                     published={testimonial.published}
                     setPublishedAction={setTestimonialPublishedAction}
                     deleteAction={deleteTestimonialAction}
-                    deleteConfirmMessage={`Delete the testimonial from ${testimonial.authorName}? This cannot be undone.`}
+                    deleteConfirmMessage={t("deleteConfirm", {
+                      author: testimonial.authorName,
+                    })}
                   />
                 }
               />
@@ -120,14 +123,14 @@ export default async function AdminTestimonialsPage() {
                 </blockquote>
                 <details className="mt-4">
                   <summary className="cursor-pointer text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
-                    Edit
+                    {t("edit")}
                   </summary>
                   <div className="mt-4">
                     <TestimonialForm
                       action={updateTestimonialAction}
                       defaults={toDefaults(testimonial)}
                       testimonialId={testimonial.id}
-                      submitLabel="Save changes"
+                      submitLabel={t("save")}
                       deliveredOrders={deliveredOrders}
                     />
                   </div>

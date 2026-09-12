@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { toActionFailure } from "@/actions/error-mapping";
-import { actionSuccess, invalidInput, type ActionState } from "@/actions/state";
+import { actionSuccess, type ActionState } from "@/actions/state";
+import { invalidInput } from "@/actions/invalid-input";
 import { requireActor } from "@/lib/auth/actor";
 import { markOrderRead, sendOrderMessage } from "@/lib/chat/mutations";
 import { describeError, logger } from "@/lib/logger";

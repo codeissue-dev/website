@@ -32,6 +32,7 @@ export function OrderStatusForm({
 }) {
   const t = useTranslations("OrderForms");
   const tStatuses = useTranslations("Statuses");
+  const tTransitions = useTranslations("Transitions");
   const [state, formAction] = useActionState(changeOrderStatusAction, idleActionState);
 
   const available = transitions.filter(
@@ -69,7 +70,7 @@ export function OrderStatusForm({
         options={available.map((transition) => ({
           value: transition.to,
           label: t("toStatus", {
-            action: transition.actionLabel,
+            action: tTransitions(transition.labelKey),
             status: tStatuses(transition.to),
           }),
         }))}
@@ -95,14 +96,16 @@ export function OrderStatusForm({
         {active.destructive === true ? (
           <ConfirmSubmitButton
             size="sm"
-            confirmMessage={t("confirm", { action: active.actionLabel })}
+            confirmMessage={t("confirm", {
+              action: tTransitions(active.labelKey),
+            })}
             pendingLabel={t("saving")}
           >
-            {active.actionLabel}
+            {tTransitions(active.labelKey)}
           </ConfirmSubmitButton>
         ) : (
           <SubmitButton size="sm" pendingLabel={t("saving")}>
-            {active.actionLabel}
+            {tTransitions(active.labelKey)}
           </SubmitButton>
         )}
       </div>

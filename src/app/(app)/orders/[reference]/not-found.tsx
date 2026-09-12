@@ -1,16 +1,17 @@
+import { useTranslations } from "next-intl";
+
 import { ButtonLink } from "@/components/ui/button";
 
 /** Shown for both a missing reference and an unavailable project. */
 export default function OrderNotFound() {
+  const t = useTranslations("Order");
+
   return (
     <div className="page-enter mx-auto flex max-w-lg flex-col items-center gap-4 py-16 text-center">
-      <h1 className="section-title">This project is not available</h1>
-      <p className="text-sm leading-relaxed text-ink-muted">
-        Either the reference does not exist or it belongs to someone else. Check the
-        reference from your project list and try again.
-      </p>
+      <h1 className="section-title">{t("notFoundTitle")}</h1>
+      <p className="text-sm leading-relaxed text-ink-muted">{t("notFoundBody")}</p>
       <ButtonLink href="/orders" size="sm" className="mt-2">
-        Back to your projects
+        {t("backToProjects")}
       </ButtonLink>
     </div>
   );
