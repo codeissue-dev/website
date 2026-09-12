@@ -525,6 +525,13 @@
     border-color: var(--color-critical);
   }
 
+  /* Touch keyboards: inputs below 16px make iOS zoom the page on focus. */
+  @media (max-width: 47.999rem) {
+    .field-control {
+      font-size: 1rem;
+    }
+  }
+
   .field-hint {
     font-size: 0.75rem;
     line-height: 1.6;

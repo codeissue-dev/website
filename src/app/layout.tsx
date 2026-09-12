@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
+import { HashNavigation } from "@/components/motion/hash-navigation";
 import { getSiteUrl } from "@/lib/env";
 
 import "./globals.css";
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body className="min-h-dvh bg-canvas font-sans text-ink antialiased">
         <NextIntlClientProvider messages={messages}>
+          <HashNavigation />
           {/* Keyboard users skip the navigation; every layout labels its main region. */}
           <a href="#main-content" className="skip-link">
             {t("skip")}

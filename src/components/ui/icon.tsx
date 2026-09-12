@@ -5,6 +5,7 @@ import {
   BarChart3,
   ChevronDown,
   ExternalLink,
+  Menu,
   Moon,
   Package,
   Settings,
@@ -61,6 +62,10 @@ export function TerminalIcon(props: LucideProps) {
 
 export function SettingsIcon(props: LucideProps) {
   return <Settings {...withDefaults(props)} />;
+}
+
+export function MenuIcon(props: LucideProps) {
+  return <Menu {...withDefaults(props)} />;
 }
 
 /* Capability glyphs: one per kind of work on the landing page. */

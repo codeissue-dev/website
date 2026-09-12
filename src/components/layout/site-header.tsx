@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { signOutAction } from "@/actions/auth";
 import { Wordmark } from "@/components/brand/wordmark";
 import { LocaleSwitch } from "@/components/layout/locale-switch";
+import { MobileMenu } from "@/components/layout/mobile-menu";
 import {
   MobileNavLinks,
   NavMenu,
@@ -12,7 +13,7 @@ import {
 } from "@/components/layout/nav-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { ButtonLink } from "@/components/ui/button";
-import { ChevronDownIcon, SettingsIcon } from "@/components/ui/icon";
+import { SettingsIcon } from "@/components/ui/icon";
 import { RoleBadge } from "@/components/ui/status-badge";
 import { Container } from "@/components/ui/section";
 import type { Actor } from "@/lib/auth/actor";
@@ -324,11 +325,7 @@ export async function SiteHeader({
           {signedIn ? signedInCluster : guestActions}
         </div>
 
-        <details className="relative ml-auto md:hidden">
-          <summary className="menu-trigger">
-            {t("menu")}
-            <ChevronDownIcon className="ml-1.5" />
-          </summary>
+        <MobileMenu>
           <nav
             aria-label="Main"
             className="menu-panel absolute right-0 z-50 mt-2 w-60 p-1.5"
@@ -351,7 +348,7 @@ export async function SiteHeader({
               <ThemeToggle />
             </div>
           </nav>
-        </details>
+        </MobileMenu>
       </Container>
     </header>
   );
